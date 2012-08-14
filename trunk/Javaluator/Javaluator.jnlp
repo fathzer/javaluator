@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://sicg.tpz.renault.fr/applReno/divCounter" href="JEvaluator.jnlp">
+<jnlp spec="1.0+" codebase="http://sicg.tpz.renault.fr/applReno/divCounter" href="Javaluator.jnlp">
     <information>
-        <title>JEvaluator demo</title>
+        <title>Javaluator demo</title>
         <vendor>Jean-Marc Astesana</vendor>
         <!--icon href="sometree-icon.jpg"/-->
         <offline-allowed/>

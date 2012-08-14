@@ -1,3 +1,3 @@
-/** The JEvaluator package */
+/** The Javaluator package */
 package net.astesana.javaluator;
 
