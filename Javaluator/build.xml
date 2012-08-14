@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Build script for A-JLib project">
+	<property name="javaluatorVersion" value="0.1"/>
+	<tstamp><format property="TODAY" pattern="dd/MM/yyyy" locale="fr,FR"/></tstamp>
+	
+	<property name="releaseDir" value="javaluatorRelease"/>
+	<!--property name="versionFile" value="src/net/astesana/javaluator/version.txt"/-->
+	
+	<target name="build" depends="doc">
+		<echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/>
+		<!-- Ensure the releaseDir is a fresh new one. -->
+		<delete dir="${releaseDir}"/>
+		<mkdir dir="${releaseDir}"/>
+		<copy todir="${releaseDir}">
+	    	<fileset dir="src" excludes="**/*.java"/>
+		</copy>
+		<javac srcdir="src" destdir="${releaseDir}" source="1.5" target="1.5" encoding="ISO8859-1" includeAntRuntime="false" debug="false"/>
+		<jar destfile="zip/Javaluator.jar">
+			<manifest file="${tempdir}/manifest">
+				<section name="net.astesana.javaluator">
+					<attribute name="Specification-Title" value="Javaluator"/>
+					<attribute name="Specification-Version" value="${shortversion}"/>
+					<attribute name="Specification-Vendor" value="Jean-Marc Astesana"/>
+					<attribute name="Implementation-Title" value="net.astesana.javaluator"/>
+					<attribute name="Implementation-Version" value="${javaluatorVersion}"/>
+					<attribute name="Implementation-Vendor" value="http://javaluator.sourceforge.net"/>
+				</section>
+			</manifest>
+			<fileset dir="${releaseDir}"/>
+		</jar>
+		<delete dir="${releaseDir}"/>
+		<zip basedir="src" destfile="zip/src.zip"/>
+		<copy todir="zip" file="license.html"/>
+		<zip basedir="zip" destfile="Javaluator-v${jevaluatorVersion}.zip"/>
+		<delete file="${versionFile}"/>
+		<delete dir="zip"/>
+	</target>
+	
+	<target name="doc">
+		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
+			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
+	</target>
+</project>
