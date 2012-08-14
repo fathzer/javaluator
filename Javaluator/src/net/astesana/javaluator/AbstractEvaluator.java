@@ -245,7 +245,7 @@ public abstract class AbstractEvaluator<T> {
 					if (!wereValues.isEmpty()) {
 						wereValues.pop(); wereValues.push(true);
 					}
-					wereValues.push(false);
+					wereValues.push(true);
 				} else if (token.isOperator()) {
 					// If the token is an operator, op1, then:
 					while (!stack.isEmpty()) {
