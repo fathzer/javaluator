@@ -6,7 +6,7 @@
 	<property name="releaseDir" value="javaluatorRelease"/>
 	<!--property name="versionFile" value="src/net/astesana/javaluator/version.txt"/-->
 	
-	<target name="build" depends="doc">
+	<target name="build" depends="doc, demo">
 		<echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/>
 		<!-- Ensure the releaseDir is a fresh new one. -->
 		<delete dir="${releaseDir}"/>
@@ -16,7 +16,7 @@
 		</copy>
 		<javac srcdir="src" destdir="${releaseDir}" source="1.5" target="1.5" encoding="ISO8859-1" includeAntRuntime="false" debug="false"/>
 		<jar destfile="zip/Javaluator.jar">
-			<manifest file="${tempdir}/manifest">
+			<manifest>
 				<section name="net.astesana.javaluator">
 					<attribute name="Specification-Title" value="Javaluator"/>
 					<attribute name="Specification-Version" value="${shortversion}"/>
@@ -31,9 +31,32 @@
 		<delete dir="${releaseDir}"/>
 		<zip basedir="src" destfile="zip/src.zip"/>
 		<copy todir="zip" file="license.html"/>
-		<zip basedir="zip" destfile="Javaluator-v${jevaluatorVersion}.zip"/>
+		<zip basedir="zip" destfile="Javaluator-v${javaluatorVersion}.zip"/>
 		<delete file="${versionFile}"/>
 		<delete dir="zip"/>
+	</target>
+		
+	<property name="srcAJLib" location="../A-JLib/src"/>
+	<property name="demo.dest" location="demo.build"/>
+	<target name="demo">
+		<!-- Ensure the releaseDir is a fresh new one. -->
+		<delete dir="${demo.dest}"/>
+		<mkdir dir="${demo.dest}"/>
+		<copy todir="${demo.dest}">
+	    	<fileset dir="${srcAJLib}" excludes="**/*.java"/>
+		</copy>
+		<javac destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1">
+			<src path="src"/>
+			<src path="demo"/>
+			<src path="${srcAJLib}"/>
+		</javac>
+		<jar destfile="JavaluatorDemo.jar">
+			<manifest>
+				<attribute name="Main-Class" value="net.astesana.javaluator.demo.Demo"/>
+			</manifest>
+			<fileset dir="${demo.dest}"/>
+		</jar>
+		<delete dir="${demo.dest}"/>
 	</target>
 	
 	<target name="doc">
