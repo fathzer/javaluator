@@ -16,7 +16,7 @@ public abstract class Function<T> {
 	 * <br>This constructor builds a function with a fixed arguments count.
 	 * @param name The function's name
 	 * @param argumentCount The function's argument count.
-	 * @throw IllegalArgumentException if argumentCount is lower than 0 or if the function name is null or empty.
+	 * @throw IllegalArgumentException if argumentCount is lower than 1 or if the function name is null or empty.
 	 */
 	public Function(String name, int argumentCount) {
 		this(name, argumentCount, argumentCount);
@@ -28,10 +28,10 @@ public abstract class Function<T> {
 	 * @param name The function's name
 	 * @param minArgumentCount The function's minimum argument count.
 	 * @param maxArgumentCount The function's maximum argument count (Integer.MAX_VALUE to specify no upper limit).
-	 * @throw IllegalArgumentException if minArgumentCount is less than 0 or greater than maxArgumentCount or if the function name is null or empty.
+	 * @throw IllegalArgumentException if minArgumentCount is less than 1 or greater than maxArgumentCount or if the function name is null or empty.
 	 */
 	public Function(String name, int minArgumentCount, int maxArgumentCount) {
-		if ((minArgumentCount<0) || (minArgumentCount>maxArgumentCount)) throw new IllegalArgumentException("Invalid argument count");
+		if ((minArgumentCount<1) || (minArgumentCount>maxArgumentCount)) throw new IllegalArgumentException("Invalid argument count");
 		if (name==null || name.length()==0) throw new IllegalArgumentException("Invalid function name");
 		this.name = name;
 		this.minArgumentCount = minArgumentCount;
