@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://sicg.tpz.renault.fr/applReno/divCounter" href="Javaluator.jnlp">
+<jnlp spec="1.0" codebase="http://javaluator.sourceforge.net/site/demo" href="Javaluator.jnlp">
     <information>
         <title>Javaluator demo</title>
         <vendor>Jean-Marc Astesana</vendor>
@@ -12,9 +12,5 @@
         <jar href="JavaluatorDemo.jar" main="true" />
     </resources>
     <update check="always" policy="always"/>
-    <security>
-    	<all-permissions/>
-    </security>
-    <application-desc main-class="net.astesana.javaluator.demo" />
-    <update check="background"/>
+    <application-desc main-class="net.astesana.javaluator.demo.Demo" />
 </jnlp>
