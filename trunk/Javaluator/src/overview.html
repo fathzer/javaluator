@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head></head>
+<body>
+This
+is a simple (but powerfull) <a href="http://en.wikipedia.org/wiki/Infix_notation">infix</a>
+expression evaluator.<br>
+<br>
+Evaluating an expression is as simple as the following line :<br>
+<code>Double result = new DoubleEvaluator().evaluate(expression);</code><br>
+<br>
+Key features:<br>
+<ul>
+<li><b>Expression syntax check</b>: Basic infix evaluators consider
+expressions
+such as "4 3 +" as valid expressions. JEvaluator performs a full syntax
+check while evaluating the expression.</li>
+<li><b>Functions support</b>:&nbsp;including variable number of arguments.</li><li><span style="font-weight: bold;">Constants support</span>: for example pi and e when evaluating expressions on doubles.</li><li><span style="font-weight: bold;">Highly configurable</span>:
+This library comes with a lot of built-in functions and operators, it
+is very easy to reduce the number of them (for example, the sine
+function can be removed from the function set if you want to implement
+a financial calculator).</li>
+<li><b>Extensible</b>: This library is provided with some operators
+and functions, if you need more, you can implement your own.</li><li><b>Small footprint</b>: This library is distributed as a 15kB jar.
+It needs no external library in order to run.</li>
+</ul>Limitations:<br><ul><li>Only one character long operators are supported.</li><li>Only unary and binary operators are supported (ternary operators such as <span style="font-style: italic;">condition</span><span style="font-weight: bold;">?</span><span style="font-style: italic;">value if true</span><span style="font-weight: bold;">:</span><span style="font-style: italic;">value if false</span> are not).</li><li>Non-associative operators are not supported.</li><li>Only () parenthesis are supported (for now).</li></ul>
+This work is still under progress and some things may be changed in the
+near future.<br>
+<br>
+License information is available <a href="../license.html">there</a>.
+</body></html>
