@@ -72,11 +72,11 @@ public abstract class AbstractEvaluator<T> {
 		if (operators.size()>2) throw new IllegalArgumentException();
 	}
 	
-	/** When a token can be more than one operator, this method guesses the right operator.
+	/** When a token can be more than one operator (homonym operators), this method guesses the right operator.
 	 * <br>A very common case is the - sign in arithmetic computation which can be an unary or a binary operator, depending
 	 * on what was the previous token. 
 	 * <br><b>Warning:</b> maybe the arguments of this function are not enough to deal with all the cases.
-	 * So, this part of the evaluation is in alpha state (method may change in the future)
+	 * So, this part of the evaluation is in alpha state (method may change in the future).
 	 * @param previous The last parsed tokens (the previous token in the infix expression we are evaluating). 
 	 * @param candidates The candidate tokens.
 	 * @return A token
