@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="build" name="Build script for A-JLib project">
+<project default="build" name="Build script for Javaluator project">
 	<property name="javaluatorVersion" value="0.1"/>
-	<tstamp><format property="TODAY" pattern="dd/MM/yyyy" locale="fr,FR"/></tstamp>
+	<!--tstamp><format property="TODAY" pattern="dd/MM/yyyy" locale="fr,FR"/></tstamp-->
+	
+	<taskdef resource="org/apache/commons/vfs2/tasks/tasks.properties"/>
 	
 	<property name="releaseDir" value="javaluatorRelease"/>
 	<property name="sf.host" value="web.sourceforge.net"/>
 	<property name="sf.user" value="fathzer,javaluator"/>
-	<property name="sf.home" value="/home/project-web/javaluator/htdocs"/>
+	<property name="sf.home" value="/htdocs"/>
 	
 	<target name="build" depends="doc, demo">
-		<echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/>
+		<!--echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/-->
 		<!-- Ensure the releaseDir is a fresh new one. -->
 		<delete dir="${releaseDir}"/>
 		<mkdir dir="${releaseDir}"/>
@@ -55,7 +57,7 @@
 			<fileset dir="${demo.dest}"/>
 		</jar>
 		<delete dir="${demo.dest}"/>
-		<scp file="JavaluatorDemo.jar" todir="${sf.user}:${sf.password}@${sf.host}:${sf.home}/site" sftp="true" trust="true"/>
+		<v-copy src="JavaluatorDemo.jar" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/site" overwrite="true"/>
 	</target>
 	
 	<target name="getPass">
@@ -65,6 +67,8 @@
 	<target name="doc" depends="getPass">
 		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
 			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
-		<scp todir="${sf.user}:${sf.password}@${sf.host}:${sf.home}/en/doc/test" trust="true"> <fileset dir="zip/doc"/> </scp>
+		<v-delete file="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc"/>
+		<v-copy src="zip/doc" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc" overwrite="false"/>
+		<v-copy src="relnotes.txt" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc" overwrite="true"/>
 	</target>
 </project>
