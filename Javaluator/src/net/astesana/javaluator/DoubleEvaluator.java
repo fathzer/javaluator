@@ -101,7 +101,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Operator<Double> DIVIDE = new DOperator("/", 2, Operator.Associativity.LEFT, 2);
 	public final static Operator<Double> EXPONENT = new DOperator("^", 2, Operator.Associativity.LEFT, 4);
 	/** The <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo operator</a>.*/
-	public final static Operator<Double> MODULO = new DOperator("%", 2, Operator.Associativity.LEFT, 4);
+	public final static Operator<Double> MODULO = new DOperator("%", 2, Operator.Associativity.LEFT, 2);
 
 	/** The whole set of predefined operators */
 	public static final Operator<Double>[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};

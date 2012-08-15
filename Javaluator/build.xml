@@ -4,7 +4,9 @@
 	<tstamp><format property="TODAY" pattern="dd/MM/yyyy" locale="fr,FR"/></tstamp>
 	
 	<property name="releaseDir" value="javaluatorRelease"/>
-	<!--property name="versionFile" value="src/net/astesana/javaluator/version.txt"/-->
+	<property name="sf.host" value="web.sourceforge.net"/>
+	<property name="sf.user" value="fathzer,javaluator"/>
+	<property name="sf.home" value="/home/project-web/javaluator/htdocs"/>
 	
 	<target name="build" depends="doc, demo">
 		<echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/>
@@ -38,29 +40,31 @@
 		
 	<property name="srcAJLib" location="../A-JLib/src"/>
 	<property name="demo.dest" location="demo.build"/>
-	<target name="demo">
+	<target name="demo" depends="getPass">
 		<!-- Ensure the releaseDir is a fresh new one. -->
 		<delete dir="${demo.dest}"/>
 		<mkdir dir="${demo.dest}"/>
-		<copy todir="${demo.dest}">
+		<!--copy todir="${demo.dest}">
 	    	<fileset dir="${srcAJLib}" excludes="**/*.java"/>
-		</copy>
-		<javac destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1">
-			<src path="src"/>
-			<src path="demo"/>
-			<src path="${srcAJLib}"/>
-		</javac>
+		</copy-->
+		<javac srcdir="demo" destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1" sourcepath="${srcAJLib};src" />
 		<jar destfile="JavaluatorDemo.jar">
 			<manifest>
-				<attribute name="Main-Class" value="net.astesana.javaluator.demo.Demo"/>
+				<attribute name="Main-Class" value="net.astesana.javaluator.demo.DemoApplet"/>
 			</manifest>
 			<fileset dir="${demo.dest}"/>
 		</jar>
 		<delete dir="${demo.dest}"/>
+		<scp file="JavaluatorDemo.jar" todir="${sf.user}:${sf.password}@${sf.host}:${sf.home}/site" sftp="true" trust="true"/>
 	</target>
 	
-	<target name="doc">
+	<target name="getPass">
+		<input message="Type the password of sourceforge account :" addproperty="sf.password"/>
+	</target>
+
+	<target name="doc" depends="getPass">
 		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
 			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
+		<scp todir="${sf.user}:${sf.password}@${sf.host}:${sf.home}/en/doc/test" trust="true"> <fileset dir="zip/doc"/> </scp>
 	</target>
 </project>

@@ -1,0 +1,4 @@
+x
+version	0.1.0 (02/01/2012)
+improvement
+	This is the first Javaluator official release.
