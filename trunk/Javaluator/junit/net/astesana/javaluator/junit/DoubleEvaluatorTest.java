@@ -11,17 +11,23 @@ public class DoubleEvaluatorTest {
 
 	@Test
 	public void testResults() {
+		assertEquals(2, evaluator.evaluate("6/3"),0.001);
+		assertEquals(Double.POSITIVE_INFINITY, evaluator.evaluate("2/0"),0.001);
+		assertEquals(2, evaluator.evaluate("7 % 2.5"),0.001);
 		assertEquals(-1., evaluator.evaluate("-1"), 0.001);
 		assertEquals(1., evaluator.evaluate("1"), 0.001);
 		assertEquals(-3, evaluator.evaluate("1+-4"), 0.001);
-		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(4*0.5)"),0.001);
 		assertEquals(2, evaluator.evaluate("3-1"), 0.001);
-		assertEquals(-1, evaluator.evaluate("min(1,-1)"),0.001);
-		assertEquals(-1, evaluator.evaluate("min(8,3,1,-1)"),0.001);
 		assertEquals(-4, evaluator.evaluate("-2^2"),0.001);
+		
 		assertEquals(0, evaluator.evaluate("sin(pi)"),0.001);
 		assertEquals(1, evaluator.evaluate("ln(e)"),0.001);
 		assertEquals(2, evaluator.evaluate("log(100)"),0.001);
+		assertEquals(-1, evaluator.evaluate("min(1,-1)"),0.001);
+		assertEquals(-1, evaluator.evaluate("min(8,3,1,-1)"),0.001);
+		assertEquals(11, evaluator.evaluate("sum(8,3,1,-1)"),0.001);
+		
+		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(4*0.5)"),0.001);
 	}
 	
 	@Test (expected=IllegalArgumentException.class)

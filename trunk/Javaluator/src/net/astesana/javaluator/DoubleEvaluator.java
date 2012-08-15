@@ -21,9 +21,11 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 			} else if (this==MULTIPLY) {
 				return operands.next() * operands.next();
 			} else if (this==DIVIDE) {
-				return operands.next() * operands.next();
+				return operands.next() / operands.next();
 			} else if (this==EXPONENT) {
 				return Math.pow(operands.next(),operands.next());
+			} else if (this==MODULO) {
+				return operands.next() % operands.next();
 			} else {
 				throw new IllegalArgumentException ("Unknown operator");
 			}
@@ -56,6 +58,11 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 				while (arguments.hasNext()) {
 					result = Math.max(result, arguments.next());
 				}
+			} else if (this==SUM) {
+				result = 0;
+				while (arguments.hasNext()) {
+					result = result + arguments.next();
+				}
 			} else if (this==LN) {
 				result = Math.log(arguments.next());
 			} else if (this==LOG) {
@@ -80,6 +87,8 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Function<Double> MIN = new DFunction("min", 1, Integer.MAX_VALUE);
 	/** Returns the maximum of n numbers (n>=1) */
 	public final static Function<Double> MAX = new DFunction("max", 1, Integer.MAX_VALUE);
+	/** Returns the sum of n numbers (n>=1) */
+	public final static Function<Double> SUM = new DFunction("sum", 1, Integer.MAX_VALUE);
 	/** Returns the natural logarithm of a number */
 	public final static Function<Double> LN = new DFunction("ln", 1);
 	/** Returns the decimal logarithm of a number */
@@ -91,9 +100,14 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Operator<Double> MULTIPLY = new DOperator("*", 2, Operator.Associativity.LEFT, 2);
 	public final static Operator<Double> DIVIDE = new DOperator("/", 2, Operator.Associativity.LEFT, 2);
 	public final static Operator<Double> EXPONENT = new DOperator("^", 2, Operator.Associativity.LEFT, 4);
+	/** The <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo operator</a>.*/
+	public final static Operator<Double> MODULO = new DOperator("%", 2, Operator.Associativity.LEFT, 4);
 
-	public static final Operator<Double>[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT};
-	public static final Function<Double>[] FUNCTIONS = new Function[]{SINE, COSINE, MIN, MAX, LN, LOG};
+	/** The whole set of predefined operators */
+	public static final Operator<Double>[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
+	/** The whole set of predefined functions */
+	public static final Function<Double>[] FUNCTIONS = new Function[]{SINE, COSINE, MIN, MAX, SUM, LN, LOG};
+	/** The whole set of predefined constants */
 	public static final Constant<Double>[] CONSTANTS = new Constant[]{PI, E};
 	
 	public DoubleEvaluator() {

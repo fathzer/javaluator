@@ -78,7 +78,7 @@ public class DemoPanel extends JPanel {
 	}
 	private JLabel getLblNewLabel_1() {
 		if (lblNewLabel_1 == null) {
-			lblNewLabel_1 = new JLabel("Result = ");
+			lblNewLabel_1 = new JLabel("Javaluator's reply = ");
 		}
 		return lblNewLabel_1;
 	}
