@@ -15,6 +15,7 @@ public class DemoApplet extends JApplet {
 				}
 			});
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("createGUI didn't complete successfully");
 		}
 	}

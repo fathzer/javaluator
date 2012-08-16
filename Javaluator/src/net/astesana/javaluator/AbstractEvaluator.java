@@ -1,6 +1,7 @@
 package net.astesana.javaluator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -311,5 +312,14 @@ public abstract class AbstractEvaluator<T> {
 		} else {
 			return Token.buildLiteral(token);
 		}
+	}
+	
+	public Collection<Operator<T>> getOperators() {
+		ArrayList<Operator<T>> result = new ArrayList<Operator<T>>();
+		Collection<List<Operator<T>>> values = this.operators.values();
+		for (List<Operator<T>> list : values) {
+			result.addAll(list);
+		}
+		return result;
 	}
 }

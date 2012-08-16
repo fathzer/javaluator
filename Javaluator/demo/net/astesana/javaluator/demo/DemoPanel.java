@@ -8,10 +8,16 @@ import java.awt.GridBagConstraints;
 import net.astesana.ajlib.swing.widget.TextWidget;
 import net.astesana.javaluator.AbstractEvaluator;
 import net.astesana.javaluator.DoubleEvaluator;
+import net.astesana.javaluator.Operator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Collection;
 import java.awt.Insets;
+import javax.swing.border.TitledBorder;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
+import javax.swing.JTable;
 
 @SuppressWarnings("serial")
 public class DemoPanel extends JPanel {
@@ -22,6 +28,9 @@ public class DemoPanel extends JPanel {
 	
 	private AbstractEvaluator<? extends Object> evaluator;
 	private JPanel panel;
+	private JPanel operatorsPanel;
+	private JScrollPane scrollPane;
+	private JTable operatorsTable;
 
 	/**
 	 * Create the panel.
@@ -43,12 +52,21 @@ public class DemoPanel extends JPanel {
 		gbc_expression.gridy = 0;
 		add(getExpression(), gbc_expression);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.insets = new Insets(0, 0, 5, 0);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridwidth = 2;
-		gbc_panel.insets = new Insets(0, 0, 0, 5);
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 1;
 		add(getPanel(), gbc_panel);
+		GridBagConstraints gbc_operatorsPanel = new GridBagConstraints();
+		gbc_operatorsPanel.fill = GridBagConstraints.BOTH;
+		gbc_operatorsPanel.gridwidth = 0;
+		gbc_operatorsPanel.weighty = 1.0;
+		gbc_operatorsPanel.weightx = 1.0;
+		gbc_operatorsPanel.insets = new Insets(0, 0, 0, 5);
+		gbc_operatorsPanel.gridx = 0;
+		gbc_operatorsPanel.gridy = 2;
+		add(getOperatorsPanel(), gbc_operatorsPanel);
 	}
 
 	private JLabel getLblNewLabel() {
@@ -114,5 +132,28 @@ public class DemoPanel extends JPanel {
 			panel.add(getResultLabel(), gbc_resultLabel);
 		}
 		return panel;
+	}
+	private JPanel getOperatorsPanel() {
+		if (operatorsPanel == null) {
+			operatorsPanel = new JPanel();
+			operatorsPanel.setBorder(new TitledBorder(null, "Operators", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			operatorsPanel.setLayout(new BorderLayout(0, 0));
+			operatorsPanel.add(getScrollPane());
+			operatorsPanel.add(getOperatorsTable(), BorderLayout.NORTH);
+		}
+		return operatorsPanel;
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+		}
+		return scrollPane;
+	}
+	private JTable getOperatorsTable() {
+		if (operatorsTable == null) {
+			Collection<?> operators = getEvaluator().getOperators();
+			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator<? extends Object>>) operators));
+		}
+		return operatorsTable;
 	}
 }
