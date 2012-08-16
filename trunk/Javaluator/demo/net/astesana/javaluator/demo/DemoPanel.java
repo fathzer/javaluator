@@ -138,14 +138,14 @@ public class DemoPanel extends JPanel {
 			operatorsPanel = new JPanel();
 			operatorsPanel.setBorder(new TitledBorder(null, "Operators", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			operatorsPanel.setLayout(new BorderLayout(0, 0));
-			operatorsPanel.add(getScrollPane());
-			operatorsPanel.add(getOperatorsTable(), BorderLayout.NORTH);
+			operatorsPanel.add(getScrollPane(), BorderLayout.CENTER);
 		}
 		return operatorsPanel;
 	}
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
-			scrollPane = new JScrollPane();
+			scrollPane = new JScrollPane(getOperatorsTable());
+			getOperatorsTable().setFillsViewportHeight(true);
 		}
 		return scrollPane;
 	}
