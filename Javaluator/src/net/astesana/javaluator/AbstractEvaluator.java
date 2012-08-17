@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -22,9 +23,9 @@ public abstract class AbstractEvaluator<T> {
 	private static final String OPEN_BRACKET = "(";
 	
 	private String tokenDelimiters;
-	private HashMap<String, Function<T>> functions;
-	private HashMap<String, List<Operator<T>>> operators;
-	private HashMap<String, T> constants;
+	private Map<String, Function<T>> functions;
+	private Map<String, List<Operator<T>>> operators;
+	private Map<String, Constant<T>> constants;
 	
 	/** Constructor.
 	 * @param operators The operators supported by this evaluator.
@@ -34,7 +35,7 @@ public abstract class AbstractEvaluator<T> {
 	protected AbstractEvaluator(Operator<T>[] operators, Function<T>[] functions, Constant<T>[] constants) {
 		this.functions = new HashMap<String, Function<T>>();
 		this.operators = new HashMap<String, List<Operator<T>>>();
-		this.constants = new HashMap<String, T>();
+		this.constants = new HashMap<String, Constant<T>>();
 		if (operators!=null) {
 			for (Operator<T> ope : operators) {
 				List<Operator<T>> known = this.operators.get(ope.getSymbol());
@@ -54,7 +55,7 @@ public abstract class AbstractEvaluator<T> {
 		}
 		if (constants!=null && constants.length!=0) {
 			for (Constant<T> constant : constants) {
-				this.constants.put(constant.getMnemonic(), constant.getValue());
+				this.constants.put(constant.getMnemonic(), constant);
 			}
 		}
 		//TODO if constants, operators, functions are duplicated => error
@@ -111,21 +112,53 @@ public abstract class AbstractEvaluator<T> {
 	private void output(Stack<T> values, Token token) {
 		if (token.isLiteral()) {
 			String literal = token.getLiteral();
-			T value = this.constants.get(literal);
-			values.push(value!=null ? value : toValue(literal));
+			Constant<T> ct = this.constants.get(literal); 
+			values.push(ct!=null ? evaluate(ct) : toValue(literal));
 		} else if (token.isOperator()) {
 			Operator<T> operator = token.getOperator();
-			values.push(operator.evaluate(getArguments(values, operator.getOperandCount())));
+			values.push(evaluate(operator, getArguments(values, operator.getOperandCount())));
 		} else {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	/** Evaluates a constant.
+	 * <br>By default, returns constant.getValue(). 
+	 * @param constant The constant
+	 * @return The constant's value
+	 * @see Constant#getValue()
+	 */
+	protected T evaluate(Constant<T> constant) {
+		return constant.getValue();
+	}
+	
+	/** Evaluates an operation.
+	 * <br>By default, returns operator.evaluate(operands). 
+	 * @param operator The operator
+	 * @param operands The operands
+	 * @return The result of the operation
+	 * @see Operator#evaluate(Iterator)
+	 */
+	protected T evaluate(Operator<T> operator, Iterator<T> operands) {
+		return operator.evaluate(operands);
+	}
+	
+	/** Evaluates a function.
+	 * <br>By default, returns function.evaluate(arguments). 
+	 * @param function The function
+	 * @param arguments The function's arguments
+	 * @return The result of the function
+	 * @see Function#evaluate(Iterator)
+	 */
+	protected T evaluate(Function<T> function, Iterator<T> arguments) {
+		return function.evaluate(arguments);
 	}
 	
 	private void doFunction(Stack<T> values, Function<T> function, int argCount) {
 		if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
 			throw new IllegalArgumentException("Invalid argument count for "+function.getName());
 		}
-		values.push(function.evaluate(getArguments(values, argCount)));
+		values.push(evaluate(function,getArguments(values, argCount)));
 	}
 	
 	private Iterator<T> getArguments(Stack<T> values, int nb) {
@@ -145,8 +178,6 @@ public abstract class AbstractEvaluator<T> {
 	 * @throws IllegalArgumentException if the literal can't be converted to a value.
 	 */
 	protected abstract T toValue(String literal);
-	
-//	protected abstract T evaluate(Operator operator, Iterator<T> operands);
 	
 	private Enumeration<String> tokenize(String expression) {
 		final StringTokenizer tokens = new StringTokenizer(expression, getDelimiters(), true);
