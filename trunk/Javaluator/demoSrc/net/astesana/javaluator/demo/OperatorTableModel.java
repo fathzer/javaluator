@@ -16,7 +16,7 @@ public class OperatorTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 2;
+		return 4;
 	}
 
 	public int getRowCount() {
@@ -26,14 +26,25 @@ public class OperatorTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int column) {
 		Operator<? extends Object> ope = operators.get(row);
 		if (column==0) return ope.getSymbol(); 
-		if (column==1) return ope.getPrecedence(); 
+		if (column==1) return getDescription(ope); 
+		if (column==2) return ope.getPrecedence();
+		if (column==3) return ope.getAssociativity();
+		if (column==4) return ope.getOperandCount();
 		return null;
+	}
+
+	private String getDescription(Operator ope) {
+		String key = ope.getSymbol()+ope.getOperandCount();
+		return Messages.getString(key);
 	}
 
 	@Override
 	public String getColumnName(int column) {
-		if (column==0) return "Symbol"; 
-		if (column==1) return "Precedence";
+		if (column==0) return "Symbol"; //$NON-NLS-1$
+		if (column==1) return "Description";		 //$NON-NLS-1$
+		if (column==2) return "Precedence"; //$NON-NLS-1$
+		if (column==3) return "Associativity"; //$NON-NLS-1$
+		if (column==4) return "Arity"; //$NON-NLS-1$
 		return super.getColumnName(column);
 	}
 }

@@ -3,9 +3,9 @@ package net.astesana.javaluator;
 import java.util.Iterator;
 
 /** An abstract <a href="http://en.wikipedia.org/wiki/Operator_(mathematics)">operator</a>.
- * @author Jean-Marc Astesana
- * <BR>License : <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL v3</a>
  * @param <T> The type of operands and results handled by the function.
+ * @author Jean-Marc Astesana
+ * @see <a href="../../../license.html">License information</a>
  */
 public abstract class Operator<T> {
 	/** An Operator's <a href="http://en.wikipedia.org/wiki/Operator_associativity">associativity</a>.

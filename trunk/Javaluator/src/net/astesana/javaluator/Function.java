@@ -5,7 +5,7 @@ import java.util.Iterator;
 /** An abstract <a href="http://en.wikipedia.org/wiki/Function_(mathematics)">function</a>.
  * @param <T> The type of arguments and results handled by the function.
  * @author Jean-Marc Astesana
- * <BR>License : <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL v3</a>
+ * @see <a href="../../../license.html">License information</a>
  */
 public abstract class Function<T> {
 	private String name;
