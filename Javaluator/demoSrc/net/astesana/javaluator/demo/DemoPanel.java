@@ -7,7 +7,9 @@ import java.awt.GridBagConstraints;
 
 import net.astesana.ajlib.swing.widget.TextWidget;
 import net.astesana.javaluator.AbstractEvaluator;
+import net.astesana.javaluator.Constant;
 import net.astesana.javaluator.DoubleEvaluator;
+import net.astesana.javaluator.Function;
 import net.astesana.javaluator.Operator;
 
 import java.beans.PropertyChangeListener;
@@ -31,6 +33,13 @@ public class DemoPanel extends JPanel {
 	private JPanel operatorsPanel;
 	private JScrollPane scrollPane;
 	private JTable operatorsTable;
+	private JPanel panel_1;
+	private JPanel constantsPanel;
+	private JScrollPane scrollPane_1;
+	private JTable constantsTable;
+	private JPanel functionsPanel;
+	private JScrollPane scrollPane_2;
+	private JTable functionsTable;
 
 	/**
 	 * Create the panel.
@@ -58,15 +67,14 @@ public class DemoPanel extends JPanel {
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 1;
 		add(getPanel(), gbc_panel);
-		GridBagConstraints gbc_operatorsPanel = new GridBagConstraints();
-		gbc_operatorsPanel.fill = GridBagConstraints.BOTH;
-		gbc_operatorsPanel.gridwidth = 0;
-		gbc_operatorsPanel.weighty = 1.0;
-		gbc_operatorsPanel.weightx = 1.0;
-		gbc_operatorsPanel.insets = new Insets(0, 0, 0, 5);
-		gbc_operatorsPanel.gridx = 0;
-		gbc_operatorsPanel.gridy = 2;
-		add(getOperatorsPanel(), gbc_operatorsPanel);
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.weighty = 1.0;
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridwidth = 2;
+		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
+		gbc_panel_1.gridx = 0;
+		gbc_panel_1.gridy = 2;
+		add(getPanel_1(), gbc_panel_1);
 	}
 
 	private JLabel getLblNewLabel() {
@@ -155,5 +163,83 @@ public class DemoPanel extends JPanel {
 			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator<? extends Object>>) operators));
 		}
 		return operatorsTable;
+	}
+	private JPanel getPanel_1() {
+		if (panel_1 == null) {
+			panel_1 = new JPanel();
+			GridBagLayout gbl_panel_1 = new GridBagLayout();
+			panel_1.setLayout(gbl_panel_1);
+			GridBagConstraints gbc_operatorsPanel = new GridBagConstraints();
+			gbc_operatorsPanel.insets = new Insets(0, 0, 5, 0);
+			gbc_operatorsPanel.weighty = 1.0;
+			gbc_operatorsPanel.weightx = 1.0;
+			gbc_operatorsPanel.fill = GridBagConstraints.BOTH;
+			gbc_operatorsPanel.gridx = 0;
+			gbc_operatorsPanel.gridy = 0;
+			panel_1.add(getOperatorsPanel(), gbc_operatorsPanel);
+			GridBagConstraints gbc_constantsPanel = new GridBagConstraints();
+			gbc_constantsPanel.insets = new Insets(0, 0, 5, 0);
+			gbc_constantsPanel.weighty = 0.5;
+			gbc_constantsPanel.weightx = 1.0;
+			gbc_constantsPanel.fill = GridBagConstraints.BOTH;
+			gbc_constantsPanel.gridx = 0;
+			gbc_constantsPanel.gridy = 1;
+			panel_1.add(getConstantsPanel(), gbc_constantsPanel);
+			GridBagConstraints gbc_functionsPanel = new GridBagConstraints();
+			gbc_functionsPanel.weighty = 1.0;
+			gbc_functionsPanel.weightx = 1.0;
+			gbc_functionsPanel.fill = GridBagConstraints.BOTH;
+			gbc_functionsPanel.gridheight = 0;
+			gbc_functionsPanel.gridx = 1;
+			gbc_functionsPanel.gridy = 0;
+			panel_1.add(getFunctionsPanel(), gbc_functionsPanel);
+		}
+		return panel_1;
+	}
+	private JPanel getConstantsPanel() {
+		if (constantsPanel == null) {
+			constantsPanel = new JPanel();
+			constantsPanel.setBorder(new TitledBorder(null, "Constants", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			constantsPanel.setLayout(new BorderLayout(0, 0));
+			constantsPanel.add(getScrollPane_1());
+		}
+		return constantsPanel;
+	}
+	private JScrollPane getScrollPane_1() {
+		if (scrollPane_1 == null) {
+			scrollPane_1 = new JScrollPane();
+			scrollPane_1.setViewportView(getConstantsTable());
+		}
+		return scrollPane_1;
+	}
+	private JTable getConstantsTable() {
+		if (constantsTable == null) {
+			Collection<?> constants = getEvaluator().getConstants();
+			constantsTable = new JTable(new ConstantTableModel((Collection<Constant<? extends Object>>) constants));
+		}
+		return constantsTable;
+	}
+	private JPanel getFunctionsPanel() {
+		if (functionsPanel == null) {
+			functionsPanel = new JPanel();
+			functionsPanel.setBorder(new TitledBorder(null, "Functions", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			functionsPanel.setLayout(new BorderLayout(0, 0));
+			functionsPanel.add(getScrollPane_2());
+		}
+		return functionsPanel;
+	}
+	private JScrollPane getScrollPane_2() {
+		if (scrollPane_2 == null) {
+			scrollPane_2 = new JScrollPane();
+			scrollPane_2.setViewportView(getFunctionsTable());
+		}
+		return scrollPane_2;
+	}
+	private JTable getFunctionsTable() {
+		if (functionsTable == null) {
+			Collection<?> functions = getEvaluator().getFunctions();
+			functionsTable = new JTable(new FunctionTableModel((Collection<Function<? extends Object>>) functions));
+		}
+		return functionsTable;
 	}
 }

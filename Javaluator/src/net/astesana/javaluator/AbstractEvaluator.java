@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  * <Some standard evaluators are included in the library, you can define your own by subclassing this class.
  * @param <T> The type of values handled by the evaluator 
  * @author Jean-Marc Astesana
- * <BR>License : <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL v3</a>
+ * @see <a href="../../../license.html">License information</a>
  */
 public abstract class AbstractEvaluator<T> {
 	private static final String FUNCTION_ARGUMENT_SEPARATOR = ",";
@@ -345,6 +345,9 @@ public abstract class AbstractEvaluator<T> {
 		}
 	}
 	
+	/** Gets the operators supported by this evaluator.
+	 * @return a collection of operators.
+	 */
 	public Collection<Operator<T>> getOperators() {
 		ArrayList<Operator<T>> result = new ArrayList<Operator<T>>();
 		Collection<List<Operator<T>>> values = this.operators.values();
@@ -352,5 +355,19 @@ public abstract class AbstractEvaluator<T> {
 			result.addAll(list);
 		}
 		return result;
+	}
+
+	/** Gets the functions supported by this evaluator.
+	 * @return a collection of functions.
+	 */
+	public Collection<Function<T>> getFunctions() {
+		return this.functions.values();
+	}
+
+	/** Gets the constants supported by this evaluator.
+	 * @return a collection of constants.
+	 */
+	public Collection<Constant<T>> getConstants() {
+		return this.constants.values();
 	}
 }

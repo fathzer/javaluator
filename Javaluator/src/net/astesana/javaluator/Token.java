@@ -1,5 +1,11 @@
 package net.astesana.javaluator;
 
+/** A token.
+ * <br>When evaluating an expression, it is first split into tokens.
+ * These tokens can be operators, constants, etc ...
+ * @author Jean-Marc Astesana
+ * @see <a href="../../../license.html">License information</a>
+ */
 public class Token {
 	private enum Kind {
 		/** Something like white space */
@@ -52,10 +58,16 @@ public class Token {
 		return kind;
 	}
 
+	/** Tests whether the token is an operator.
+	 * @return true if the token is an operator
+	 */
 	public boolean isOperator() {
 		return kind.equals(Kind.OPERATOR);
 	}
 
+	/** Tests whether the token is a function.
+	 * @return true if the token is a function
+	 */
 	public boolean isFunction() {
 		return kind.equals(Kind.FUNCTION);
 	}
@@ -64,18 +76,30 @@ public class Token {
 		return kind.equals(Kind.IGNORED);
 	}
 
+	/** Tests whether the token is an open bracket.
+	 * @return true if the token is an open bracket
+	 */
 	public boolean isOpenBracket() {
 		return kind.equals(Kind.OPEN_BRACKET);
 	}
 
+	/** Tests whether the token is a close bracket.
+	 * @return true if the token is a close bracket
+	 */
 	public boolean isCloseBracket() {
 		return kind.equals(Kind.CLOSE_BRACKET);
 	}
 
+	/** Tests whether the token is a function argument separator.
+	 * @return true if the token is a function argument separator
+	 */
 	public boolean isFunctionArgumentSeparator() {
 		return kind.equals(Kind.FUNCTION_SEPARATOR);
 	}
 	
+	/** Tests whether the token is a literal.
+	 * @return true if the token is a literal
+	 */
 	public boolean isLiteral() {
 		return kind.equals(Kind.LITERAL);
 	}

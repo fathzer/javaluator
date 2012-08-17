@@ -3,6 +3,8 @@ package net.astesana.javaluator;
 import java.util.Iterator;
 
 /** An evaluator that is able to evaluate arithmetic expressions on Double.
+ * @author Jean-Marc Astesana
+ * @see <a href="../../../license.html">License information</a>
  */
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	private static class DOperator extends Operator<Double> {
