@@ -145,7 +145,7 @@ public class DemoPanel extends JPanel {
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane(getOperatorsTable());
-			getOperatorsTable().setFillsViewportHeight(true);
+//			getOperatorsTable().setFillsViewportHeight(true);
 		}
 		return scrollPane;
 	}
