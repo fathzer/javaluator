@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
+import net.astesana.ajlib.swing.Utils;
 import net.astesana.ajlib.swing.widget.TextWidget;
 import net.astesana.javaluator.AbstractEvaluator;
 import net.astesana.javaluator.Constant;
@@ -71,7 +72,6 @@ public class DemoPanel extends JPanel {
 		gbc_panel_1.weighty = 1.0;
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
 		gbc_panel_1.gridwidth = 2;
-		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
 		gbc_panel_1.gridx = 0;
 		gbc_panel_1.gridy = 2;
 		add(getPanel_1(), gbc_panel_1);
@@ -161,6 +161,7 @@ public class DemoPanel extends JPanel {
 		if (operatorsTable == null) {
 			Collection<?> operators = getEvaluator().getOperators();
 			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator<? extends Object>>) operators));
+			Utils.packColumns(operatorsTable, 2);
 		}
 		return operatorsTable;
 	}
@@ -179,7 +180,7 @@ public class DemoPanel extends JPanel {
 			panel_1.add(getOperatorsPanel(), gbc_operatorsPanel);
 			GridBagConstraints gbc_constantsPanel = new GridBagConstraints();
 			gbc_constantsPanel.insets = new Insets(0, 0, 5, 0);
-			gbc_constantsPanel.weighty = 0.5;
+			gbc_constantsPanel.weighty = 0.3;
 			gbc_constantsPanel.weightx = 1.0;
 			gbc_constantsPanel.fill = GridBagConstraints.BOTH;
 			gbc_constantsPanel.gridx = 0;
@@ -216,6 +217,7 @@ public class DemoPanel extends JPanel {
 		if (constantsTable == null) {
 			Collection<?> constants = getEvaluator().getConstants();
 			constantsTable = new JTable(new ConstantTableModel((Collection<Constant<? extends Object>>) constants));
+			Utils.packColumns(constantsTable, 2);
 		}
 		return constantsTable;
 	}
@@ -239,6 +241,7 @@ public class DemoPanel extends JPanel {
 		if (functionsTable == null) {
 			Collection<?> functions = getEvaluator().getFunctions();
 			functionsTable = new JTable(new FunctionTableModel((Collection<Function<? extends Object>>) functions));
+			Utils.packColumns(functionsTable, 2);
 		}
 		return functionsTable;
 	}

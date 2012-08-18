@@ -2,17 +2,26 @@ package net.astesana.javaluator.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
 import net.astesana.javaluator.Operator;
 
+@SuppressWarnings("serial")
 public class OperatorTableModel extends AbstractTableModel {
 	private List<Operator<? extends Object>> operators;
 	
 	public OperatorTableModel(Collection<Operator<? extends Object>> collection) {
 		this.operators = new ArrayList<Operator<? extends Object>>(collection);
+		Collections.sort(this.operators, new Comparator<Operator<? extends Object>>() {
+			public int compare(Operator<? extends Object> o1, Operator<? extends Object> o2) {
+				int result = o1.getPrecedence()-o2.getPrecedence();
+				return result;
+			}
+		});
 	}
 
 	public int getColumnCount() {
@@ -33,7 +42,7 @@ public class OperatorTableModel extends AbstractTableModel {
 		return null;
 	}
 
-	private String getDescription(Operator ope) {
+	private String getDescription(Operator<? extends Object> ope) {
 		String key = ope.getSymbol()+ope.getOperandCount();
 		return Messages.getString(key);
 	}
