@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="build" name="Build script for Javaluator project">
 	<property name="javaluatorVersion" value="0.1"/>
-	<!--tstamp><format property="TODAY" pattern="dd/MM/yyyy" locale="fr,FR"/></tstamp-->
+	<tstamp><format property="TODAY" pattern="yyyyMMddhhmm" locale="fr,FR"/></tstamp>
 	
-	<taskdef resource="org/apache/commons/vfs2/tasks/tasks.properties"/>
-	
+	<!--taskdef resource="org/apache/commons/vfs2/tasks/tasks.properties"/-->
 	<property name="releaseDir" value="javaluatorRelease"/>
+	
+	<property name="deploymentDir" value="deployemnt" />
+	
 	<property name="sf.host" value="web.sourceforge.net"/>
 	<property name="sf.user" value="fathzer,javaluator"/>
 	<property name="sf.home" value="/htdocs"/>
 	
+	<target name="freshDeploymentDir">
+		<delete dir="${deploymentDir}"/>
+		<mkdir dir="${deploymentDir}"/>
+	</target>
+	
 	<target name="build" depends="doc, demo">
 		<!--echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/-->
-		<!-- Ensure the releaseDir is a fresh new one. -->
+		<!-- Ensure the releaseDir and deploymentDir are fresh new ones. -->
 		<delete dir="${releaseDir}"/>
 		<mkdir dir="${releaseDir}"/>
 		<copy todir="${releaseDir}">
@@ -35,40 +42,46 @@
 		<delete dir="${releaseDir}"/>
 		<zip basedir="src" destfile="zip/src.zip"/>
 		<copy todir="zip" file="license.html"/>
-		<zip basedir="zip" destfile="Javaluator-v${javaluatorVersion}.zip"/>
+		<zip basedir="zip" destfile="${deploymentDir}/Javaluator-v${javaluatorVersion}.zip"/>
 		<delete file="${versionFile}"/>
 		<delete dir="zip"/>
 	</target>
 		
 	<property name="srcAJLib" location="../A-JLib/src"/>
 	<property name="demo.dest" location="demo.build"/>
-	<target name="demo" depends="getPass">
+	<target name="demo" depends="freshDeploymentDir">
 		<!-- Ensure the releaseDir is a fresh new one. -->
 		<delete dir="${demo.dest}"/>
 		<mkdir dir="${demo.dest}"/>
-		<!--copy todir="${demo.dest}">
-	    	<fileset dir="${srcAJLib}" excludes="**/*.java"/>
-		</copy-->
-		<javac srcdir="demo" destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1" sourcepath="${srcAJLib};src" />
-		<jar destfile="JavaluatorDemo.jar">
+		<copy todir="${demo.dest}">
+	    	<fileset dir="demosrc" includes="**/*.properties"/>
+		</copy>
+		<javac srcdir="demoSrc" destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1" sourcepath="${srcAJLib};src" />
+		<echo file="${deploymentDir}/demo/demoId.txt" message="${TODAY}"/>
+		<jar destfile="${deploymentDir}/demo/JavaluatorDemo${TODAY}.jar">
 			<manifest>
 				<attribute name="Main-Class" value="net.astesana.javaluator.demo.DemoApplet"/>
 			</manifest>
 			<fileset dir="${demo.dest}"/>
 		</jar>
 		<delete dir="${demo.dest}"/>
-		<v-copy src="JavaluatorDemo.jar" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/site" overwrite="true"/>
+		<!--v-copy src="JavaluatorDemo.jar" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/site" overwrite="true"/-->
 	</target>
 	
-	<target name="getPass">
+	<!--target name="getPass">
 		<input message="Type the password of sourceforge account :" addproperty="sf.password"/>
-	</target>
+	</target-->
 
-	<target name="doc" depends="getPass">
+	<target name="doc" depends="freshDeploymentDir">
 		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
 			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
-		<v-delete file="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc"/>
+		<copy todir="${deploymentDir}/doc/javadoc">
+	    	<fileset dir="zip/doc"/>
+		</copy>
+		<copy todir="${deploymentDir}/doc" file="relnotes.txt"/>
+		<copy todir="${deploymentDir}/doc" file="license.html"/>
+		<!--v-delete file="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc"/>
 		<v-copy src="zip/doc" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc" overwrite="false"/>
-		<v-copy src="relnotes.txt" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc" overwrite="true"/>
+		<v-copy src="relnotes.txt" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc" overwrite="true"/-->
 	</target>
 </project>

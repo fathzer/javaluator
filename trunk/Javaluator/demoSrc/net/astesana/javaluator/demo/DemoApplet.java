@@ -3,6 +3,7 @@ package net.astesana.javaluator.demo;
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
 
+@SuppressWarnings("serial")
 public class DemoApplet extends JApplet {
 	// Called when this applet is loaded into the browser.
 	public void init() {
