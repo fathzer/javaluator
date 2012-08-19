@@ -33,7 +33,7 @@ public class Token {
 		return new Token(Kind.OPERATOR, ope);
 	}
 
-	static Token buildFunction(Function<? extends Object> function) {
+	static Token buildFunction(Function function) {
 		return new Token(Kind.FUNCTION, function);
 	}
 
@@ -50,8 +50,8 @@ public class Token {
 		return (Operator) this.content;
 	}
 
-	Function<? extends Object> getFunction() {
-		return (Function<? extends Object>) this.content;
+	Function getFunction() {
+		return (Function) this.content;
 	}
 
 	Kind getKind() {

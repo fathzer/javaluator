@@ -89,7 +89,8 @@ public class DemoPanel extends JPanel {
 			expression.addPropertyChangeListener(TextWidget.TEXT_PROPERTY, new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
 					try {
-						Object result = getEvaluator().evaluate(expression.getText());
+						String exp = expression.getText();
+						Object result = exp.length()==0 ? exp : getEvaluator().evaluate(exp);
 						getResultLabel().setText(result.toString());
 						resultLabel.setIcon(null);
 					} catch (IllegalArgumentException e) {
@@ -160,7 +161,7 @@ public class DemoPanel extends JPanel {
 	private JTable getOperatorsTable() {
 		if (operatorsTable == null) {
 			Collection<?> operators = getEvaluator().getOperators();
-			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator<? extends Object>>) operators));
+			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator>) operators));
 			Utils.packColumns(operatorsTable, 2);
 		}
 		return operatorsTable;
@@ -216,7 +217,7 @@ public class DemoPanel extends JPanel {
 	private JTable getConstantsTable() {
 		if (constantsTable == null) {
 			Collection<?> constants = getEvaluator().getConstants();
-			constantsTable = new JTable(new ConstantTableModel((Collection<Constant<? extends Object>>) constants));
+			constantsTable = new JTable(new ConstantTableModel((Collection<Constant>) constants));
 			Utils.packColumns(constantsTable, 2);
 		}
 		return constantsTable;
@@ -240,7 +241,7 @@ public class DemoPanel extends JPanel {
 	private JTable getFunctionsTable() {
 		if (functionsTable == null) {
 			Collection<?> functions = getEvaluator().getFunctions();
-			functionsTable = new JTable(new FunctionTableModel((Collection<Function<? extends Object>>) functions));
+			functionsTable = new JTable(new FunctionTableModel((Collection<Function>) functions));
 			Utils.packColumns(functionsTable, 2);
 		}
 		return functionsTable;

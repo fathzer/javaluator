@@ -7,29 +7,19 @@ package net.astesana.javaluator;
  * <br>A constant for pi would be defined by :<br>
  * <code>Constant<Double> pi = new Constant<Double>("pi", Math.PI);</code>
  * <br>With such a constant, you will be able to evaluate the expression "sin(pi/4)"
- * @param <T> The value type of the constant. For example, pi is a Double. 
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
+ * @see AbstractEvaluator#evaluate(Constant)
  */
-public class Constant<T> {
-	private T value;
+public class Constant {
 	private String mnemonic;
 	
 	/** Constructor
 	 * @param mnemonic The mnemonic of the constant.
 	 * <br>The mnemonic is used in expressions to identified the constants.
-	 * @param value The value of the constant
 	 */
-	public Constant(String mnemonic, T value) {
-		this.value = value;
+	public Constant(String mnemonic) {
 		this.mnemonic = mnemonic;
-	}
-
-	/** Gets the constant value.
-	 * @return the value
-	 */
-	public T getValue() {
-		return value;
 	}
 
 	/** Gets the mnemonic of the constant.

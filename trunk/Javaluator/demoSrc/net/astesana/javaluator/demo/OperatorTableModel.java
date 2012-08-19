@@ -12,12 +12,12 @@ import net.astesana.javaluator.Operator;
 
 @SuppressWarnings("serial")
 public class OperatorTableModel extends AbstractTableModel {
-	private List<Operator<? extends Object>> operators;
+	private List<Operator> operators;
 	
-	public OperatorTableModel(Collection<Operator<? extends Object>> collection) {
-		this.operators = new ArrayList<Operator<? extends Object>>(collection);
-		Collections.sort(this.operators, new Comparator<Operator<? extends Object>>() {
-			public int compare(Operator<? extends Object> o1, Operator<? extends Object> o2) {
+	public OperatorTableModel(Collection<Operator> collection) {
+		this.operators = new ArrayList<Operator>(collection);
+		Collections.sort(this.operators, new Comparator<Operator>() {
+			public int compare(Operator o1, Operator o2) {
 				int result = o1.getPrecedence()-o2.getPrecedence();
 				return result;
 			}
@@ -33,7 +33,7 @@ public class OperatorTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
-		Operator<? extends Object> ope = operators.get(row);
+		Operator ope = operators.get(row);
 		if (column==0) return ope.getSymbol(); 
 		if (column==1) return getDescription(ope); 
 		if (column==2) return ope.getPrecedence();
@@ -42,7 +42,7 @@ public class OperatorTableModel extends AbstractTableModel {
 		return null;
 	}
 
-	private String getDescription(Operator<? extends Object> ope) {
+	private String getDescription(Operator ope) {
 		String key = ope.getSymbol()+ope.getOperandCount();
 		return Messages.getString(key);
 	}
