@@ -3,28 +3,21 @@
 	<property name="javaluatorVersion" value="0.1"/>
 	<tstamp><format property="TODAY" pattern="yyyyMMddhhmm" locale="fr,FR"/></tstamp>
 	
-	<!--taskdef resource="org/apache/commons/vfs2/tasks/tasks.properties"/-->
 	<property name="releaseDir" value="javaluatorRelease"/>
-	
-	<property name="deploymentDir" value="deployemnt" />
-	
-	<property name="sf.host" value="web.sourceforge.net"/>
-	<property name="sf.user" value="fathzer,javaluator"/>
-	<property name="sf.home" value="/htdocs"/>
-	
+	<property name="deploymentDir" value="deployment" />
+
 	<target name="freshDeploymentDir">
 		<delete dir="${deploymentDir}"/>
 		<mkdir dir="${deploymentDir}"/>
 	</target>
 	
 	<target name="build" depends="doc, demo">
-		<!--echo message="version=${javaluatorVersion} (${TODAY})" file="${versionFile}"/-->
 		<!-- Ensure the releaseDir and deploymentDir are fresh new ones. -->
 		<delete dir="${releaseDir}"/>
 		<mkdir dir="${releaseDir}"/>
-		<copy todir="${releaseDir}">
+		<!--copy todir="${releaseDir}">
 	    	<fileset dir="src" excludes="**/*.java"/>
-		</copy>
+		</copy-->
 		<javac srcdir="src" destdir="${releaseDir}" source="1.5" target="1.5" encoding="ISO8859-1" includeAntRuntime="false" debug="false"/>
 		<jar destfile="zip/Javaluator.jar">
 			<manifest>
@@ -65,13 +58,8 @@
 			<fileset dir="${demo.dest}"/>
 		</jar>
 		<delete dir="${demo.dest}"/>
-		<!--v-copy src="JavaluatorDemo.jar" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/site" overwrite="true"/-->
 	</target>
 	
-	<!--target name="getPass">
-		<input message="Type the password of sourceforge account :" addproperty="sf.password"/>
-	</target-->
-
 	<target name="doc" depends="freshDeploymentDir">
 		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
 			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
@@ -79,9 +67,6 @@
 	    	<fileset dir="zip/doc"/>
 		</copy>
 		<copy todir="${deploymentDir}/doc" file="relnotes.txt"/>
-		<copy todir="${deploymentDir}/doc" file="license.html"/>
-		<!--v-delete file="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc"/>
-		<v-copy src="zip/doc" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc/javadoc" overwrite="false"/>
-		<v-copy src="relnotes.txt" destdir="sftp://${sf.user}:${sf.password}@${sf.host}${sf.home}/en/doc" overwrite="true"/-->
+		<copy todir="${deploymentDir}/doc/javadoc" file="license.html"/>
 	</target>
 </project>

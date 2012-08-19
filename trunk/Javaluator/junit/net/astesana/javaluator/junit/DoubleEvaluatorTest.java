@@ -34,7 +34,12 @@ public class DoubleEvaluatorTest {
 		assertEquals(11, evaluator.evaluate("sum(8,3,1,-1)"),0.001);
 		assertEquals(3, evaluator.evaluate("avg(8,3,1,0)"),0.001);
 		
-		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(4*0.5)"),0.001);
+		assertEquals(3, evaluator.evaluate("abs(-3)"),0.001);
+		assertEquals(3, evaluator.evaluate("ceil(2.45)"),0.001);
+		assertEquals(2, evaluator.evaluate("floor(2.45)"),0.001);
+		assertEquals(2, evaluator.evaluate("round(2.45)"),0.001);
+		
+		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(round(4.1)*0.5)"),0.001);
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
