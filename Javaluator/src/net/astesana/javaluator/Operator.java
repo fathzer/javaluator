@@ -1,13 +1,10 @@
 package net.astesana.javaluator;
 
-import java.util.Iterator;
-
-/** An abstract <a href="http://en.wikipedia.org/wiki/Operator_(mathematics)">operator</a>.
- * @param <T> The type of operands and results handled by the function.
+/** An <a href="http://en.wikipedia.org/wiki/Operator_(mathematics)">operator</a>.
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
-public abstract class Operator<T> {
+public class Operator {
 	/** An Operator's <a href="http://en.wikipedia.org/wiki/Operator_associativity">associativity</a>.
 	 */
 	public enum Associativity {
@@ -56,13 +53,6 @@ public abstract class Operator<T> {
 		return this.operandCount;
 	}
 	
-	/** Evaluates the operation result.
-	 * @param operands The operands of the operator.
-	 * <br>It is guaranteed that the number of operands is the one specified in the constructor.
-	 * @return The result of the operation.
-	 */
-	public abstract T evaluate(Iterator<T> operands);
-
 	/** Gets this operator's associativity.
 	 * @return true if the operator is left associative.
 	 * @see <a href="http://en.wikipedia.org/wiki/Operator_associativity">Operator's associativity in Wikipedia</a>

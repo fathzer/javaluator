@@ -1,13 +1,10 @@
 package net.astesana.javaluator;
 
-import java.util.Iterator;
-
-/** An abstract <a href="http://en.wikipedia.org/wiki/Function_(mathematics)">function</a>.
- * @param <T> The type of arguments and results handled by the function.
+/** A <a href="http://en.wikipedia.org/wiki/Function_(mathematics)">function</a>.
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
-public abstract class Function<T> {
+public class Function {
 	private String name;
 	private int minArgumentCount;
 	private int maxArgumentCount;
@@ -58,11 +55,4 @@ public abstract class Function<T> {
 	public int getMaximumArgumentCount() {
 		return this.maxArgumentCount;
 	}
-	
-	/** Evaluates the function's result.
-	 * @param arguments The arguments of the function.
-	 * <br>It is guaranteed that the number of arguments is in the range specified in the constructor.
-	 * @return The result of the function.
-	 */
-	public abstract T evaluate(Iterator<T> arguments);
 }

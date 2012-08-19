@@ -23,24 +23,24 @@ public abstract class AbstractEvaluator<T> {
 	private static final String OPEN_BRACKET = "(";
 	
 	private String tokenDelimiters;
-	private Map<String, Function<T>> functions;
-	private Map<String, List<Operator<T>>> operators;
-	private Map<String, Constant<T>> constants;
+	private Map<String, Function> functions;
+	private Map<String, List<Operator>> operators;
+	private Map<String, Constant> constants;
 	
 	/** Constructor.
 	 * @param operators The operators supported by this evaluator.
 	 * @param functions The functions supported by this evaluator.
 	 * @param constants The constants supported by this evaluator.
 	 */
-	protected AbstractEvaluator(Operator<T>[] operators, Function<T>[] functions, Constant<T>[] constants) {
-		this.functions = new HashMap<String, Function<T>>();
-		this.operators = new HashMap<String, List<Operator<T>>>();
-		this.constants = new HashMap<String, Constant<T>>();
+	protected AbstractEvaluator(Operator[] operators, Function[] functions, Constant[] constants) {
+		this.functions = new HashMap<String, Function>();
+		this.operators = new HashMap<String, List<Operator>>();
+		this.constants = new HashMap<String, Constant>();
 		if (operators!=null) {
-			for (Operator<T> ope : operators) {
-				List<Operator<T>> known = this.operators.get(ope.getSymbol());
+			for (Operator ope : operators) {
+				List<Operator> known = this.operators.get(ope.getSymbol());
 				if (known==null) {
-					known = new ArrayList<Operator<T>>();
+					known = new ArrayList<Operator>();
 					this.operators.put(ope.getSymbol(), known);
 				}
 				known.add(ope);
@@ -48,13 +48,13 @@ public abstract class AbstractEvaluator<T> {
 			}
 		}
 		if (functions!=null && functions.length>0) {
-			for (Function<T> function : functions) {
+			for (Function function : functions) {
 				//TODO if function name contains operators or reserved chars => error
 				this.functions.put(function.getName(), function);
 			}			
 		}
 		if (constants!=null && constants.length!=0) {
-			for (Constant<T> constant : constants) {
+			for (Constant constant : constants) {
 				this.constants.put(constant.getMnemonic(), constant);
 			}
 		}
@@ -70,7 +70,7 @@ public abstract class AbstractEvaluator<T> {
 	 * @throws IllegalArgumentException if the homonyms are not compatibles.
 	 * @see #guessOperator(Token, List)
 	 */
-	protected void validateHomonyms(List<Operator<T>> operators) {
+	protected void validateHomonyms(List<Operator> operators) {
 		if (operators.size()>2) throw new IllegalArgumentException();
 	}
 	
@@ -84,9 +84,9 @@ public abstract class AbstractEvaluator<T> {
 	 * @return A token
 	 * @see #validateHomonyms(List)
 	 */
-	protected Operator<T> guessOperator(Token previous, List<Operator<T>> candidates) {
+	protected Operator guessOperator(Token previous, List<Operator> candidates) {
 		int argCount = ((previous!=null) && (previous.isCloseBracket() || previous.isLiteral())) ? 2 : 1;
-		for (Operator<T> operator : candidates) {
+		for (Operator operator : candidates) {
 			if (operator.getOperandCount()==argCount) return operator;
 		}
 		return null;
@@ -100,7 +100,7 @@ public abstract class AbstractEvaluator<T> {
 			for (String car:operators.keySet()) {
 				builder.append(car);
 			}
-			for (Function<? extends Object> function:functions.values()) {
+			for (Function function:functions.values()) {
 				if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
 			}
 			if (needFunctionSeparator) builder.append(FUNCTION_ARGUMENT_SEPARATOR);
@@ -112,10 +112,10 @@ public abstract class AbstractEvaluator<T> {
 	private void output(Stack<T> values, Token token) {
 		if (token.isLiteral()) {
 			String literal = token.getLiteral();
-			Constant<T> ct = this.constants.get(literal); 
+			Constant ct = this.constants.get(literal); 
 			values.push(ct!=null ? evaluate(ct) : toValue(literal));
 		} else if (token.isOperator()) {
-			Operator<T> operator = token.getOperator();
+			Operator operator = token.getOperator();
 			values.push(evaluate(operator, getArguments(values, operator.getOperandCount())));
 		} else {
 			throw new IllegalArgumentException();
@@ -123,38 +123,26 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	/** Evaluates a constant.
-	 * <br>By default, returns constant.getValue(). 
 	 * @param constant The constant
 	 * @return The constant's value
-	 * @see Constant#getValue()
 	 */
-	protected T evaluate(Constant<T> constant) {
-		return constant.getValue();
-	}
+	protected abstract T evaluate(Constant constant);
 	
 	/** Evaluates an operation.
-	 * <br>By default, returns operator.evaluate(operands). 
 	 * @param operator The operator
 	 * @param operands The operands
 	 * @return The result of the operation
-	 * @see Operator#evaluate(Iterator)
 	 */
-	protected T evaluate(Operator<T> operator, Iterator<T> operands) {
-		return operator.evaluate(operands);
-	}
+	protected abstract T evaluate(Operator operator, Iterator<T> operands);
 	
 	/** Evaluates a function.
-	 * <br>By default, returns function.evaluate(arguments). 
 	 * @param function The function
 	 * @param arguments The function's arguments
 	 * @return The result of the function
-	 * @see Function#evaluate(Iterator)
 	 */
-	protected T evaluate(Function<T> function, Iterator<T> arguments) {
-		return function.evaluate(arguments);
-	}
+	protected abstract T evaluate(Function function, Iterator<T> arguments);
 	
-	private void doFunction(Stack<T> values, Function<T> function, int argCount) {
+	private void doFunction(Stack<T> values, Function function, int argCount) {
 		if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
 			throw new IllegalArgumentException("Invalid argument count for "+function.getName());
 		}
@@ -241,7 +229,7 @@ public abstract class AbstractEvaluator<T> {
 							} else {
 								throw new IllegalArgumentException("Function argument is missing");
 							}
-							doFunction(values, (Function<T>)stack.pop().getFunction(), argCount);
+							doFunction(values, (Function)stack.pop().getFunction(), argCount);
 						}
 					}
 				} else if (token.isFunctionArgumentSeparator()) {
@@ -337,7 +325,7 @@ public abstract class AbstractEvaluator<T> {
 		} else if (functions.containsKey(token)) {
 			return Token.buildFunction(functions.get(token));
 		} else if (operators.containsKey(token)) {
-			List<Operator<T>> list = operators.get(token);
+			List<Operator> list = operators.get(token);
 			if (list.size()==1) return Token.buildOperator(list.get(0));
 			return Token.buildOperator(guessOperator(previous, list));
 		} else {
@@ -348,10 +336,10 @@ public abstract class AbstractEvaluator<T> {
 	/** Gets the operators supported by this evaluator.
 	 * @return a collection of operators.
 	 */
-	public Collection<Operator<T>> getOperators() {
-		ArrayList<Operator<T>> result = new ArrayList<Operator<T>>();
-		Collection<List<Operator<T>>> values = this.operators.values();
-		for (List<Operator<T>> list : values) {
+	public Collection<Operator> getOperators() {
+		ArrayList<Operator> result = new ArrayList<Operator>();
+		Collection<List<Operator>> values = this.operators.values();
+		for (List<Operator> list : values) {
 			result.addAll(list);
 		}
 		return result;
@@ -360,14 +348,14 @@ public abstract class AbstractEvaluator<T> {
 	/** Gets the functions supported by this evaluator.
 	 * @return a collection of functions.
 	 */
-	public Collection<Function<T>> getFunctions() {
+	public Collection<Function> getFunctions() {
 		return this.functions.values();
 	}
 
 	/** Gets the constants supported by this evaluator.
 	 * @return a collection of constants.
 	 */
-	public Collection<Constant<T>> getConstants() {
+	public Collection<Constant> getConstants() {
 		return this.constants.values();
 	}
 }

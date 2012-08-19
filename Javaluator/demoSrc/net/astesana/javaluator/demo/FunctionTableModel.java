@@ -12,12 +12,12 @@ import net.astesana.javaluator.Function;
 
 @SuppressWarnings("serial")
 public class FunctionTableModel extends AbstractTableModel {
-	private List<Function<? extends Object>> functions;
+	private List<Function> functions;
 	
-	public FunctionTableModel(Collection<Function<? extends Object>> collection) {
-		this.functions = new ArrayList<Function<? extends Object>>(collection);
-		Collections.sort(this.functions, new Comparator<Function<? extends Object>>() {
-			public int compare(Function<? extends Object> f1, Function<? extends Object> f2) {
+	public FunctionTableModel(Collection<Function> collection) {
+		this.functions = new ArrayList<Function>(collection);
+		Collections.sort(this.functions, new Comparator<Function>() {
+			public int compare(Function f1, Function f2) {
 				return f1.getName().compareTo(f2.getName());
 			}
 		});
@@ -32,7 +32,7 @@ public class FunctionTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
-		Function<? extends Object> function = functions.get(row);
+		Function function = functions.get(row);
 		if (column==0) return function.getName(); 
 		if (column==1) return getDescription(function); 
 		if (column==2) {
@@ -45,7 +45,7 @@ public class FunctionTableModel extends AbstractTableModel {
 		return null;
 	}
 
-	private String getDescription(Function<? extends Object> function) {
+	private String getDescription(Function function) {
 		return Messages.getString(function.getName());
 	}
 
