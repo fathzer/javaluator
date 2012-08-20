@@ -22,22 +22,30 @@ public abstract class AbstractEvaluator<T> {
 	private static final String CLOSE_BRACKET = ")";
 	private static final String OPEN_BRACKET = "(";
 	
-	private String tokenDelimiters;
-	private Map<String, Function> functions;
-	private Map<String, List<Operator>> operators;
-	private Map<String, Constant> constants;
+	private final String tokenDelimiters;
+	private final Map<String, Function> functions;
+	private final Map<String, List<Operator>> operators;
+	private final Map<String, Constant> constants;
 	
 	/** Constructor.
 	 * @param operators The operators supported by this evaluator.
 	 * @param functions The functions supported by this evaluator.
 	 * @param constants The constants supported by this evaluator.
+	 * @param ignoreSpaces If true, the spaces in evaluated expressions are ignored.
+	 * <br>This mean that, if + is an operator, an expression like "a +b" will be considered as "a+b".
+	 *  "a b" will be considered as an error (two literals without any operator).
 	 */
-	protected AbstractEvaluator(Operator[] operators, Function[] functions, Constant[] constants) {
+	protected AbstractEvaluator(Operator[] operators, Function[] functions, Constant[] constants, boolean ignoreSpaces) {
+		//TODO if constants, operators, functions are duplicated => error
 		this.functions = new HashMap<String, Function>();
 		this.operators = new HashMap<String, List<Operator>>();
 		this.constants = new HashMap<String, Constant>();
+		final StringBuilder tokenDelimitersBuilder = new StringBuilder();
+		tokenDelimitersBuilder.append(OPEN_BRACKET).append(CLOSE_BRACKET);
+		if (ignoreSpaces) tokenDelimitersBuilder.append(" ");
 		if (operators!=null) {
 			for (Operator ope : operators) {
+				tokenDelimitersBuilder.append(ope.getSymbol());
 				List<Operator> known = this.operators.get(ope.getSymbol());
 				if (known==null) {
 					known = new ArrayList<Operator>();
@@ -47,10 +55,12 @@ public abstract class AbstractEvaluator<T> {
 				if (known.size()>1) validateHomonyms(known);
 			}
 		}
+		boolean needFunctionSeparator = false;
 		if (functions!=null && functions.length>0) {
 			for (Function function : functions) {
 				//TODO if function name contains operators or reserved chars => error
 				this.functions.put(function.getName(), function);
+				if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
 			}			
 		}
 		if (constants!=null && constants.length!=0) {
@@ -58,7 +68,8 @@ public abstract class AbstractEvaluator<T> {
 				this.constants.put(constant.getMnemonic(), constant);
 			}
 		}
-		//TODO if constants, operators, functions are duplicated => error
+		if (needFunctionSeparator) tokenDelimitersBuilder.append(FUNCTION_ARGUMENT_SEPARATOR);
+		tokenDelimiters = tokenDelimitersBuilder.toString();
 	}
 	
 	/** Validates that homonym operators are valid.
@@ -85,30 +96,13 @@ public abstract class AbstractEvaluator<T> {
 	 * @see #validateHomonyms(List)
 	 */
 	protected Operator guessOperator(Token previous, List<Operator> candidates) {
-		int argCount = ((previous!=null) && (previous.isCloseBracket() || previous.isLiteral())) ? 2 : 1;
+		final int argCount = ((previous!=null) && (previous.isCloseBracket() || previous.isLiteral())) ? 2 : 1;
 		for (Operator operator : candidates) {
 			if (operator.getOperandCount()==argCount) return operator;
 		}
 		return null;
 	}
 
-	private synchronized String getDelimiters() {
-		if (tokenDelimiters==null) {
-			boolean needFunctionSeparator = false;
-			StringBuilder builder = new StringBuilder();
-			builder.append(" ").append(OPEN_BRACKET).append(CLOSE_BRACKET);
-			for (String car:operators.keySet()) {
-				builder.append(car);
-			}
-			for (Function function:functions.values()) {
-				if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
-			}
-			if (needFunctionSeparator) builder.append(FUNCTION_ARGUMENT_SEPARATOR);
-			tokenDelimiters = builder.toString();
-		}
-		return tokenDelimiters;
-	}
-	
 	private void output(Stack<T> values, Token token) {
 		if (token.isLiteral()) {
 			String literal = token.getLiteral();
@@ -123,24 +117,39 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	/** Evaluates a constant.
+	 * <br>Subclasses that support constants must override this method.
+	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
+	 * while creating a subclass that accepts constants.
 	 * @param constant The constant
 	 * @return The constant's value
 	 */
-	protected abstract T evaluate(Constant constant);
+	protected T evaluate(Constant constant) {
+		throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getMnemonic());
+	}
 	
 	/** Evaluates an operation.
+	 * <br>Subclasses that support operators must override this method.
+	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
+	 * while creating a subclass that accepts operators.
 	 * @param operator The operator
 	 * @param operands The operands
 	 * @return The result of the operation
 	 */
-	protected abstract T evaluate(Operator operator, Iterator<T> operands);
+	protected T evaluate(Operator operator, Iterator<T> operands) {
+		throw new RuntimeException("evaluate(Operator, Iterator) is not implemented for "+operator.getSymbol());
+	}
 	
 	/** Evaluates a function.
+	 * <br>Subclasses that support functions must override this method.
+	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
+	 * while creating a subclass that accepts functions.
 	 * @param function The function
 	 * @param arguments The function's arguments
 	 * @return The result of the function
 	 */
-	protected abstract T evaluate(Function function, Iterator<T> arguments);
+	protected T evaluate(Function function, Iterator<T> arguments) {
+		throw new RuntimeException("evaluate(Function, Iterator) is not implemented for "+function.getName());
+	}
 	
 	private void doFunction(Stack<T> values, Function function, int argCount) {
 		if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
@@ -168,7 +177,7 @@ public abstract class AbstractEvaluator<T> {
 	protected abstract T toValue(String literal);
 	
 	private Enumeration<String> tokenize(String expression) {
-		final StringTokenizer tokens = new StringTokenizer(expression, getDelimiters(), true);
+		final StringTokenizer tokens = new StringTokenizer(expression, tokenDelimiters, true);
 		return new Enumeration<String>() {
 			public boolean hasMoreElements() {
 				return tokens.hasMoreElements();
@@ -185,15 +194,15 @@ public abstract class AbstractEvaluator<T> {
 	 * @throws IllegalArgumentException if the expression is not correct.
 	 */
 	public T evaluate(String expression) {
-		Stack<T> values = new Stack<T>(); // values stack
-		Stack<Token> stack = new Stack<Token>(); // operator stack
-		Stack<Integer> functionArgCount = new Stack<Integer>(); // function argument count stack
-		Stack<Boolean> wereValues = new Stack<Boolean>();
-		Enumeration<String> tokens = tokenize(expression);
+		final Stack<T> values = new Stack<T>(); // values stack
+		final Stack<Token> stack = new Stack<Token>(); // operator stack
+		final Stack<Integer> functionArgCount = new Stack<Integer>(); // function argument count stack
+		final Stack<Boolean> wereValues = new Stack<Boolean>();
+		final Enumeration<String> tokens = tokenize(expression);
 		Token previous = null;
 		while (tokens.hasMoreElements()) {
 			// read one token from the input stream
-			Token token = toToken(previous, tokens.nextElement());
+			final Token token = toToken(previous, tokens.nextElement());
 			if (token.isIgnored()) {
 				// If the token is a space ... do nothing
 			} else {
