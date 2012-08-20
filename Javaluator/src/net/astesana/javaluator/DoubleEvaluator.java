@@ -71,7 +71,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	
 	private static Parameters DEFAULT_PARAMETERS;
 	
-	/** Gets a copy DoubleEvaluator default parameters.
+	/** Gets a copy of DoubleEvaluator default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
 	 * <br>Each call to this method create a new instance of Parameters. 
 	 * @return a Paramaters instance
