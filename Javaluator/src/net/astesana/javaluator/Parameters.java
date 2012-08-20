@@ -2,6 +2,8 @@ package net.astesana.javaluator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /** The parameters of an evaluator.
  * <br>An evaluator may have different parameters as the supported operators, the supported functions, etc ...
@@ -13,6 +15,7 @@ public class Parameters {
 	private final ArrayList<Operator> operators;
 	private final ArrayList<Function> functions;
 	private final ArrayList<Constant> constants;
+	private final Map<String, String> translations;
 
 	/** Constructor.
 	 * <br>This method builds an instance with no operators, no functions, no constants
@@ -24,6 +27,7 @@ public class Parameters {
 		this.operators = new ArrayList<Operator>();
 		this.functions = new ArrayList<Function>();
 		this.constants = new ArrayList<Constant>();
+		this.translations = new HashMap<String, String>();
 	}
 
 	/** Gets the supported operators.
@@ -103,5 +107,35 @@ public class Parameters {
 	 */
 	public void add(Constant constant) {
 		this.constants.add(constant);
+	}
+	
+	/** Sets the translated term for a function.
+	 * <br>Using this method, you can localize the names of some built-in functions. For instance,
+	 * for french people,you can use this method to use "somme" instead of "sum" with the SUM built-in
+	 * function of DoubleEvaluator. 
+	 * @param function The function you want to translate the name
+	 * @param translatedName The translated name
+	 * @see DoubleEvaluator#SUM
+	 */
+	public void setTranslation(Function function, String translatedName) {
+		setTranslation(function.getName(), translatedName);
+	}
+
+	/** Sets the translated term for a constant.
+	 * @param constant The constant you want to translate the name
+	 * @param translatedName The translated name
+	 * @see #setTranslation(Function, String)
+	 */
+	public void setTranslation(Constant constant, String translatedName) {
+		setTranslation(constant.getName(), translatedName);
+	}
+	
+	private void setTranslation(String name, String translatedName) {
+		this.translations.put(name, translatedName);
+	}
+	
+	String getTranslation(String originalName) {
+		String translation = this.translations.get(originalName);
+		return translation==null?originalName:translation;
 	}
 }
