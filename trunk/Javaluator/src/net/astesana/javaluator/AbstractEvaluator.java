@@ -56,13 +56,13 @@ public abstract class AbstractEvaluator<T> {
 		if (parameters.getFunctions()!=null) {
 			for (Function function : parameters.getFunctions()) {
 				//TODO if function name contains operators or reserved chars => error
-				this.functions.put(function.getName(), function);
+				this.functions.put(parameters.getTranslation(function.getName()), function);
 				if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
 			}			
 		}
 		if (parameters.getConstants()!=null) {
 			for (Constant constant : parameters.getConstants()) {
-				this.constants.put(constant.getMnemonic(), constant);
+				this.constants.put(parameters.getTranslation(constant.getName()), constant);
 			}
 		}
 		if (needFunctionSeparator) tokenDelimitersBuilder.append(FUNCTION_ARGUMENT_SEPARATOR);
@@ -121,7 +121,7 @@ public abstract class AbstractEvaluator<T> {
 	 * @return The constant's value
 	 */
 	protected T evaluate(Constant constant) {
-		throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getMnemonic());
+		throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getName());
 	}
 	
 	/** Evaluates an operation.

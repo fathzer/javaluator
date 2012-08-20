@@ -63,36 +63,46 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Operator MODULO = new Operator("%", 2, Operator.Associativity.LEFT, 2);
 
 	/** The whole set of predefined operators */
-	public static final Operator[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
+	private static final Operator[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
 	/** The whole set of predefined functions */
-	public static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS};
+	private static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS};
 	/** The whole set of predefined constants */
-	public static final Constant[] CONSTANTS = new Constant[]{PI, E};
+	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
 	private static Parameters DEFAULT_PARAMETERS;
 	
+	/** Gets a copy DoubleEvaluator default parameters.
+	 * <br>The returned parameters contains all the predefined operators, functions and constants.
+	 * <br>Each call to this method create a new instance of Parameters. 
+	 * @return a Paramaters instance
+	 */
 	public static Parameters getDefaultParameters() {
 		Parameters result = new Parameters();
-		DEFAULT_PARAMETERS.addOperators(Arrays.asList(OPERATORS));
-		DEFAULT_PARAMETERS.addFunctions(Arrays.asList(FUNCTIONS));
-		DEFAULT_PARAMETERS.addConstants(Arrays.asList(CONSTANTS));
+		result.addOperators(Arrays.asList(OPERATORS));
+		result.addFunctions(Arrays.asList(FUNCTIONS));
+		result.addConstants(Arrays.asList(CONSTANTS));
 		return result;
 	}
 	
 	private static Parameters getParameters() {
 		if (DEFAULT_PARAMETERS == null) {
-			DEFAULT_PARAMETERS = new Parameters();
-			DEFAULT_PARAMETERS.addOperators(Arrays.asList(OPERATORS));
-			DEFAULT_PARAMETERS.addFunctions(Arrays.asList(FUNCTIONS));
-			DEFAULT_PARAMETERS.addConstants(Arrays.asList(CONSTANTS));
+			DEFAULT_PARAMETERS = getDefaultParameters();
 		}
 		return DEFAULT_PARAMETERS;
 	}
 	
+	/** Constructor.
+	 * <br>This default constructor builds an instance with all predefined operators, functions and constants. 
+	 */
 	public DoubleEvaluator() {
 		this(getParameters());
 	}
 
+	/** Constructor.
+	 * <br>This constructor can be used to reduce the set of supported operators, functions or constants,
+	 * or to localize some function or constant's names.
+	 * @param parameters The parameters of the evaluator.
+	 */
 	public DoubleEvaluator(Parameters parameters) {
 		super(parameters);
 	}

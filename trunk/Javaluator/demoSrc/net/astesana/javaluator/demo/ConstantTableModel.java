@@ -18,7 +18,7 @@ public class ConstantTableModel extends AbstractTableModel {
 		this.constants = new ArrayList<Constant>(collection);
 		Collections.sort(this.constants, new Comparator<Constant>() {
 			public int compare(Constant c1, Constant c2) {
-				return c1.getMnemonic().compareTo(c2.getMnemonic());
+				return c1.getName().compareTo(c2.getName());
 			}
 		});
 	}
@@ -33,13 +33,13 @@ public class ConstantTableModel extends AbstractTableModel {
 
 	public Object getValueAt(int row, int column) {
 		Constant constant = constants.get(row);
-		if (column==0) return constant.getMnemonic(); 
+		if (column==0) return constant.getName(); 
 		if (column==1) return getDescription(constant); 
 		return null;
 	}
 
 	private String getDescription(Constant constant) {
-		return Messages.getString(constant.getMnemonic());
+		return Messages.getString(constant.getName());
 	}
 
 	@Override
