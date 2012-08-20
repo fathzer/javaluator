@@ -73,7 +73,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	}
 
 	public DoubleEvaluator(Operator[] operators, Function[] functions, Constant[] constants) {
-		super(operators, functions, constants);
+		super(operators, functions, constants, true);
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		} else if (constant==E) {
 			return Math.E;
 		} else {
-			throw new RuntimeException("Constant "+constant.getMnemonic()+" not implemented");
+			return super.evaluate(constant);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		} else if (operator==MODULO) {
 			return operands.next() % operands.next();
 		} else {
-			throw new IllegalArgumentException ("Unknown operator");
+			return super.evaluate(operator, operands);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		} else if (function==LOG) {
 			result = Math.log10(arguments.next());
 		} else {
-			throw new RuntimeException("Unimplemented function, please report this error to http://sourceforge.net/p/javaluator/tickets/new/");
+			result = super.evaluate(function, arguments);
 		}
 		errIfNaN(result, function);
 		return result;
