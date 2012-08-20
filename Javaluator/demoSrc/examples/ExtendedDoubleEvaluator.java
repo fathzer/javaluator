@@ -11,13 +11,13 @@ public class ExtendedDoubleEvaluator {
 	private static final Function SQRT = new Function("sqrt", 1);
 	
 	public static void main(String[] args) {
-		// Create an array of function with all the built-in DoubleEvaluator's functions and the new sqrt function
-		Function[] functions = new Function[DoubleEvaluator.FUNCTIONS.length+1];
-		functions[0] = SQRT;
-		System.arraycopy(DoubleEvaluator.FUNCTIONS, 0, functions, 1, DoubleEvaluator.FUNCTIONS.length);
+		// Gets the default DoubleEvaluator's parameters
+		Parameters params = DoubleEvaluator.getDefaultParameters();
+		// add the new sqrt function to these parameters
+		params.add(SQRT);
 		
 		// Create a new subclass of DoubleEvaluator that support the new function
-		AbstractEvaluator<Double> evaluator = new DoubleEvaluator(DoubleEvaluator.OPERATORS, functions, DoubleEvaluator.CONSTANTS) {
+		AbstractEvaluator<Double> evaluator = new DoubleEvaluator(params) {
 			@Override
 			protected Double evaluate(Function function, Iterator<Double> arguments) {
 				if (function == SQRT) {

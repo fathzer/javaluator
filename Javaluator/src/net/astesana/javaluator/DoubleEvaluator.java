@@ -1,5 +1,6 @@
 package net.astesana.javaluator;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /** An evaluator that is able to evaluate arithmetic expressions on Double.
@@ -68,12 +69,32 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The whole set of predefined constants */
 	public static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
+	private static Parameters DEFAULT_PARAMETERS;
+	
+	public static Parameters getDefaultParameters() {
+		Parameters result = new Parameters();
+		DEFAULT_PARAMETERS.addOperators(Arrays.asList(OPERATORS));
+		DEFAULT_PARAMETERS.addFunctions(Arrays.asList(FUNCTIONS));
+		DEFAULT_PARAMETERS.addConstants(Arrays.asList(CONSTANTS));
+		return result;
+	}
+	
+	private static Parameters getParameters() {
+		if (DEFAULT_PARAMETERS == null) {
+			DEFAULT_PARAMETERS = new Parameters();
+			DEFAULT_PARAMETERS.addOperators(Arrays.asList(OPERATORS));
+			DEFAULT_PARAMETERS.addFunctions(Arrays.asList(FUNCTIONS));
+			DEFAULT_PARAMETERS.addConstants(Arrays.asList(CONSTANTS));
+		}
+		return DEFAULT_PARAMETERS;
+	}
+	
 	public DoubleEvaluator() {
-		this(OPERATORS, FUNCTIONS, CONSTANTS);
+		this(getParameters());
 	}
 
-	public DoubleEvaluator(Operator[] operators, Function[] functions, Constant[] constants) {
-		super(operators, functions, constants, true);
+	public DoubleEvaluator(Parameters parameters) {
+		super(parameters);
 	}
 
 	@Override

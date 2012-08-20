@@ -26,25 +26,22 @@ public abstract class AbstractEvaluator<T> {
 	private final Map<String, Function> functions;
 	private final Map<String, List<Operator>> operators;
 	private final Map<String, Constant> constants;
-	
+		
 	/** Constructor.
-	 * @param operators The operators supported by this evaluator.
-	 * @param functions The functions supported by this evaluator.
-	 * @param constants The constants supported by this evaluator.
-	 * @param ignoreSpaces If true, the spaces in evaluated expressions are ignored.
-	 * <br>This mean that, if + is an operator, an expression like "a +b" will be considered as "a+b".
-	 *  "a b" will be considered as an error (two literals without any operator).
+	 * @param parameters The evaluator parameters.
+	 * <br>Please note that there's no side effect between the evaluator and the parameters.
+	 * So, changes made to the parameters after the call to this constructor are ignored by the instance. 
 	 */
-	protected AbstractEvaluator(Operator[] operators, Function[] functions, Constant[] constants, boolean ignoreSpaces) {
+	protected AbstractEvaluator(Parameters parameters) {
 		//TODO if constants, operators, functions are duplicated => error
 		this.functions = new HashMap<String, Function>();
 		this.operators = new HashMap<String, List<Operator>>();
 		this.constants = new HashMap<String, Constant>();
 		final StringBuilder tokenDelimitersBuilder = new StringBuilder();
 		tokenDelimitersBuilder.append(OPEN_BRACKET).append(CLOSE_BRACKET);
-		if (ignoreSpaces) tokenDelimitersBuilder.append(" ");
+		if (parameters.isSpaceIgnored()) tokenDelimitersBuilder.append(" ");
 		if (operators!=null) {
-			for (Operator ope : operators) {
+			for (Operator ope : parameters.getOperators()) {
 				tokenDelimitersBuilder.append(ope.getSymbol());
 				List<Operator> known = this.operators.get(ope.getSymbol());
 				if (known==null) {
@@ -56,15 +53,15 @@ public abstract class AbstractEvaluator<T> {
 			}
 		}
 		boolean needFunctionSeparator = false;
-		if (functions!=null && functions.length>0) {
-			for (Function function : functions) {
+		if (parameters.getFunctions()!=null) {
+			for (Function function : parameters.getFunctions()) {
 				//TODO if function name contains operators or reserved chars => error
 				this.functions.put(function.getName(), function);
 				if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
 			}			
 		}
-		if (constants!=null && constants.length!=0) {
-			for (Constant constant : constants) {
+		if (parameters.getConstants()!=null) {
+			for (Constant constant : parameters.getConstants()) {
 				this.constants.put(constant.getMnemonic(), constant);
 			}
 		}
