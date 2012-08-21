@@ -208,8 +208,7 @@ public abstract class AbstractEvaluator<T> {
 	public T evaluate(String expression, AbstractVariableSet<T> variables) {
 		final Stack<T> values = new Stack<T>(); // values stack
 		final Stack<Token> stack = new Stack<Token>(); // operator stack
-		final Stack<Integer> functionArgCount = new Stack<Integer>(); // function argument count stack
-		final Stack<Boolean> wereValues = new Stack<Boolean>();
+		final Stack<Integer> previousValuesSize = new Stack<Integer>();
 		final Enumeration<String> tokens = tokenize(expression);
 		Token previous = null;
 		while (tokens.hasMoreElements()) {
@@ -221,6 +220,7 @@ public abstract class AbstractEvaluator<T> {
 				// If the token is a left parenthesis, then push it onto the stack.
 				stack.push(token);
 			} else if (token.isCloseBracket()) {
+				if (previous.isFunctionArgumentSeparator()) throw new IllegalArgumentException("argument is missing");
 				// If the token is a right parenthesis:
 				boolean openBracketFound = false;
 				// Until the token at the top of the stack is a left parenthesis,
@@ -239,21 +239,21 @@ public abstract class AbstractEvaluator<T> {
 					// there are mismatched parentheses.
 					throw new IllegalArgumentException("Parentheses mismatched");
 				}
-				// If the token at the top of the stack is a function token, pop it
-				// onto the output queue.
 				if (!stack.isEmpty()) {
 					if (stack.peek().isFunction()) {
-						int argCount = functionArgCount.pop();
-						if (wereValues.pop()) {
-							argCount++;
-						} else {
-							throw new IllegalArgumentException("Function argument is missing");
-						}
+						// If the token at the top of the stack is a function token, pop it
+						// onto the output queue.
+						int argCount = values.size()-previousValuesSize.pop();
 						doFunction(values, (Function)stack.pop().getFunction(), argCount);
 					}
 				}
 			} else if (token.isFunctionArgumentSeparator()) {
-				// If the token is a function argument separator (e.g., a comma):
+				// Verify that there was an argument before this separator
+				if (previous.isOpenBracket() || previous.isFunctionArgumentSeparator()) {
+					// The cases were operator miss an operand are detected elsewhere.
+					throw new IllegalArgumentException("argument is missing");
+				}
+				// If the token is a function argument separator
 				boolean pe = false;
 				while (!stack.isEmpty()) {
 					if (stack.peek().isOpenBracket()) {
@@ -270,22 +270,10 @@ public abstract class AbstractEvaluator<T> {
 					// or parentheses were mismatched.
 					throw new IllegalArgumentException("Separator or parentheses mismatched");
 				}
-				if (wereValues.pop()) {
-					int argCount = functionArgCount.pop();
-					argCount++;
-					functionArgCount.push(argCount);
-				} else {
-					throw new IllegalArgumentException("Function argument is missing");
-				}
-				wereValues.push(false);
 			} else if (token.isFunction()) {
 				// If the token is a function token, then push it onto the stack.
 				stack.push(token);
-				functionArgCount.push(0);
-				if (!wereValues.isEmpty()) {
-					wereValues.pop(); wereValues.push(true);
-				}
-				wereValues.push(true);
+				previousValuesSize.push(values.size());
 			} else if (token.isOperator()) {
 				// If the token is an operator, op1, then:
 				while (!stack.isEmpty()) {
@@ -312,9 +300,6 @@ public abstract class AbstractEvaluator<T> {
 			} else {
 				// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
 				if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
-				if (!wereValues.isEmpty()) {
-					wereValues.pop(); wereValues.push(true);
-				}
 				output(values, token, variables);
 			}
 			previous = token;

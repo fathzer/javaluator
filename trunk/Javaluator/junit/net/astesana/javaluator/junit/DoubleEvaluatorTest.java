@@ -39,10 +39,13 @@ public class DoubleEvaluatorTest {
 		assertEquals(3, evaluator.evaluate("ceil(2.45)"),0.001);
 		assertEquals(2, evaluator.evaluate("floor(2.45)"),0.001);
 		assertEquals(2, evaluator.evaluate("round(2.45)"),0.001);
+		
+		double rnd = evaluator.evaluate("random()");
+		assertTrue(rnd>=0 && rnd<=1.0);
 
 		assertEquals(evaluator.evaluate("tanh(5)"), evaluator.evaluate("sinh(5)/cosh(5)"),0.001);
 		
-		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(round(4.1)*0.5)"),0.001);
+		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-round(4.1)*0.5"),0.001);
 	}
 	
 	@Test

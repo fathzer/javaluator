@@ -8,14 +8,10 @@ import java.awt.GridBagConstraints;
 import net.astesana.ajlib.swing.Utils;
 import net.astesana.ajlib.swing.widget.TextWidget;
 import net.astesana.javaluator.AbstractEvaluator;
-import net.astesana.javaluator.Constant;
 import net.astesana.javaluator.DoubleEvaluator;
-import net.astesana.javaluator.Function;
-import net.astesana.javaluator.Operator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-import java.util.Collection;
 import java.awt.Insets;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
@@ -160,8 +156,7 @@ public class DemoPanel extends JPanel {
 	}
 	private JTable getOperatorsTable() {
 		if (operatorsTable == null) {
-			Collection<?> operators = getEvaluator().getOperators();
-			operatorsTable = new JTable(new OperatorTableModel((Collection<Operator>) operators));
+			operatorsTable = new JTable(new OperatorTableModel(getEvaluator().getOperators()));
 			Utils.packColumns(operatorsTable, 2);
 		}
 		return operatorsTable;
@@ -216,8 +211,7 @@ public class DemoPanel extends JPanel {
 	}
 	private JTable getConstantsTable() {
 		if (constantsTable == null) {
-			Collection<?> constants = getEvaluator().getConstants();
-			constantsTable = new JTable(new ConstantTableModel((Collection<Constant>) constants));
+			constantsTable = new JTable(new ConstantTableModel(getEvaluator().getConstants()));
 			Utils.packColumns(constantsTable, 2);
 		}
 		return constantsTable;
@@ -240,8 +234,7 @@ public class DemoPanel extends JPanel {
 	}
 	private JTable getFunctionsTable() {
 		if (functionsTable == null) {
-			Collection<?> functions = getEvaluator().getFunctions();
-			functionsTable = new JTable(new FunctionTableModel((Collection<Function>) functions));
+			functionsTable = new JTable(new FunctionTableModel(getEvaluator().getFunctions()));
 			Utils.packColumns(functionsTable, 2);
 		}
 		return functionsTable;

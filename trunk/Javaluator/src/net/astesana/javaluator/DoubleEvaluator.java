@@ -33,6 +33,7 @@ import java.util.Iterator;
  * <li>sum: sum of arguments</li>
  * <li>tan: tangent</li>
  * <li>tanh: hyperbolic tangent</li>
+ * <li>random: pseudo-random number (between 0 and 1)</li>
  * </ul>
  * Built-in constants:<ul>
  * <li>e: Base of natural algorithms</li>
@@ -89,6 +90,9 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Function LN = new Function("ln", 1);
 	/** Returns the decimal logarithm of a number */
 	public final static Function LOG = new Function("log", 1);
+	
+	/** Returns a pseudo random number */
+	public final static Function RANDOM = new Function("random", 0);
 
 
 	/** The negate unary operator.*/
@@ -109,7 +113,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The whole set of predefined operators */
 	private static final Operator[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
 	/** The whole set of predefined functions */
-	private static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, SINEH, COSINEH, TANGENTH, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS};
+	private static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, SINEH, COSINEH, TANGENTH, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS, RANDOM};
 	/** The whole set of predefined constants */
 	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
@@ -262,6 +266,8 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 			result = Math.log(arguments.next());
 		} else if (function==LOG) {
 			result = Math.log10(arguments.next());
+		} else if (function==RANDOM) {
+			result = Math.random();
 		} else {
 			result = super.evaluate(function, arguments);
 		}
