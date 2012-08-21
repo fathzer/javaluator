@@ -12,13 +12,12 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 /** An abstract evaluator, able to evaluate infix expressions.
- * <Some standard evaluators are included in the library, you can define your own by subclassing this class.
+ * <br>Some standard evaluators are included in the library, you can define your own by subclassing this class.
  * @param <T> The type of values handled by the evaluator 
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
 public abstract class AbstractEvaluator<T> {
-	private static final String FUNCTION_ARGUMENT_SEPARATOR = ",";
 	private static final String CLOSE_BRACKET = ")";
 	private static final String OPEN_BRACKET = "(";
 	
@@ -26,6 +25,7 @@ public abstract class AbstractEvaluator<T> {
 	private final Map<String, Function> functions;
 	private final Map<String, List<Operator>> operators;
 	private final Map<String, Constant> constants;
+	private final String functionArgumentSeparator;
 		
 	/** Constructor.
 	 * @param parameters The evaluator parameters.
@@ -65,7 +65,10 @@ public abstract class AbstractEvaluator<T> {
 				this.constants.put(parameters.getTranslation(constant.getName()), constant);
 			}
 		}
-		if (needFunctionSeparator) tokenDelimitersBuilder.append(FUNCTION_ARGUMENT_SEPARATOR);
+		functionArgumentSeparator = parameters.getFunctionArgumentSeparator();
+		if (needFunctionSeparator) {
+			tokenDelimitersBuilder.append(functionArgumentSeparator);
+		}
 		tokenDelimiters = tokenDelimitersBuilder.toString();
 	}
 	
@@ -105,7 +108,7 @@ public abstract class AbstractEvaluator<T> {
 			String literal = token.getLiteral();
 			Constant ct = this.constants.get(literal);
 			T value = ct==null?null:evaluate(ct);
-			if (value==null && variables!=null) value = variables.getVariableValue(literal);
+			if (value==null && variables!=null) value = variables.get(literal);
 			values.push(value!=null ? value : toValue(literal));
 		} else if (token.isOperator()) {
 			Operator operator = token.getOperator();
@@ -196,10 +199,12 @@ public abstract class AbstractEvaluator<T> {
 		return evaluate(expression, null);
 	}
 	
-	/** Evaluates an expression.
+	/** Evaluates an expression that contains variables.
 	 * @param expression The expression to evaluate.
+	 * @param variables A variable set
 	 * @return the result of the evaluation.
 	 * @throws IllegalArgumentException if the expression is not correct.
+	 * @see AbstractVariableSet
 	 */
 	public T evaluate(String expression, AbstractVariableSet<T> variables) {
 		final Stack<T> values = new Stack<T>(); // values stack
@@ -337,7 +342,7 @@ public abstract class AbstractEvaluator<T> {
 			return Token.OPEN_BRACKET;
 		} else if (token.equals(CLOSE_BRACKET)) {
 			return Token.CLOSE_BRACKET;
-		} else if (token.equals(FUNCTION_ARGUMENT_SEPARATOR)) {
+		} else if (token.equals(functionArgumentSeparator)) {
 			return Token.FUNCTION_ARG_SEPARATOR;
 		} else if (functions.containsKey(token)) {
 			return Token.buildFunction(functions.get(token));

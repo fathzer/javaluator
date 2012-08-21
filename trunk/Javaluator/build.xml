@@ -47,7 +47,7 @@
 		<delete dir="${demo.dest}"/>
 		<mkdir dir="${demo.dest}"/>
 		<copy todir="${demo.dest}">
-	    	<fileset dir="demosrc" includes="**/*.properties"/>
+	    	<fileset dir="demoSrc" includes="**/*.properties"/>
 		</copy>
 		<javac srcdir="demoSrc" destdir="${demo.dest}" debug="on" source="1.6" target="1.6" encoding="ISO8859-1" sourcepath="${srcAJLib};src" />
 		<echo file="${deploymentDir}/demo/demoId.txt" message="${TODAY}"/>

@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class Parameters {
 	private boolean isSpaceIgnored;
+	private String functionSeparator;
 	private final ArrayList<Operator> operators;
 	private final ArrayList<Function> functions;
 	private final ArrayList<Constant> constants;
@@ -19,7 +20,7 @@ public class Parameters {
 
 	/** Constructor.
 	 * <br>This method builds an instance with no operators, no functions, no constants
-	 * <br>isSpaceIgnored is set to true.
+	 * <br>isSpaceIgnored is set to true. Function argument separator is set to ','.
 	 * @see #setSpaceIgnored(boolean)
 	 */
 	public Parameters() {
@@ -28,6 +29,7 @@ public class Parameters {
 		this.functions = new ArrayList<Function>();
 		this.constants = new ArrayList<Constant>();
 		this.translations = new HashMap<String, String>();
+		setFunctionArgumentSeparator(',');
 	}
 
 	/** Gets the supported operators.
@@ -137,5 +139,20 @@ public class Parameters {
 	String getTranslation(String originalName) {
 		String translation = this.translations.get(originalName);
 		return translation==null?originalName:translation;
+	}
+	
+	/** Sets the function argument separator.
+	 * <br>Its default value is ','.
+	 * @param separator The new separator
+	 */
+	public void setFunctionArgumentSeparator(char separator) {
+		this.functionSeparator = new String(new char[]{separator});
+	}
+	
+	/** Gets the function argument separator.
+	 * @return a string
+	 */
+	public String getFunctionArgumentSeparator() {
+		return this.functionSeparator;
 	}
 }
