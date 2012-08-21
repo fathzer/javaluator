@@ -11,7 +11,6 @@ import java.util.Map;
  * @see <a href="../../../license.html">License information</a>
  */
 public class Parameters {
-	private boolean isSpaceIgnored;
 	private String functionSeparator;
 	private final ArrayList<Operator> operators;
 	private final ArrayList<Function> functions;
@@ -20,11 +19,10 @@ public class Parameters {
 
 	/** Constructor.
 	 * <br>This method builds an instance with no operators, no functions, no constants
-	 * <br>isSpaceIgnored is set to true. Function argument separator is set to ','.
+	 * <br>Function argument separator is set to ','.
 	 * @see #setSpaceIgnored(boolean)
 	 */
 	public Parameters() {
-		this.isSpaceIgnored = true;
 		this.operators = new ArrayList<Operator>();
 		this.functions = new ArrayList<Function>();
 		this.constants = new ArrayList<Constant>();
@@ -53,22 +51,6 @@ public class Parameters {
 		return this.constants;
 	}
 	
-	/** Tests whether space characters are ignored or not.
-	 * @return true if space are ignored.
-	 */
-	public boolean isSpaceIgnored() {
-		return isSpaceIgnored;
-	}
-	
-	/** Sets the ignoreSpaces parameter.
-	 * @param ignored If true, the spaces in evaluated expressions are ignored.
-	 * <br>This mean that, if + is an operator, an expression like "a +b" will be considered as "a+b".
-	 *  "a b" will be considered as an error (two literals without any operator).
-	 */
-	public void setSpaceIgnored(boolean ignored) {
-		this.isSpaceIgnored = ignored;
-	}
-
 	/** Adds operators to the supported ones.
 	 * @param operators The operators to be added.
 	 */

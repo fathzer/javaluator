@@ -39,7 +39,6 @@ public abstract class AbstractEvaluator<T> {
 		this.constants = new HashMap<String, Constant>();
 		final StringBuilder tokenDelimitersBuilder = new StringBuilder();
 		tokenDelimitersBuilder.append(OPEN_BRACKET).append(CLOSE_BRACKET);
-		if (parameters.isSpaceIgnored()) tokenDelimitersBuilder.append(" ");
 		if (operators!=null) {
 			for (Operator ope : parameters.getOperators()) {
 				tokenDelimitersBuilder.append(ope.getSymbol());
@@ -215,112 +214,110 @@ public abstract class AbstractEvaluator<T> {
 		Token previous = null;
 		while (tokens.hasMoreElements()) {
 			// read one token from the input stream
-			final Token token = toToken(previous, tokens.nextElement());
-			if (token.isIgnored()) {
-				// If the token is a space ... do nothing
-			} else {
-				if (token.isOpenBracket()) {
-					// If the token is a left parenthesis, then push it onto the stack.
-					stack.push(token);
-				} else if (token.isCloseBracket()) {
-					// If the token is a right parenthesis:
-					boolean openBracketFound = false;
-					// Until the token at the top of the stack is a left parenthesis,
-					// pop operators off the stack onto the output queue
-					while (!stack.isEmpty()) {
-						Token sc = stack.pop();
-						if (sc.isOpenBracket()) {
-							openBracketFound = true;
-							break;
-						} else {
-							output(values, sc, variables);
-						}
-					}
-					if (!openBracketFound) {
-						// If the stack runs out without finding a left parenthesis, then
-						// there are mismatched parentheses.
-						throw new IllegalArgumentException("Parentheses mismatched");
-					}
-					// If the token at the top of the stack is a function token, pop it
-					// onto the output queue.
-					if (!stack.isEmpty()) {
-						if (stack.peek().isFunction()) {
-							int argCount = functionArgCount.pop();
-							if (wereValues.pop()) {
-								argCount++;
-							} else {
-								throw new IllegalArgumentException("Function argument is missing");
-							}
-							doFunction(values, (Function)stack.pop().getFunction(), argCount);
-						}
-					}
-				} else if (token.isFunctionArgumentSeparator()) {
-					// If the token is a function argument separator (e.g., a comma):
-					boolean pe = false;
-					while (!stack.isEmpty()) {
-						if (stack.peek().isOpenBracket()) {
-							pe = true;
-							break;
-						} else {
-							// Until the token at the top of the stack is a left parenthesis,
-							// pop operators off the stack onto the output queue.
-							output(values, stack.pop(), variables);
-						}
-					}
-					if (!pe) {
-						// If no left parentheses are encountered, either the separator was misplaced
-						// or parentheses were mismatched.
-						throw new IllegalArgumentException("Separator or parentheses mismatched");
-					}
-					if (wereValues.pop()) {
-						int argCount = functionArgCount.pop();
-						argCount++;
-						functionArgCount.push(argCount);
+			String trimmed = tokens.nextElement().trim();
+			if (trimmed.length()==0) continue; // Ignored blank tokens
+			final Token token = toToken(previous, trimmed);
+			if (token.isOpenBracket()) {
+				// If the token is a left parenthesis, then push it onto the stack.
+				stack.push(token);
+			} else if (token.isCloseBracket()) {
+				// If the token is a right parenthesis:
+				boolean openBracketFound = false;
+				// Until the token at the top of the stack is a left parenthesis,
+				// pop operators off the stack onto the output queue
+				while (!stack.isEmpty()) {
+					Token sc = stack.pop();
+					if (sc.isOpenBracket()) {
+						openBracketFound = true;
+						break;
 					} else {
-						throw new IllegalArgumentException("Function argument is missing");
+						output(values, sc, variables);
 					}
-					wereValues.push(false);
-				} else if (token.isFunction()) {
-					// If the token is a function token, then push it onto the stack.
-					stack.push(token);
-					functionArgCount.push(0);
-					if (!wereValues.isEmpty()) {
-						wereValues.pop(); wereValues.push(true);
-					}
-					wereValues.push(true);
-				} else if (token.isOperator()) {
-					// If the token is an operator, op1, then:
-					while (!stack.isEmpty()) {
-						Token sc = stack.peek();
-						// While there is an operator token, o2, at the top of the stack
-						// op1 is left-associative and its precedence is less than or equal
-						// to that of op2,
-						// or op1 has precedence less than that of op2,
-						// Let + and ^ be right associative.
-						// Correct transformation from 1^2+3 is 12^3+
-						// The differing operator priority decides pop / push
-						// If 2 operators have equal priority then associativity decides.
-						if (sc.isOperator()
-								&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
-										(token.getPrecedence() < sc.getPrecedence()))) {
-							// Pop o2 off the stack, onto the output queue;
-							output(values, stack.pop(), variables);
-						} else {
-							break;
-						}
-					}
-					// push op1 onto the stack.
-					stack.push(token);
-				} else {
-					// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
-					if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
-					if (!wereValues.isEmpty()) {
-						wereValues.pop(); wereValues.push(true);
-					}
-					output(values, token, variables);
 				}
-				previous = token;
+				if (!openBracketFound) {
+					// If the stack runs out without finding a left parenthesis, then
+					// there are mismatched parentheses.
+					throw new IllegalArgumentException("Parentheses mismatched");
+				}
+				// If the token at the top of the stack is a function token, pop it
+				// onto the output queue.
+				if (!stack.isEmpty()) {
+					if (stack.peek().isFunction()) {
+						int argCount = functionArgCount.pop();
+						if (wereValues.pop()) {
+							argCount++;
+						} else {
+							throw new IllegalArgumentException("Function argument is missing");
+						}
+						doFunction(values, (Function)stack.pop().getFunction(), argCount);
+					}
+				}
+			} else if (token.isFunctionArgumentSeparator()) {
+				// If the token is a function argument separator (e.g., a comma):
+				boolean pe = false;
+				while (!stack.isEmpty()) {
+					if (stack.peek().isOpenBracket()) {
+						pe = true;
+						break;
+					} else {
+						// Until the token at the top of the stack is a left parenthesis,
+						// pop operators off the stack onto the output queue.
+						output(values, stack.pop(), variables);
+					}
+				}
+				if (!pe) {
+					// If no left parentheses are encountered, either the separator was misplaced
+					// or parentheses were mismatched.
+					throw new IllegalArgumentException("Separator or parentheses mismatched");
+				}
+				if (wereValues.pop()) {
+					int argCount = functionArgCount.pop();
+					argCount++;
+					functionArgCount.push(argCount);
+				} else {
+					throw new IllegalArgumentException("Function argument is missing");
+				}
+				wereValues.push(false);
+			} else if (token.isFunction()) {
+				// If the token is a function token, then push it onto the stack.
+				stack.push(token);
+				functionArgCount.push(0);
+				if (!wereValues.isEmpty()) {
+					wereValues.pop(); wereValues.push(true);
+				}
+				wereValues.push(true);
+			} else if (token.isOperator()) {
+				// If the token is an operator, op1, then:
+				while (!stack.isEmpty()) {
+					Token sc = stack.peek();
+					// While there is an operator token, o2, at the top of the stack
+					// op1 is left-associative and its precedence is less than or equal
+					// to that of op2,
+					// or op1 has precedence less than that of op2,
+					// Let + and ^ be right associative.
+					// Correct transformation from 1^2+3 is 12^3+
+					// The differing operator priority decides pop / push
+					// If 2 operators have equal priority then associativity decides.
+					if (sc.isOperator()
+							&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
+									(token.getPrecedence() < sc.getPrecedence()))) {
+						// Pop o2 off the stack, onto the output queue;
+						output(values, stack.pop(), variables);
+					} else {
+						break;
+					}
+				}
+				// push op1 onto the stack.
+				stack.push(token);
+			} else {
+				// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
+				if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
+				if (!wereValues.isEmpty()) {
+					wereValues.pop(); wereValues.push(true);
+				}
+				output(values, token, variables);
 			}
+			previous = token;
 		}
 		// When there are no more tokens to read:
 		// While there are still operator tokens in the stack:
@@ -336,9 +333,7 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	private Token toToken(Token previous, String token) {
-		if (token.equals(" ")) {
-			return Token.IGNORED;
-		} else if (token.equals(OPEN_BRACKET)) {
+		if (token.equals(OPEN_BRACKET)) {
 			return Token.OPEN_BRACKET;
 		} else if (token.equals(CLOSE_BRACKET)) {
 			return Token.CLOSE_BRACKET;

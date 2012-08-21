@@ -8,8 +8,6 @@ package net.astesana.javaluator;
  */
 public class Token {
 	private enum Kind {
-		/** Something like white space */
-		IGNORED,
 		OPEN_BRACKET,
 		CLOSE_BRACKET,
 		FUNCTION_SEPARATOR,
@@ -20,7 +18,6 @@ public class Token {
 	static final Token OPEN_BRACKET = new Token(Kind.OPEN_BRACKET, null);
 	static final Token CLOSE_BRACKET = new Token(Kind.CLOSE_BRACKET, null);
 	static final Token FUNCTION_ARG_SEPARATOR = new Token(Kind.FUNCTION_SEPARATOR, null);
-	static final Token IGNORED = new Token(Kind.IGNORED, null);
 	
 	private Kind kind;
 	private Object content;
@@ -70,10 +67,6 @@ public class Token {
 	 */
 	public boolean isFunction() {
 		return kind.equals(Kind.FUNCTION);
-	}
-
-	boolean isIgnored() {
-		return kind.equals(Kind.IGNORED);
 	}
 
 	/** Tests whether the token is an open bracket.
