@@ -97,8 +97,8 @@ public class Token {
 		return kind.equals(Kind.FUNCTION_SEPARATOR);
 	}
 	
-	/** Tests whether the token is a literal.
-	 * @return true if the token is a literal
+	/** Tests whether the token is a literal or a constant or a variable name.
+	 * @return true if the token is a literal, a constant or a variable name
 	 */
 	public boolean isLiteral() {
 		return kind.equals(Kind.LITERAL);

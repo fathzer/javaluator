@@ -100,11 +100,13 @@ public abstract class AbstractEvaluator<T> {
 		return null;
 	}
 
-	private void output(Stack<T> values, Token token) {
-		if (token.isLiteral()) {
+	private void output(Stack<T> values, Token token, AbstractVariableSet<T> variables) {
+		if (token.isLiteral()) { // If the token is a literal, a constant, or a variable name
 			String literal = token.getLiteral();
-			Constant ct = this.constants.get(literal); 
-			values.push(ct!=null ? evaluate(ct) : toValue(literal));
+			Constant ct = this.constants.get(literal);
+			T value = ct==null?null:evaluate(ct);
+			if (value==null && variables!=null) value = variables.getVariableValue(literal);
+			values.push(value!=null ? value : toValue(literal));
 		} else if (token.isOperator()) {
 			Operator operator = token.getOperator();
 			values.push(evaluate(operator, getArguments(values, operator.getOperandCount())));
@@ -191,6 +193,15 @@ public abstract class AbstractEvaluator<T> {
 	 * @throws IllegalArgumentException if the expression is not correct.
 	 */
 	public T evaluate(String expression) {
+		return evaluate(expression, null);
+	}
+	
+	/** Evaluates an expression.
+	 * @param expression The expression to evaluate.
+	 * @return the result of the evaluation.
+	 * @throws IllegalArgumentException if the expression is not correct.
+	 */
+	public T evaluate(String expression, AbstractVariableSet<T> variables) {
 		final Stack<T> values = new Stack<T>(); // values stack
 		final Stack<Token> stack = new Stack<Token>(); // operator stack
 		final Stack<Integer> functionArgCount = new Stack<Integer>(); // function argument count stack
@@ -217,7 +228,7 @@ public abstract class AbstractEvaluator<T> {
 							openBracketFound = true;
 							break;
 						} else {
-							output(values, sc);
+							output(values, sc, variables);
 						}
 					}
 					if (!openBracketFound) {
@@ -248,7 +259,7 @@ public abstract class AbstractEvaluator<T> {
 						} else {
 							// Until the token at the top of the stack is a left parenthesis,
 							// pop operators off the stack onto the output queue.
-							output(values, stack.pop());
+							output(values, stack.pop(), variables);
 						}
 					}
 					if (!pe) {
@@ -288,7 +299,7 @@ public abstract class AbstractEvaluator<T> {
 								&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
 										(token.getPrecedence() < sc.getPrecedence()))) {
 							// Pop o2 off the stack, onto the output queue;
-							output(values, stack.pop());
+							output(values, stack.pop(), variables);
 						} else {
 							break;
 						}
@@ -296,12 +307,12 @@ public abstract class AbstractEvaluator<T> {
 					// push op1 onto the stack.
 					stack.push(token);
 				} else {
-					// If the token is a number (identifier), then add it to the output queue.
+					// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
 					if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
 					if (!wereValues.isEmpty()) {
 						wereValues.pop(); wereValues.push(true);
 					}
-					output(values, token);
+					output(values, token, variables);
 				}
 				previous = token;
 			}
@@ -313,7 +324,7 @@ public abstract class AbstractEvaluator<T> {
 			if (sc.isOpenBracket() || sc.isCloseBracket()) {
 				throw new IllegalArgumentException("Parentheses mismatched");
 			}
-			output(values, sc);
+			output(values, sc, variables);
 		}
 		if (values.size()!=1) throw new IllegalArgumentException();
 		return values.pop();

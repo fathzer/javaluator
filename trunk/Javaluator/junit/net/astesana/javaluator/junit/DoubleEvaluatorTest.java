@@ -3,6 +3,7 @@ package net.astesana.javaluator.junit;
 import static org.junit.Assert.*;
 
 import net.astesana.javaluator.DoubleEvaluator;
+import net.astesana.javaluator.StaticVariableSet;
 
 import org.junit.Test;
 
@@ -38,8 +39,21 @@ public class DoubleEvaluatorTest {
 		assertEquals(3, evaluator.evaluate("ceil(2.45)"),0.001);
 		assertEquals(2, evaluator.evaluate("floor(2.45)"),0.001);
 		assertEquals(2, evaluator.evaluate("round(2.45)"),0.001);
+
+		assertEquals(evaluator.evaluate("tanh(5)"), evaluator.evaluate("sinh(5)/cosh(5)"),0.001);
 		
 		assertEquals(-1, evaluator.evaluate("min(1,min(3+2,2))+-(round(4.1)*0.5)"),0.001);
+	}
+	
+	@Test
+	public void testWithVariable() {
+		String expression = "x+2";
+		StaticVariableSet<Double> variables = new StaticVariableSet<Double>();
+		
+		variables.set("x", 1.);
+		assertEquals(3, evaluator.evaluate(expression, variables),0.001);
+		variables.set("x", -1.);
+		assertEquals(1, evaluator.evaluate(expression, variables),0.001);
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
