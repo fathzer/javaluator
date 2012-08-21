@@ -37,6 +37,7 @@ import java.util.Iterator;
  * Built-in constants:<ul>
  * <li>e: Base of natural algorithms</li>
  * <li>pi: Ratio of the circumference of a circle to its diameter</li>
+ * </ul>
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */

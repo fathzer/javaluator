@@ -17,6 +17,14 @@ public class ParametersTest {
 		assertEquals(2, evaluator.evaluate("moy(3,1)"),0.001);
 	}
 
+	@Test
+	public void testFunctionArgumentSeparators() {
+		Parameters params = DoubleEvaluator.getDefaultParameters();
+		params.setFunctionArgumentSeparator(';');
+		DoubleEvaluator evaluator = new DoubleEvaluator(params);
+		assertEquals(2, evaluator.evaluate("avg(3;1)"),0.001);
+	}
+
 //	@Test (expected=IllegalArgumentException.class)
 //	public void sameTranslatedNames() {
 //		Parameters params = new Parameters();
