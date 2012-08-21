@@ -12,7 +12,7 @@ public class DoubleEvaluatorTest {
 
 	@Test
 	public void testResults() {
-		assertEquals(2, evaluator.evaluate("6/3"),0.001);
+		assertEquals(2, evaluator.evaluate("6 / 3"),0.001);
 		assertEquals(Double.POSITIVE_INFINITY, evaluator.evaluate("2/0"),0.001);
 		assertEquals(2, evaluator.evaluate("7 % 2.5"),0.001);
 		assertEquals(-1., evaluator.evaluate("-1"), 0.001);
@@ -21,10 +21,10 @@ public class DoubleEvaluatorTest {
 		assertEquals(2, evaluator.evaluate("3-1"), 0.001);
 		assertEquals(-4, evaluator.evaluate("-2^2"),0.001);
 		
-		assertEquals(1, evaluator.evaluate("sin(pi/2)"),0.001);
+		assertEquals(1, evaluator.evaluate("sin ( pi /2)"),0.001);
 		assertEquals(-1, evaluator.evaluate("cos(pi)"),0.001);
 		assertEquals(1, evaluator.evaluate("tan(pi/4)"),0.001);
-		assertEquals(Math.PI, evaluator.evaluate("acos(-1)"),0.001);
+		assertEquals(Math.PI, evaluator.evaluate("acos( -1)"),0.001);
 		assertEquals(Math.PI/2, evaluator.evaluate("asin(1)"),0.001);
 		assertEquals(Math.PI/4, evaluator.evaluate("atan(1)"),0.001);
 		
