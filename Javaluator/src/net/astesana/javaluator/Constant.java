@@ -9,7 +9,7 @@ package net.astesana.javaluator;
  * <br>With such a constant, you will be able to evaluate the expression "sin(pi/4)"
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
- * @see AbstractEvaluator#evaluate(Constant)
+ * @see AbstractEvaluator#evaluate(Constant, Object)
  */
 public class Constant {
 	private String name;

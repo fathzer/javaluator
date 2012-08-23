@@ -4,9 +4,9 @@ import net.astesana.javaluator.*;
 
 /** An example of how to restrict operators, functions and constant of an existing evaluator.
  */
-public class SimpleDoubleEvaluator {
+public class Restricting {
 	public static void main(String[] args) {
-		// Let's create an double evaluator that only support +,-,*,and / operators
+		// Let's create a double evaluator that only support +,-,*,and / operators
 		// First create empty evaluator parameters
 		Parameters params = new Parameters();
 		// Add the supported operators to these parameters

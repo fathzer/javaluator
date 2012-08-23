@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 import net.astesana.javaluator.*;
 
-/** An example of how to extend an existing evaluator by adding a new supported function.
+/** An example of how to extend an existing evaluator by adding support for a new function.
  */
-public class ExtendedDoubleEvaluator {
+public class Extending {
 	/** Defines the new function (square root).*/
 	private static final Function SQRT = new Function("sqrt", 1);
 	
@@ -19,13 +19,13 @@ public class ExtendedDoubleEvaluator {
 		// Create a new subclass of DoubleEvaluator that support the new function
 		AbstractEvaluator<Double> evaluator = new DoubleEvaluator(params) {
 			@Override
-			protected Double evaluate(Function function, Iterator<Double> arguments) {
+			protected Double evaluate(Function function, Iterator<Double> arguments, Object evaluationContext) {
 				if (function == SQRT) {
 					// Implements the new function
 					return Math.sqrt(arguments.next());
 				} else {
 					// If it's another function, pass it to DoubleEvaluator
-					return super.evaluate(function, arguments);
+					return super.evaluate(function, arguments, evaluationContext);
 				}
 			}
 		};

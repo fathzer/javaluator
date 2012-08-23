@@ -156,7 +156,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	}
 
 	@Override
-	protected Double toValue(String literal) {
+	protected Double toValue(String literal, Object evaluationContext) {
 		try {
 			return Double.parseDouble(literal);
 		} catch (NumberFormatException e) {
@@ -168,13 +168,13 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 * @see net.astesana.javaluator.AbstractEvaluator#evaluate(net.astesana.javaluator.Constant)
 	 */
 	@Override
-	protected Double evaluate(Constant constant) {
+	protected Double evaluate(Constant constant, Object evaluationContext) {
 		if (constant==PI) {
 			return Math.PI;
 		} else if (constant==E) {
 			return Math.E;
 		} else {
-			return super.evaluate(constant);
+			return super.evaluate(constant, evaluationContext);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 * @see net.astesana.javaluator.AbstractEvaluator#evaluate(net.astesana.javaluator.Operator, java.util.Iterator)
 	 */
 	@Override
-	protected Double evaluate(Operator operator, Iterator<Double> operands) {
+	protected Double evaluate(Operator operator, Iterator<Double> operands, Object evaluationContext) {
 		if (operator==NEGATE) {
 			return -operands.next();
 		} else if (operator==MINUS) {
@@ -198,7 +198,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		} else if (operator==MODULO) {
 			return operands.next() % operands.next();
 		} else {
-			return super.evaluate(operator, operands);
+			return super.evaluate(operator, operands, evaluationContext);
 		}
 	}
 
@@ -206,7 +206,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 * @see net.astesana.javaluator.AbstractEvaluator#evaluate(net.astesana.javaluator.Function, java.util.Iterator)
 	 */
 	@Override
-	protected Double evaluate(Function function, Iterator<Double> arguments) {
+	protected Double evaluate(Function function, Iterator<Double> arguments, Object evaluationContext) {
 		Double result;
 		if (function==ABS) {
 			result = Math.abs(arguments.next());
@@ -269,7 +269,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		} else if (function==RANDOM) {
 			result = Math.random();
 		} else {
-			result = super.evaluate(function, arguments);
+			result = super.evaluate(function, arguments, evaluationContext);
 		}
 		errIfNaN(result, function);
 		return result;

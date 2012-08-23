@@ -18,9 +18,8 @@ public class Parameters {
 	private final Map<String, String> translations;
 
 	/** Constructor.
-	 * <br>This method builds an instance with no operators, no functions, no constants
+	 * <br>This method builds an instance with no operator, no function, no constant, no translation
 	 * <br>Function argument separator is set to ','.
-	 * @see #setSpaceIgnored(boolean)
 	 */
 	public Parameters() {
 		this.operators = new ArrayList<Operator>();
