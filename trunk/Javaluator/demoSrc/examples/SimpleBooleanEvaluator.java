@@ -30,12 +30,12 @@ public class SimpleBooleanEvaluator extends AbstractEvaluator<Boolean> {
 	}
 
 	@Override
-	protected Boolean toValue(String literal) {
+	protected Boolean toValue(String literal, Object evaluationContext) {
 		return Boolean.valueOf(literal);
 	}
 
 	@Override
-	protected Boolean evaluate(Operator operator, Iterator<Boolean> operands) {
+	protected Boolean evaluate(Operator operator, Iterator<Boolean> operands, Object evaluationContext) {
 		if (operator == NEGATE) {
 			return !operands.next();
 		} else if (operator == OR) {
@@ -47,7 +47,7 @@ public class SimpleBooleanEvaluator extends AbstractEvaluator<Boolean> {
 			Boolean o2 = operands.next();
 			return o1 && o2;
 		} else {
-			return super.evaluate(operator, operands);
+			return super.evaluate(operator, operands, evaluationContext);
 		}
 	}
 

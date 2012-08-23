@@ -102,16 +102,16 @@ public abstract class AbstractEvaluator<T> {
 		return null;
 	}
 
-	private void output(Stack<T> values, Token token, AbstractVariableSet<T> variables) {
+	private void output(Stack<T> values, Token token, Object evaluationContext) {
 		if (token.isLiteral()) { // If the token is a literal, a constant, or a variable name
 			String literal = token.getLiteral();
 			Constant ct = this.constants.get(literal);
-			T value = ct==null?null:evaluate(ct);
-			if (value==null && variables!=null) value = variables.get(literal);
-			values.push(value!=null ? value : toValue(literal));
+			T value = ct==null?null:evaluate(ct, evaluationContext);
+			if (value==null && evaluationContext!=null && (evaluationContext instanceof AbstractVariableSet)) value = ((AbstractVariableSet<T>)evaluationContext).get(literal);
+			values.push(value!=null ? value : toValue(literal, evaluationContext));
 		} else if (token.isOperator()) {
 			Operator operator = token.getOperator();
-			values.push(evaluate(operator, getArguments(values, operator.getOperandCount())));
+			values.push(evaluate(operator, getArguments(values, operator.getOperandCount()), evaluationContext));
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -122,9 +122,10 @@ public abstract class AbstractEvaluator<T> {
 	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
 	 * while creating a subclass that accepts constants.
 	 * @param constant The constant
+	 * @param evaluationContext The context of the evaluation
 	 * @return The constant's value
 	 */
-	protected T evaluate(Constant constant) {
+	protected T evaluate(Constant constant, Object evaluationContext) {
 		throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getName());
 	}
 	
@@ -134,9 +135,10 @@ public abstract class AbstractEvaluator<T> {
 	 * while creating a subclass that accepts operators.
 	 * @param operator The operator
 	 * @param operands The operands
+	 * @param evaluationContext The context of the evaluation
 	 * @return The result of the operation
 	 */
-	protected T evaluate(Operator operator, Iterator<T> operands) {
+	protected T evaluate(Operator operator, Iterator<T> operands, Object evaluationContext) {
 		throw new RuntimeException("evaluate(Operator, Iterator) is not implemented for "+operator.getSymbol());
 	}
 	
@@ -146,17 +148,18 @@ public abstract class AbstractEvaluator<T> {
 	 * while creating a subclass that accepts functions.
 	 * @param function The function
 	 * @param arguments The function's arguments
+	 * @param evaluationContext The context of the evaluation
 	 * @return The result of the function
 	 */
-	protected T evaluate(Function function, Iterator<T> arguments) {
+	protected T evaluate(Function function, Iterator<T> arguments, Object evaluationContext) {
 		throw new RuntimeException("evaluate(Function, Iterator) is not implemented for "+function.getName());
 	}
 	
-	private void doFunction(Stack<T> values, Function function, int argCount) {
+	private void doFunction(Stack<T> values, Function function, int argCount, Object evaluationContext) {
 		if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
 			throw new IllegalArgumentException("Invalid argument count for "+function.getName());
 		}
-		values.push(evaluate(function,getArguments(values, argCount)));
+		values.push(evaluate(function, getArguments(values, argCount), evaluationContext));
 	}
 	
 	private Iterator<T> getArguments(Stack<T> values, int nb) {
@@ -173,9 +176,10 @@ public abstract class AbstractEvaluator<T> {
 	/** Evaluates a literal (Converts it to a value).
 	 * @param literal The literal to evaluate.
 	 * @return an instance of T.
+	 * @param evaluationContext The context of the evaluation
 	 * @throws IllegalArgumentException if the literal can't be converted to a value.
 	 */
-	protected abstract T toValue(String literal);
+	protected abstract T toValue(String literal, Object evaluationContext);
 	
 	private Enumeration<String> tokenize(String expression) {
 		final StringTokenizer tokens = new StringTokenizer(expression, tokenDelimiters, true);
@@ -200,12 +204,15 @@ public abstract class AbstractEvaluator<T> {
 	
 	/** Evaluates an expression that contains variables.
 	 * @param expression The expression to evaluate.
-	 * @param variables A variable set
+	 * @param evaluationContext The context of the evaluation.
+	 * <br>This context is an object that can contain useful dynamic data, for example the values of the variables
+	 * used in the expression (Use an AbstractVariableSet to do that).<br>The context is not limited to variable values but
+	 * can be used for any dynamic information. A good example is the <a href="javaluator.sourceforge.net">BooleanSetEvaluator</a> one.
 	 * @return the result of the evaluation.
 	 * @throws IllegalArgumentException if the expression is not correct.
 	 * @see AbstractVariableSet
 	 */
-	public T evaluate(String expression, AbstractVariableSet<T> variables) {
+	public T evaluate(String expression, Object evaluationContext) {
 		final Stack<T> values = new Stack<T>(); // values stack
 		final Stack<Token> stack = new Stack<Token>(); // operator stack
 		final Stack<Integer> previousValuesSize = new Stack<Integer>();
@@ -231,7 +238,7 @@ public abstract class AbstractEvaluator<T> {
 						openBracketFound = true;
 						break;
 					} else {
-						output(values, sc, variables);
+						output(values, sc, evaluationContext);
 					}
 				}
 				if (!openBracketFound) {
@@ -244,7 +251,7 @@ public abstract class AbstractEvaluator<T> {
 						// If the token at the top of the stack is a function token, pop it
 						// onto the output queue.
 						int argCount = values.size()-previousValuesSize.pop();
-						doFunction(values, (Function)stack.pop().getFunction(), argCount);
+						doFunction(values, (Function)stack.pop().getFunction(), argCount, evaluationContext);
 					}
 				}
 			} else if (token.isFunctionArgumentSeparator()) {
@@ -262,7 +269,7 @@ public abstract class AbstractEvaluator<T> {
 					} else {
 						// Until the token at the top of the stack is a left parenthesis,
 						// pop operators off the stack onto the output queue.
-						output(values, stack.pop(), variables);
+						output(values, stack.pop(), evaluationContext);
 					}
 				}
 				if (!pe) {
@@ -290,7 +297,7 @@ public abstract class AbstractEvaluator<T> {
 							&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
 									(token.getPrecedence() < sc.getPrecedence()))) {
 						// Pop o2 off the stack, onto the output queue;
-						output(values, stack.pop(), variables);
+						output(values, stack.pop(), evaluationContext);
 					} else {
 						break;
 					}
@@ -300,7 +307,7 @@ public abstract class AbstractEvaluator<T> {
 			} else {
 				// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
 				if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
-				output(values, token, variables);
+				output(values, token, evaluationContext);
 			}
 			previous = token;
 		}
@@ -311,7 +318,7 @@ public abstract class AbstractEvaluator<T> {
 			if (sc.isOpenBracket() || sc.isCloseBracket()) {
 				throw new IllegalArgumentException("Parentheses mismatched");
 			}
-			output(values, sc, variables);
+			output(values, sc, evaluationContext);
 		}
 		if (values.size()!=1) throw new IllegalArgumentException();
 		return values.pop();

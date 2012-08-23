@@ -23,6 +23,18 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 	public final static Constant TRUE = new Constant("true");
 	/** The false constant. */
 	public final static Constant FALSE = new Constant("false");
+	
+	public static class BitSetEvaluationContext {
+		/** The bitset's length. */
+		private int bitSetLength;
+		public BitSetEvaluationContext(int bitSetLength) {
+			super();
+			this.bitSetLength = bitSetLength;
+		}
+		public int getBitSetLength() {
+			return bitSetLength;
+		}
+	}
 
 	/** The evalaluator's parameters.*/
 	private static final Parameters PARAMETERS;
@@ -37,21 +49,17 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		PARAMETERS.add(FALSE);
 	}
 
-	/** The bitset length. */
-	private int length;
-
 	/** Constructor.
-	 * @param length The bitset's length.
 	 */
-	public BooleanSetEvaluator(int length) {
+	public BooleanSetEvaluator() {
 		super(PARAMETERS);
-		this.length = length;
 	}
 
 	@Override
-	protected BitSet toValue(String literal) {
+	protected BitSet toValue(String literal, Object evaluationContext) {
+		int length =((BitSetEvaluationContext)evaluationContext).getBitSetLength(); 
 		// A literal is composed of 0 and 1 characters. If not, it is an illegal argument
-		if (literal.length()!=this.length) throw new IllegalArgumentException(literal+" must have a length of "+this.length);
+		if (literal.length()!=length) throw new IllegalArgumentException(literal+" must have a length of "+length);
 		BitSet result = new BitSet(length);
 		for (int i = 0; i < length; i++) {
 			if (literal.charAt(i)=='1') {
@@ -64,11 +72,11 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 	}
 
 	@Override
-	protected BitSet evaluate(Operator operator, Iterator<BitSet> operands) {
+	protected BitSet evaluate(Operator operator, Iterator<BitSet> operands, Object evaluationContext) {
 		// Implementation of supported operators
 		BitSet o1 = operands.next();
 		if (operator == NEGATE) {
-			o1.flip(0, length);
+			o1.flip(0, o1.size());
 		} else {
 			BitSet o2 = operands.next();
 			if (operator == OR) {
@@ -76,15 +84,16 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 			} else if (operator == AND) {
 				o1.and(o2);
 			} else {
-				o1 = super.evaluate(operator, operands);
+				o1 = super.evaluate(operator, operands, evaluationContext);
 			}
 		}
 		return o1;
 	}
 	
 	@Override
-	protected BitSet evaluate(Constant constant) {
+	protected BitSet evaluate(Constant constant, Object evaluationContext) {
 		// Implementation of supported constants
+		int length = ((BitSetEvaluationContext)evaluationContext).getBitSetLength();
 		BitSet result;
 		if (constant==FALSE) {
 			result = new BitSet(length);
@@ -92,33 +101,29 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 			result = new BitSet(length);
 			result.flip(0, length);
 		} else {
-			result = super.evaluate(constant);
+			result = super.evaluate(constant, evaluationContext);
 		}
 		return result;
 	}
 	
-	/** Converts a bit set to its String representation.
-	 * @param set The set to be converted.
-	 * @return a String
-	 */
-	public String toString(BitSet set) {
-		StringBuilder builder = new StringBuilder(length);
-		for (int i = 0; i < length; i++) {
-			builder.append(set.get(i)?'1':'0');
-		}
-		return builder.toString();
-	}
-
 	/** A simple program using this evaluator. */
 	public static void main(String[] args) {
-		BooleanSetEvaluator evaluator = new BooleanSetEvaluator(4);
-		doIt(evaluator, "0011 * 1010");
-		doIt(evaluator, "true * 1100");
-		doIt(evaluator, "-true");
+		BooleanSetEvaluator evaluator = new BooleanSetEvaluator();
+		BitSetEvaluationContext context = new BitSetEvaluationContext(4);
+		doIt(evaluator, "0011 * 1010", context);
+		doIt(evaluator, "true * 1100", context);
+		doIt(evaluator, "-false", context);
 	}
 
-	private static void doIt(BooleanSetEvaluator evaluator, String expression) {
-		BitSet result = evaluator.evaluate(expression);
-		System.out.println (expression+" = "+evaluator.toString(result));
+	private static void doIt(BooleanSetEvaluator evaluator, String expression, BitSetEvaluationContext context) {
+		// Evaluate the expression
+		BitSet result = evaluator.evaluate(expression, context);
+		// Converts the result to a String
+		StringBuilder builder = new StringBuilder(context.getBitSetLength());
+		for (int i = 0; i < context.getBitSetLength(); i++) {
+			builder.append(result.get(i)?'1':'0');
+		}
+		// Display the result
+		System.out.println (expression+" = "+builder.toString());
 	}
 }
