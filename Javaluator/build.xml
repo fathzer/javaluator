@@ -68,5 +68,8 @@
 		</copy>
 		<copy todir="${deploymentDir}/doc" file="relnotes.txt"/>
 		<copy todir="${deploymentDir}/doc/javadoc" file="license.html"/>
+		<copy todir="${deploymentDir}/doc/tutorial">
+			<fileset dir="demoSrc/examples"/>
+		</copy>
 	</target>
 </project>
