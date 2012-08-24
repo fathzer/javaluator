@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.HashSet;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
@@ -69,10 +70,42 @@ public class DeployJavaluator {
 	}
 
 	protected void doIt() throws FileSystemException {
-		doApplet();
-		doJavadoc();
-		doRelease();
+//		doApplet();
+//		doJavadoc();
+//		doRelease();
+		doTutorial(true);
 		System.out.println ("Finished :-)");
+	}
+	
+	private void doTutorial(boolean trace) throws FileSystemException {
+		System.out.println ("Copying tutorial sources");
+		// Copy sources
+		HashSet<String> copied = new HashSet<String>();
+		File[] localSources = src.getTutoSourcesFile().listFiles();
+		for (File localSource : localSources) {
+			String name = localSource.getName();
+			fsManager.resolveFile(WEB_ROOT+"/en/doc/tutorial/"+name, opts).copyFrom(fsManager.toFileObject(localSource), getDummySelector());
+			copied.add(name);
+			if (trace) System.out.println ("  "+name+" copied");
+		}
+		// Delete sources files than were not just copied
+		FileObject tuto = fsManager.resolveFile(WEB_ROOT+"/en/doc/tutorial", opts);
+		FileObject[] sources = tuto.findFiles(new FileSelector() {
+			@Override
+			public boolean traverseDescendents(FileSelectInfo arg0) throws Exception {
+				return true;
+			}
+			@Override
+			public boolean includeFile(FileSelectInfo info) throws Exception {
+				return info.getFile().getName().getBaseName().endsWith(".java");
+			}
+		});
+		for (FileObject source : sources) {
+			if (!copied.contains(source.getName().getBaseName())) {
+				source.delete();
+				if (trace) System.out.println ("  remote "+source.getName().getBaseName()+" deleted");
+			}
+		}
 	}
 
 	private void doRelease() throws FileSystemException {
