@@ -2,7 +2,7 @@ package examples;
 
 import net.astesana.javaluator.*;
 
-/** An example of how to restrict operators, functions and constant of an existing evaluator.
+/** An example of how to restrict operators, functions and constants of an existing evaluator.
  */
 public class Restricting {
 	public static void main(String[] args) {
