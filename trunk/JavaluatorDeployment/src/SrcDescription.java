@@ -7,6 +7,7 @@ public class SrcDescription {
 	private File releaseFile;
 	private File javaDocFile;
 	private File relNotesFile;
+	private File tutoSourcesFile;
 
 	public SrcDescription(File folder) {
 		String[] files = folder.list(new FilenameFilter() {
@@ -27,6 +28,7 @@ public class SrcDescription {
 		this.demoIdFile = new File(file, "demoId.txt");
 		this.javaDocFile = new File(folder, "doc/javadoc");
 		this.relNotesFile = new File(folder, "doc/relnotes.txt");
+		this.tutoSourcesFile = new File(folder, "doc/tutorial");
 	}
 	
 	public File getDemoJarFile() {
@@ -47,5 +49,12 @@ public class SrcDescription {
 
 	public File getJavaDocFile() {
 		return javaDocFile;
+	}
+
+	/**
+	 * @return the tutoSourcesFile
+	 */
+	public File getTutoSourcesFile() {
+		return tutoSourcesFile;
 	}
 }
