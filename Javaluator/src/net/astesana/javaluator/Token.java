@@ -15,8 +15,6 @@ public class Token {
 		OPERATOR,
 		LITERAL
 	}
-	static final Token OPEN_BRACKET = new Token(Kind.OPEN_BRACKET, null);
-	static final Token CLOSE_BRACKET = new Token(Kind.CLOSE_BRACKET, null);
 	static final Token FUNCTION_ARG_SEPARATOR = new Token(Kind.FUNCTION_SEPARATOR, null);
 	
 	private Kind kind;
@@ -33,6 +31,14 @@ public class Token {
 	static Token buildFunction(Function function) {
 		return new Token(Kind.FUNCTION, function);
 	}
+	
+	static Token buildOpenToken(BracketPair pair) {
+		return new Token(Kind.OPEN_BRACKET, pair);
+	}
+
+	static Token buildCloseToken(BracketPair pair) {
+		return new Token(Kind.CLOSE_BRACKET, pair);
+	}
 
 	private Token(Kind kind, Object content) {
 		super();
@@ -43,6 +49,10 @@ public class Token {
 		this.content = content;
 	}
 	
+	BracketPair getBrackets() {
+		return (BracketPair) this.content;
+	}
+
 	Operator getOperator() {
 		return (Operator) this.content;
 	}

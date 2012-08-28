@@ -94,7 +94,6 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** Returns a pseudo random number */
 	public final static Function RANDOM = new Function("random", 0);
 
-
 	/** The negate unary operator.*/
 	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
 	/** The substraction operator.*/
@@ -129,6 +128,8 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		result.addOperators(Arrays.asList(OPERATORS));
 		result.addFunctions(Arrays.asList(FUNCTIONS));
 		result.addConstants(Arrays.asList(CONSTANTS));
+		result.addFunctionBracket(BracketPair.PARENTHESES);
+		result.addExpressionBracket(BracketPair.PARENTHESES);
 		return result;
 	}
 	
@@ -160,7 +161,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		try {
 			return Double.parseDouble(literal);
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException(literal+" is not a number");
+			throw new IllegalArgumentException(literal+" is not a number");
 		}
 	}
 	

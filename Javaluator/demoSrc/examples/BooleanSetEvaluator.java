@@ -47,6 +47,8 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		PARAMETERS.add(NEGATE);
 		PARAMETERS.add(TRUE);
 		PARAMETERS.add(FALSE);
+		// Add the default parenthesis pair
+		PARAMETERS.addExpressionBracket(BracketPair.PARENTHESES);
 	}
 
 	/** Constructor.

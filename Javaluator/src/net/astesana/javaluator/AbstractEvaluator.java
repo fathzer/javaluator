@@ -18,14 +18,13 @@ import java.util.StringTokenizer;
  * @see <a href="../../../license.html">License information</a>
  */
 public abstract class AbstractEvaluator<T> {
-	private static final String CLOSE_BRACKET = ")";
-	private static final String OPEN_BRACKET = "(";
-	
 	private final String tokenDelimiters;
 	private final Map<String, Function> functions;
 	private final Map<String, List<Operator>> operators;
 	private final Map<String, Constant> constants;
 	private final String functionArgumentSeparator;
+	private final Map<String, BracketPair> functionBrackets;
+	private final Map<String, BracketPair> expressionBrackets;
 		
 	/** Constructor.
 	 * @param parameters The evaluator parameters.
@@ -34,11 +33,22 @@ public abstract class AbstractEvaluator<T> {
 	 */
 	protected AbstractEvaluator(Parameters parameters) {
 		//TODO if constants, operators, functions are duplicated => error
+		final StringBuilder tokenDelimitersBuilder = new StringBuilder();
 		this.functions = new HashMap<String, Function>();
 		this.operators = new HashMap<String, List<Operator>>();
 		this.constants = new HashMap<String, Constant>();
-		final StringBuilder tokenDelimitersBuilder = new StringBuilder();
-		tokenDelimitersBuilder.append(OPEN_BRACKET).append(CLOSE_BRACKET);
+		this.functionBrackets = new HashMap<String, BracketPair>();
+		for (final BracketPair pair : parameters.getFunctionBrackets()) {
+			functionBrackets.put(pair.getOpen(), pair);
+			functionBrackets.put(pair.getClose(), pair);
+			tokenDelimitersBuilder.append(pair.getOpen()).append(pair.getClose());
+		}
+		this.expressionBrackets = new HashMap<String, BracketPair>();
+		for (final BracketPair pair : parameters.getExpressionBrackets()) {
+			expressionBrackets.put(pair.getOpen(), pair);
+			expressionBrackets.put(pair.getClose(), pair);
+			tokenDelimitersBuilder.append(pair.getOpen()).append(pair.getClose());
+		}
 		if (operators!=null) {
 			for (Operator ope : parameters.getOperators()) {
 				tokenDelimitersBuilder.append(ope.getSymbol());
@@ -102,6 +112,7 @@ public abstract class AbstractEvaluator<T> {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void output(Stack<T> values, Token token, Object evaluationContext) {
 		if (token.isLiteral()) { // If the token is a literal, a constant, or a variable name
 			String literal = token.getLiteral();
@@ -215,7 +226,7 @@ public abstract class AbstractEvaluator<T> {
 	public T evaluate(String expression, Object evaluationContext) {
 		final Stack<T> values = new Stack<T>(); // values stack
 		final Stack<Token> stack = new Stack<Token>(); // operator stack
-		final Stack<Integer> previousValuesSize = new Stack<Integer>();
+		final Stack<Integer> previousValuesSize = functions.size()==0?null:new Stack<Integer>();
 		final Enumeration<String> tokens = tokenize(expression);
 		Token previous = null;
 		while (tokens.hasMoreElements()) {
@@ -226,8 +237,14 @@ public abstract class AbstractEvaluator<T> {
 			if (token.isOpenBracket()) {
 				// If the token is a left parenthesis, then push it onto the stack.
 				stack.push(token);
+				if (previous!=null && previous.isFunction()) {
+					if (!functionBrackets.containsKey(token.getBrackets().getOpen())) throw new IllegalArgumentException("Invalid bracket after function: "+trimmed);
+				} else {
+					if (!expressionBrackets.containsKey(token.getBrackets().getOpen())) throw new IllegalArgumentException("Invalid bracket in expression: "+trimmed);
+				}
 			} else if (token.isCloseBracket()) {
 				if (previous.isFunctionArgumentSeparator()) throw new IllegalArgumentException("argument is missing");
+				BracketPair brackets = token.getBrackets();
 				// If the token is a right parenthesis:
 				boolean openBracketFound = false;
 				// Until the token at the top of the stack is a left parenthesis,
@@ -235,8 +252,12 @@ public abstract class AbstractEvaluator<T> {
 				while (!stack.isEmpty()) {
 					Token sc = stack.pop();
 					if (sc.isOpenBracket()) {
-						openBracketFound = true;
-						break;
+						if (sc.getBrackets().equals(brackets)) {
+							openBracketFound = true;
+							break;
+						} else {
+							throw new IllegalArgumentException("Invalid parenthesis match "+sc.getBrackets().getOpen()+brackets.getClose());
+						}
 					} else {
 						output(values, sc, evaluationContext);
 					}
@@ -325,11 +346,7 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	private Token toToken(Token previous, String token) {
-		if (token.equals(OPEN_BRACKET)) {
-			return Token.OPEN_BRACKET;
-		} else if (token.equals(CLOSE_BRACKET)) {
-			return Token.CLOSE_BRACKET;
-		} else if (token.equals(functionArgumentSeparator)) {
+		if (token.equals(functionArgumentSeparator)) {
 			return Token.FUNCTION_ARG_SEPARATOR;
 		} else if (functions.containsKey(token)) {
 			return Token.buildFunction(functions.get(token));
@@ -338,8 +355,22 @@ public abstract class AbstractEvaluator<T> {
 			if (list.size()==1) return Token.buildOperator(list.get(0));
 			return Token.buildOperator(guessOperator(previous, list));
 		} else {
-			return Token.buildLiteral(token);
-		}
+			final BracketPair brackets = getBracketPair(token);
+			if (brackets!=null) {
+				if (brackets.getOpen().equals(token)) {
+					return Token.buildOpenToken(brackets);
+				} else {
+					return Token.buildCloseToken(brackets);
+				}
+			} else {
+				return Token.buildLiteral(token);
+			}
+		}	
+	}
+
+	private BracketPair getBracketPair(String token) {
+		BracketPair result = expressionBrackets.get(token);
+		return result==null ? functionBrackets.get(token) : result;
 	}
 	
 	/** Gets the operators supported by this evaluator.

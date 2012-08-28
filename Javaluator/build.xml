@@ -62,7 +62,7 @@
 	
 	<target name="doc" depends="freshDeploymentDir">
 		<javadoc header="${javaluatorVersion}" sourcepath="src"	overview="src/overview.html"
-			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator"/>
+			destdir="zip/doc" doctitle="Javaluator" windowtitle="Javaluator" source="1.5" />
 		<copy todir="${deploymentDir}/doc/javadoc">
 	    	<fileset dir="zip/doc"/>
 		</copy>
