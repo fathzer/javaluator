@@ -16,9 +16,11 @@ public class Parameters {
 	private final ArrayList<Function> functions;
 	private final ArrayList<Constant> constants;
 	private final Map<String, String> translations;
+	private final ArrayList<BracketPair> expressionBrackets;
+	private final ArrayList<BracketPair> functionBrackets;
 
 	/** Constructor.
-	 * <br>This method builds an instance with no operator, no function, no constant, no translation
+	 * <br>This method builds an instance with no operator, no function, no constant, no translation and no bracket
 	 * <br>Function argument separator is set to ','.
 	 */
 	public Parameters() {
@@ -26,6 +28,8 @@ public class Parameters {
 		this.functions = new ArrayList<Function>();
 		this.constants = new ArrayList<Constant>();
 		this.translations = new HashMap<String, String>();
+		this.expressionBrackets = new ArrayList<BracketPair>();
+		this.functionBrackets = new ArrayList<BracketPair>();
 		setFunctionArgumentSeparator(',');
 	}
 
@@ -48,6 +52,20 @@ public class Parameters {
 	 */
 	public Collection<Constant> getConstants() {
 		return this.constants;
+	}
+	
+	/** Gets the supported bracket pairs for expressions.
+	 * @return a Collection of bracket pairs.
+	 */
+	public Collection<BracketPair> getExpressionBrackets() {
+		return this.expressionBrackets;
+	}
+
+	/** Gets the supported bracket pairs for functions.
+	 * @return a Collection of bracket pairs.
+	 */
+	public Collection<BracketPair> getFunctionBrackets() {
+		return this.functionBrackets;
 	}
 	
 	/** Adds operators to the supported ones.
@@ -92,6 +110,34 @@ public class Parameters {
 		this.constants.add(constant);
 	}
 	
+	/** Adds a new bracket pair to the expression bracket list.
+	 * @param pair A bracket pair
+	 */
+	public void addExpressionBracket(BracketPair pair) {
+		this.expressionBrackets.add(pair);
+	}
+	
+	/** Adds bracket pairs to the expression bracket list.
+	 * @param brackets The brackets to be added.
+	 */
+	public void addExpressionBrackets(Collection<BracketPair> brackets) {
+		this.expressionBrackets.addAll(brackets);
+	}
+	
+	/** Adds a new bracket pair to the function bracket list.
+	 * @param pair A bracket pair
+	 */
+	public void addFunctionBracket(BracketPair pair) {
+		this.functionBrackets.add(pair);
+	}
+
+	/** Adds bracket pairs to the function bracket list.
+	 * @param brackets The brackets to be added.
+	 */
+	public void addFunctionBrackets(Collection<BracketPair> brackets) {
+		this.functionBrackets.addAll(brackets);
+	}
+
 	/** Sets the translated term for a function.
 	 * <br>Using this method, you can localize the names of some built-in functions. For instance,
 	 * for french people,you can use this method to use "somme" instead of "sum" with the SUM built-in
