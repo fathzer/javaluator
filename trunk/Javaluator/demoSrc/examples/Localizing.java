@@ -44,7 +44,7 @@ public class Localizing {
 		};
 		
 		// Test that all this stuff is ok
-		String expression = "3 000 +moyenne( 3,;somme(1,5 ; 7 ; -3,5))";
+		String expression = "3 000 +moyenne(3 ; somme(1,5 ; 7 ; -3,5))";
 		System.out.println (expression+" = "+format.format(evaluator.evaluate(expression)));
 	}
 }
