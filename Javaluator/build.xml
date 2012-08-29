@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="build" name="Build script for Javaluator project">
-	<property name="javaluatorVersion" value="0.1"/>
+	<property name="javaluatorVersion" value="1.0.0"/>
 	<tstamp><format property="TODAY" pattern="yyyyMMddhhmm" locale="fr,FR"/></tstamp>
 	
 	<property name="releaseDir" value="javaluatorRelease"/>
