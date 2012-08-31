@@ -1,7 +1,9 @@
 package net.astesana.javaluator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** An abstract evaluator, able to evaluate infix expressions.
  * <br>Some standard evaluators are included in the library, you can define your own by subclassing this class.
@@ -192,18 +196,6 @@ public abstract class AbstractEvaluator<T> {
 	 */
 	protected abstract T toValue(String literal, Object evaluationContext);
 	
-	private Enumeration<String> tokenize(String expression) {
-		final StringTokenizer tokens = new StringTokenizer(expression, tokenDelimiters, true);
-		return new Enumeration<String>() {
-			public boolean hasMoreElements() {
-				return tokens.hasMoreElements();
-			}
-			public String nextElement() {
-				return tokens.nextToken();
-			}
-		};
-	}
-
 	/** Evaluates an expression.
 	 * @param expression The expression to evaluate.
 	 * @return the result of the evaluation.
@@ -327,7 +319,7 @@ public abstract class AbstractEvaluator<T> {
 				stack.push(token);
 			} else {
 				// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
-				if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can follow another literal");
+				if ((previous!=null) && previous.isLiteral()) throw new IllegalArgumentException("A literal can't follow another literal");
 				output(values, token, evaluationContext);
 			}
 			previous = token;
@@ -397,5 +389,64 @@ public abstract class AbstractEvaluator<T> {
 	 */
 	public Collection<Constant> getConstants() {
 		return this.constants.values();
+	}
+
+	private Enumeration<String> tokenize(String expression) {
+		//FIXME Use the fonctions below to fix the case of multiple characters operators
+		final StringTokenizer tokens = new StringTokenizer(expression, tokenDelimiters, true);
+		return new Enumeration<String>() {
+			public boolean hasMoreElements() {
+				return tokens.hasMoreElements();
+			}
+			public String nextElement() {
+				return tokens.nextToken();
+			}
+		};
+	}
+
+	private static Pattern delimitersToRegexp(String[] delimiters) {
+		// First, create a regular expression that match the union of the delimiters
+		// Be aware that, in case of delimiters containing others (example && and &),
+		// the longer may be before the shorter (&& should be before &) or the regexpr
+		// parser will recognize && as two &.
+		Arrays.sort(delimiters, new Comparator<String>() {
+			public int compare(String o1, String o2) {
+				return -o1.compareTo(o2);
+			}
+		});
+		// Build a string that will contain the regular expression
+		StringBuilder result = new StringBuilder();
+		result.append('(');
+		for (String delim : delimiters) { // For each delimiter
+			if (result.length()!=1) result.append('|'); // Add it to the union
+			for (int i=0;i<delim.length();i++) {
+				// Add an escape character if the character is a regexp reserved char
+				result.append('\\');
+				result.append(delim.charAt(i));
+			}
+		}
+		result.append(')');
+		return Pattern.compile(result.toString());
+	}
+
+	private static String[] tokenize(String string, Pattern p) {
+		List<String> res = new ArrayList<String>();
+		Matcher m = p.matcher(string);
+		int pos = 0;
+		while (m.find()) { // While there's a delimiter in the string
+			if (pos != m.start()) {
+				// If there's something between the current and the previous delimiter
+				// Add to the tokens list
+				res.add(string.substring(pos, m.start()));
+			}
+			res.add(m.group()); // add the delimiter
+			pos = m.end(); // Remember end of delimiter
+		}
+		if (pos != string.length()) {
+			// If it remains some characters in the string after last delimiter
+			res.add(string.substring(pos));
+		}
+		// Return the result
+		return res.toArray(new String[res.size()]);
 	}
 }
