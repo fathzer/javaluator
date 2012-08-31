@@ -25,7 +25,7 @@ public class Localizing {
 		// Create a French number formatter
 		final DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.FRENCH);
 		format.setGroupingUsed(true);
-		// Create a new DoubleEvaluator that support the translations and the French decimal separator
+		// Create a new DoubleEvaluator that supports the translations and the French decimal separator
 		DoubleEvaluator evaluator = new DoubleEvaluator(params) {
 			@Override
 			protected Double toValue(String literal, Object evaluationContext) {

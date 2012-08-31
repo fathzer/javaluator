@@ -28,8 +28,11 @@ public class Operator {
 	 * <br>The precedence is the priority of the operator. An operator with an higher precedence will be executed before an operator with a lower precedence.
 	 * Example : In "<i>1+3*4</i>" * has a higher precedence than +, so the expression is interpreted as 1+(3*4).
 	 * @throw IllegalArgumentException if operandCount if not 1 or 2 or if associativity is none
+	 * @throw NullPointerException if symbol or associativity are null
 	 */
 	public Operator(String symbol, int operandCount, Associativity associativity, int precedence) {
+		if (symbol==null || associativity==null) throw new NullPointerException();
+		if (symbol.length()==0) throw new IllegalArgumentException("Operator symbol can't be null");
 		if ((operandCount<1) || (operandCount>2)) throw new IllegalArgumentException("Only unary and binary operators are supported");
 		if (Associativity.NONE.equals(associativity)) throw new IllegalArgumentException("None associativity operators are not supported");
 		this.symbol = symbol;
