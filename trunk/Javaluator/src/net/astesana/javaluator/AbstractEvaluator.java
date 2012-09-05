@@ -387,16 +387,13 @@ public abstract class AbstractEvaluator<T> {
 		return this.constants.values();
 	}
 
-	public Iterator<String> tokenize(String expression) {
-//		final StringTokenizer tokens = new StringTokenizer(expression, tokenDelimiters, true);
+	/** Converts the evaluated expression into tokens.
+	 * <br>Example: The result for the expression "<i>-1+min(10,3)</i>" is an iterator on "-", "1", "+", "min", "(", "10", ",", "3", ")".
+	 * <br>By default, the operators symbols, the brackets and the function argument separator are used as delimiter in the string.
+	 * @param expression The expression that is evaluated
+	 * @return A string iterator.
+	 */
+	protected Iterator<String> tokenize(String expression) {
 		return tokenizer.tokenize(expression);
-//		return new Enumeration<String>() {
-//			public boolean hasMoreElements() {
-//				return tokens.hasMoreElements();
-//			}
-//			public String nextElement() {
-//				return tokens.nextToken();
-//			}
-//		};
 	}
 }
