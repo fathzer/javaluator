@@ -1,7 +1,12 @@
 x
+version 1.2.0 (??/09/2012)
+improvement
+	Adds protected method tokenize(String) in AbstractEvaluator. 
+
 version	1.1.0 (01/09/2012)
 improvement
 	Support for operators with length > 1 (example &&, ||, ==)
+
 version	1.0.0 (28/08/2012)
 improvement
 	This is the first Javaluator official release.
