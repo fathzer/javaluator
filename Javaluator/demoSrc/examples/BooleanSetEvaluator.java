@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 import net.astesana.javaluator.*;
 
-/** An example of how to implement an evaluator from scratch, working on something more complex than doubles.
+/** An example of how to implement an evaluator from scratch, working on something more complex 
+ * than doubles.
  * <br>This evaluator computes expressions that use boolean sets.
  * <br>A boolean set is a vector of booleans. A true is represented by a one, a false, by a zero.
  * For instance "01" means {false, true}
@@ -36,7 +37,7 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		}
 	}
 
-	/** The evalaluator's parameters.*/
+	/** The evaluator's parameters.*/
 	private static final Parameters PARAMETERS;
 	static {
 		// Create the evaluator's parameters
