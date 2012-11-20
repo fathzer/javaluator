@@ -95,7 +95,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public final static Function RANDOM = new Function("random", 0);
 
 	/** The negate unary operator.*/
-	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
+	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 5);
 	/** The substraction operator.*/
 	public final static Operator MINUS = new Operator("-", 2, Operator.Associativity.LEFT, 1);
 	/** The addition operator.*/
