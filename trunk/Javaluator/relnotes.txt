@@ -1,7 +1,9 @@
 x
-version 1.2.0 (??/09/2012)
+version 1.2.0 (20/11/2012)
 improvement
-	Adds protected method tokenize(String) in AbstractEvaluator. 
+	Adds protected method tokenize(String) in AbstractEvaluator.
+fix
+	Fixes precedence of unary minus and exponentiation operators in DoubleEvaluator. Previously it returned -4 when evaluating -2^2, where bash shell (for example) returns 4.  
 
 version	1.1.0 (01/09/2012)
 improvement
