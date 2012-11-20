@@ -70,9 +70,9 @@ public class DeployJavaluator {
 	}
 
 	protected void doIt() throws FileSystemException {
-//		doApplet();
-//		doJavadoc();
-//		doRelease();
+		doApplet();
+		doJavadoc();
+		doRelease();
 		doTutorial(true);
 		System.out.println ("Finished :-)");
 	}
