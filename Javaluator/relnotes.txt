@@ -1,5 +1,11 @@
 x
-version 1.2.0 (20/11/2012)
+version	1.2.1 (22/11/2012)
+improvement
+	Adds getDefaultParameters(Style) method to DoubleEvaluator. When passing Style.EXCEL_LIKE, to the DoubleEvaluator constructor, -2^2 is interpreted as 4, like in Excel or Bash scripts.
+fix
+	Revert the precedence of unary minus and exponentiation operators in DoubleEvaluator to the standard one, where -2^2=-4.  
+
+version	1.2.0 (20/11/2012)
 improvement
 	Adds protected method tokenize(String) in AbstractEvaluator.
 fix

@@ -3,16 +3,23 @@ package net.astesana.javaluator.junit;
 import static org.junit.Assert.*;
 
 import net.astesana.javaluator.DoubleEvaluator;
+import net.astesana.javaluator.DoubleEvaluator.Style;
 import net.astesana.javaluator.StaticVariableSet;
 
 import org.junit.Test;
 
 public class DoubleEvaluatorTest {
 	private static DoubleEvaluator evaluator = new DoubleEvaluator();
+	
+	@Test
+	public void excelLike() {
+		DoubleEvaluator excelLike = new DoubleEvaluator(DoubleEvaluator.getDefaultParameters(Style.EXCEL));
+		assertEquals(4, excelLike.evaluate("-2^2"), 0.001);
+	}
 
 	@Test
 	public void testResults() {
-		assertEquals(6, evaluator.evaluate("2+-2^2"),0.001);
+		assertEquals(-2, evaluator.evaluate("2+-2^2"),0.001);
 		assertEquals(2, evaluator.evaluate("6 / 3"),0.001);
 		assertEquals(Double.POSITIVE_INFINITY, evaluator.evaluate("2/0"),0.001);
 		assertEquals(2, evaluator.evaluate("7 % 2.5"),0.001);
@@ -20,7 +27,7 @@ public class DoubleEvaluatorTest {
 		assertEquals(1., evaluator.evaluate("1"), 0.001);
 		assertEquals(-3, evaluator.evaluate("1+-4"), 0.001);
 		assertEquals(2, evaluator.evaluate("3-1"), 0.001);
-		assertEquals(4, evaluator.evaluate("-2^2"),0.001);
+		assertEquals(-4, evaluator.evaluate("-2^2"),0.001);
 		
 		assertEquals(1, evaluator.evaluate("sin ( pi /2)"),0.001);
 		assertEquals(-1, evaluator.evaluate("cos(pi)"),0.001);
