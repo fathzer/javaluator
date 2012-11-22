@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="build" name="Build script for Javaluator project">
-	<property name="javaluatorVersion" value="1.2.0"/>
+	<property name="javaluatorVersion" value="1.2.1"/>
 	<tstamp><format property="TODAY" pattern="yyyyMMddhhmm" locale="fr,FR"/></tstamp>
 	
-	<property name="releaseDir" value="javaluatorRelease"/>
-	<property name="deploymentDir" value="deployment" />
+	<property name="junitPath" location="C:/Users/Jean-Marc/Documents/ApplisPortables/eclipse/plugins/org.junit_4.10.0.v4_10_0_v20120426-0900"/>
+	<property name="srcAJLib" location="../A-JLib/src"/>
 
+		<property name="releaseDir" value="javaluatorRelease"/>
+	<property name="deploymentDir" value="deployment" />
+	<property name="jUnitClasses" value="jUnitClasses" />
+	
 	<target name="freshDeploymentDir">
 		<delete dir="${deploymentDir}"/>
 		<mkdir dir="${deploymentDir}"/>
 	</target>
-	
+
 	<target name="build" depends="doc, demo">
-		<!-- Ensure the releaseDir and deploymentDir are fresh new ones. -->
+   		<!-- Ensure the releaseDir and deploymentDir are fresh new ones. -->
 		<delete dir="${releaseDir}"/>
 		<mkdir dir="${releaseDir}"/>
 		<!--copy todir="${releaseDir}">
 	    	<fileset dir="src" excludes="**/*.java"/>
 		</copy-->
 		<javac srcdir="src" destdir="${releaseDir}" source="1.5" target="1.5" encoding="ISO8859-1" includeAntRuntime="false" debug="false"/>
+		<antcall target="test"/>
 		<jar destfile="zip/Javaluator.jar">
 			<manifest>
 				<section name="net.astesana.javaluator">
@@ -39,8 +44,33 @@
 		<delete file="${versionFile}"/>
 		<delete dir="zip"/>
 	</target>
+	
+	
+	
+	<target name="test">
+	    <echo message="${releaseDir}"/> 
+	    <mkdir dir="${junitCLasses}" />
+	    <mkdir dir="jUnitReports" /> 
+		<javac srcdir="junit" classpath="${releaseDir};${junitPath}/junit.jar" destdir="${junitClasses}" source="1.5" target="1.5" encoding="ISO8859-1" includeAntRuntime="true" debug="false"/>
+	    	    
+	    <echo message="fakeTest"></echo>
+		<!-- That fucking ANT add some wrong class on the classpath, Unit fails looking for hamcrest libraries !!!
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement location="${releaseDir}" />
+				<pathelement location="${junitPath}/junit.jar" />
+				<pathelement location="${junitClasses}" />
+			</classpath>
+		    <formatter type="plain" />
+			<batchtest fork="yes" todir="jUnitReports">
+            	<fileset dir="${junitClasses}" includes="**/*.class" />
+        	</batchtest>
+		</junit>
+		-->
+		<delete dir="${junitCLasses}"/>
+		<delete dir="jUnitReports"/>
+	</target>
 		
-	<property name="srcAJLib" location="../A-JLib/src"/>
 	<property name="demo.dest" location="demo.build"/>
 	<target name="demo" depends="freshDeploymentDir">
 		<!-- Ensure the releaseDir is a fresh new one. -->

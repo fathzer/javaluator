@@ -43,6 +43,21 @@ import java.util.Iterator;
  * @see <a href="../../../license.html">License information</a>
  */
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
+	/** The order or operations (operator precedence) is not clearly defined, especially between the unary minus operator and exponentiation
+	 * operator (see <a href="http://en.wikipedia.org/wiki/Order_of_operations#Exceptions_to_the_standard">http://en.wikipedia.org/wiki/Order_of_operations</a>).
+	 * These constants define the operator precedence styles.
+	 */
+	public static enum Style {
+		/** The most commonly operator precedence, where the unary minus as a lower precedence than the exponentiation.
+		 * <br>With this style, used by Google, Wolfram alpha, and many others, -2^2=-4.
+		 */
+		STANDARD, 
+		/** The operator precedence used by Excel, or bash shell script language, where the unary minus as a higher precedence than the exponentiation.
+		 * <br>With this style, -2^2=4.
+		 */
+		EXCEL 
+	}
+	
 	/** A constant that represents pi (3.14159...) */
 	public final static Constant PI = new Constant("pi");
 	/** A constant that represents e (2.718281...) */
@@ -94,8 +109,10 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** Returns a pseudo random number */
 	public final static Function RANDOM = new Function("random", 0);
 
-	/** The negate unary operator.*/
-	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 5);
+	/** The negate unary operator in the standard operator precedence.*/
+	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
+	/** The negate unary operator in the Excel like operator precedence.*/
+	public final static Operator NEGATE_HIGH = new Operator("-", 1, Operator.Associativity.RIGHT, 5);
 	/** The substraction operator.*/
 	public final static Operator MINUS = new Operator("-", 2, Operator.Associativity.LEFT, 1);
 	/** The addition operator.*/
@@ -109,8 +126,10 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo operator</a>.*/
 	public final static Operator MODULO = new Operator("%", 2, Operator.Associativity.LEFT, 2);
 
-	/** The whole set of predefined operators */
+	/** The standard whole set of predefined operators */
 	private static final Operator[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
+	/** The excel like whole set of predefined operators */
+	private static final Operator[] OPERATORS_EXCEL = new Operator[]{NEGATE_HIGH, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
 	/** The whole set of predefined functions */
 	private static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, SINEH, COSINEH, TANGENTH, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS, RANDOM};
 	/** The whole set of predefined constants */
@@ -118,21 +137,31 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	
 	private static Parameters DEFAULT_PARAMETERS;
 	
+	/** Gets a copy of DoubleEvaluator standard default parameters.
+	 * <br>The returned parameters contains all the predefined operators, functions and constants.
+	 * <br>Each call to this method create a new instance of Parameters. 
+	 * @return a Paramaters instance
+	 * @see Style
+	 */
+	public static Parameters getDefaultParameters() {
+		return getDefaultParameters(Style.STANDARD);
+	}
+	
 	/** Gets a copy of DoubleEvaluator default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
 	 * <br>Each call to this method create a new instance of Parameters. 
 	 * @return a Paramaters instance
 	 */
-	public static Parameters getDefaultParameters() {
+	public static Parameters getDefaultParameters(Style style) {
 		Parameters result = new Parameters();
-		result.addOperators(Arrays.asList(OPERATORS));
+		result.addOperators(style==Style.STANDARD?Arrays.asList(OPERATORS):Arrays.asList(OPERATORS_EXCEL));
 		result.addFunctions(Arrays.asList(FUNCTIONS));
 		result.addConstants(Arrays.asList(CONSTANTS));
 		result.addFunctionBracket(BracketPair.PARENTHESES);
 		result.addExpressionBracket(BracketPair.PARENTHESES);
 		return result;
 	}
-	
+
 	private static Parameters getParameters() {
 		if (DEFAULT_PARAMETERS == null) {
 			DEFAULT_PARAMETERS = getDefaultParameters();
@@ -184,7 +213,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 */
 	@Override
 	protected Double evaluate(Operator operator, Iterator<Double> operands, Object evaluationContext) {
-		if (operator==NEGATE) {
+		if (operator==NEGATE || operator==NEGATE_HIGH) {
 			return -operands.next();
 		} else if (operator==MINUS) {
 			return operands.next() - operands.next();
