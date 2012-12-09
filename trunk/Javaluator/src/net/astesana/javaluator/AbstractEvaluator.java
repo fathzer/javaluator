@@ -231,6 +231,7 @@ public abstract class AbstractEvaluator<T> {
 					if (!expressionBrackets.containsKey(token.getBrackets().getOpen())) throw new IllegalArgumentException("Invalid bracket in expression: "+trimmed);
 				}
 			} else if (token.isCloseBracket()) {
+				if (previous==null) throw new IllegalArgumentException("expression can't start with a close bracket");
 				if (previous.isFunctionArgumentSeparator()) throw new IllegalArgumentException("argument is missing");
 				BracketPair brackets = token.getBrackets();
 				// If the token is a right parenthesis:
