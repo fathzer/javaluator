@@ -1,7 +1,10 @@
 package net.astesana.javaluator;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Locale;
 
 /** An evaluator that is able to evaluate arithmetic expressions on real numbers.
  * <br>Built-in operators:<ul>
@@ -136,6 +139,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
 	private static Parameters DEFAULT_PARAMETERS;
+	private static final NumberFormat FORMATTER = NumberFormat.getNumberInstance(Locale.US);
 	
 	/** Gets a copy of DoubleEvaluator standard default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
@@ -187,11 +191,10 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 
 	@Override
 	protected Double toValue(String literal, Object evaluationContext) {
-		try {
-			return Double.parseDouble(literal);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException(literal+" is not a number");
-		}
+		ParsePosition p = new ParsePosition(0);
+		Number result = FORMATTER.parse(literal, p);
+		if (p.getIndex()==0 || p.getIndex()!=literal.length()) throw new IllegalArgumentException(literal+" is not a number");
+		return result.doubleValue();
 	}
 	
 	/* (non-Javadoc)

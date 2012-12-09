@@ -116,4 +116,14 @@ public class DoubleEvaluatorTest {
 	public void testInvalidArgumentASin() {
 		evaluator.evaluate("asin(2)");
 	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testOnlyCloseBracket() {
+		evaluator.evaluate(")");
+	}
+
+	@Test (expected=IllegalArgumentException.class)
+	public void testDSuffixInLiteral() {
+		evaluator.evaluate("3d+4");
+	}
 }
