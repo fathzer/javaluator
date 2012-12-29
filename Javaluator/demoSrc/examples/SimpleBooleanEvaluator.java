@@ -55,7 +55,7 @@ public class SimpleBooleanEvaluator extends AbstractEvaluator<Boolean> {
 		SimpleBooleanEvaluator evaluator = new SimpleBooleanEvaluator();
 		String expression = "true && false";
 		System.out.println (expression+" = "+evaluator.evaluate(expression));
-		expression = "true && false";
+		expression = "true || false";
 		System.out.println (expression+" = "+evaluator.evaluate(expression));
 		expression = "!true";
 		System.out.println (expression+" = "+evaluator.evaluate(expression));
