@@ -126,4 +126,9 @@ public class DoubleEvaluatorTest {
 	public void testDSuffixInLiteral() {
 		evaluator.evaluate("3d+4");
 	}
+
+	@Test (expected=IllegalArgumentException.class)
+	public void testStartWithFunctionSeparator() {
+		evaluator.evaluate(",3");
+	}
 }
