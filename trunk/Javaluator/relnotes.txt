@@ -1,4 +1,8 @@
 x
+version	1.2.3 (02/02/2013)
+fix
+	Evaluate an expression that starts a function argument separator caused a NullPointerException.
+
 version	1.2.2 (09/12/2012)
 fix
 	Evaluate the expression ")" caused a NullPointerException.

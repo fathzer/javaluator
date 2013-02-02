@@ -265,6 +265,7 @@ public abstract class AbstractEvaluator<T> {
 					}
 				}
 			} else if (token.isFunctionArgumentSeparator()) {
+				if (previous==null) throw new IllegalArgumentException("expression can't start with a function argument separator");
 				// Verify that there was an argument before this separator
 				if (previous.isOpenBracket() || previous.isFunctionArgumentSeparator()) {
 					// The cases were operator miss an operand are detected elsewhere.
