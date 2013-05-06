@@ -206,7 +206,7 @@ public abstract class AbstractEvaluator<T> {
 	 * @param evaluationContext The context of the evaluation.
 	 * <br>This context is an object that can contain useful dynamic data, for example the values of the variables
 	 * used in the expression (Use an AbstractVariableSet to do that).<br>The context is not limited to variable values but
-	 * can be used for any dynamic information. A good example is the <a href="javaluator.sourceforge.net">BooleanSetEvaluator</a> one.
+	 * can be used for any dynamic information. A good example is the <a href="http://javaluator.sourceforge.net/en/doc/tutorial.php?chapter=creatingComplex">BooleanSetEvaluator</a> one.
 	 * @return the result of the evaluation.
 	 * @throws IllegalArgumentException if the expression is not correct.
 	 * @see AbstractVariableSet
