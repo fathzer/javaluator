@@ -24,7 +24,7 @@ public class SrcDescription {
 				return name.endsWith(".jar");
 			}
 		});
-		if (files.length==1) demoJarFile = new File (file, files[0]);
+		if ((files!=null) && (files.length==1)) demoJarFile = new File (file, files[0]);
 		this.demoIdFile = new File(file, "demoId.txt");
 		this.javaDocFile = new File(folder, "doc/javadoc");
 		this.relNotesFile = new File(folder, "doc/relnotes.txt");
