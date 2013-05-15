@@ -1,0 +1,3 @@
+Unable to define an unary operator at the right of its operand (example 4! "!" means factorial).
+Have a look at demoSrc/examples/Extending.java
+Evaluating 4!-2 results in a IllegalArgumentException.    
