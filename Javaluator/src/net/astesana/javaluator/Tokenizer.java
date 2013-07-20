@@ -58,11 +58,7 @@ public class Tokenizer {
 		result.append('(');
 		for (String delim : delimiters) { // For each delimiter
 			if (result.length()!=1) result.append('|'); // Add it to the union
-			for (int i=0;i<delim.length();i++) {
-				// Add an escape character if the character is a regexp reserved char
-				result.append('\\');
-				result.append(delim.charAt(i));
-			}
+				result.append("\\Q").append(delim).append("\\E"); // Quote the delimiter as it could contain some regexpr reserved characters
 		}
 		result.append(')');
 		return Pattern.compile(result.toString());
