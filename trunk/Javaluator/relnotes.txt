@@ -1,4 +1,8 @@
 x
+version	1.2.4 (20/07/2013)
+fix
+	Fixes java.util.regex.PatternSyntaxException while evaluating an expression with an evaluator that accepts, for instance, only "or" and "and" operators.
+
 version	1.2.3 (02/02/2013)
 fix
 	Evaluate an expression that starts a function argument separator caused a NullPointerException.

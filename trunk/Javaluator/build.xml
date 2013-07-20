@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="build" name="Build script for Javaluator project">
-	<property name="javaluatorVersion" value="1.2.3"/>
+	<property name="javaluatorVersion" value="1.2.4"/>
 	<tstamp><format property="TODAY" pattern="yyyyMMddhhmm" locale="fr,FR"/></tstamp>
 	
 	<property name="junitPath" location="C:/Users/Jean-Marc/Documents/ApplisPortables/eclipse/plugins/org.junit_4.10.0.v4_10_0_v20120426-0900"/>
