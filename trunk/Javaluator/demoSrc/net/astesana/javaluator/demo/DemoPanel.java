@@ -5,8 +5,6 @@ import javax.swing.JLabel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-import net.astesana.ajlib.swing.Utils;
-import net.astesana.ajlib.swing.widget.TextWidget;
 import net.astesana.javaluator.AbstractEvaluator;
 import net.astesana.javaluator.DoubleEvaluator;
 
@@ -17,6 +15,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import javax.swing.JTable;
+
+import com.fathzer.soft.ajlib.swing.Utils;
+import com.fathzer.soft.ajlib.swing.widget.TextWidget;
 
 @SuppressWarnings("serial")
 public class DemoPanel extends JPanel {
