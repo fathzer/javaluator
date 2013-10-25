@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.fathzer</groupId>
+  <artifactId>javaluator-parent</artifactId>
+  <version>2.0.0</version>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>javaluator</module>
+  	<module>javaluator-examples</module>
+  	<module>javaluator-demo</module>
+  </modules>
+  <properties>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+  </properties>
+  
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License v3 (LGPL-v3)</name>
+      <url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://svn.code.sf.net/p/javaluator/code/trunk</url>
+    <connection>http://svn.code.sf.net/p/javaluator/code/trunk</connection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>Fathzer</id>
+      <name>Jean-Marc Astesana</name>
+      <email>admin@fathzer.com</email>
+    </developer>
+  </developers>  
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.11</version>
+  		<scope>test</scope>
+  	</dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kohsuke</groupId>
+    	<artifactId>pgp-maven-plugin</artifactId>
+    	<version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+        	<!-- For obvious security reasons, keyFile and pass phrase are not provided,
+        	  they should be in file present in the user's home directory -->
+      		<secretkey>keyfile:${user.home}/fathzer_private_key.asc</secretkey>
+      		<passphrase>file:${user.home}/fathzer_key_pwd.txt</passphrase>
+    	</configuration>
+      </plugin>
+    
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

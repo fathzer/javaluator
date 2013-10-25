@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.fathzer</groupId>
+    <artifactId>javaluator-parent</artifactId>
+    <version>2.0.0</version>
+  </parent>
+  <artifactId>javaluator</artifactId>
+  <name>javaluator</name>
+  <description>Javaluator is a simple, but powerful, infix expression evaluator for Java.</description>
+  <url>http://javaluator.soft.fathzer.com</url>
+  
+  <build>
+    <plugins>
+      <plugin>
+      	<artifactId>maven-jar-plugin</artifactId>
+      	<version>2.4</version>
+      	<configuration>
+	        <excludes>
+	          <exclude>**/*.html</exclude>
+	        </excludes>
+	      	</configuration>
+      </plugin>
+      
+      <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-javadoc-plugin</artifactId>
+		<version>2.9</version>
+		<configuration>
+			<doencoding>UTF-8</doencoding>
+			<overview>${basedir}/src/overview.html</overview>
+			<header>${project.version}</header>
+			<footer>${project.version}</footer>
+		</configuration>
+		<executions>
+			<execution>
+				<id>javadoc_generation</id>
+				<phase>package</phase>
+				<goals>
+					<goal>jar</goal>
+				</goals>
+			</execution>
+		</executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
