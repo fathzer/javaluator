@@ -8,6 +8,7 @@
   	<module>javaluator</module>
   	<module>javaluator-examples</module>
   	<module>javaluator-demo</module>
+  	<module>javaluator-deploy</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
