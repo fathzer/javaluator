@@ -27,8 +27,8 @@ public class Operator {
 	 * @param precedence The <a href="http://en.wikipedia.org/wiki/Order_of_operations">precedence</a> of the operator.
 	 * <br>The precedence is the priority of the operator. An operator with an higher precedence will be executed before an operator with a lower precedence.
 	 * Example : In "<i>1+3*4</i>" * has a higher precedence than +, so the expression is interpreted as 1+(3*4).
-	 * @throw IllegalArgumentException if operandCount if not 1 or 2 or if associativity is none
-	 * @throw NullPointerException if symbol or associativity are null
+	 * @throws IllegalArgumentException if operandCount if not 1 or 2 or if associativity is none
+	 * @throws NullPointerException if symbol or associativity are null
 	 */
 	public Operator(String symbol, int operandCount, Associativity associativity, int precedence) {
 		if (symbol==null || associativity==null) throw new NullPointerException();

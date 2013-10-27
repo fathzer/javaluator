@@ -13,22 +13,45 @@
   <build>
     <plugins>
       <plugin>
-      	<artifactId>maven-jar-plugin</artifactId>
-      	<version>2.4</version>
-      	<configuration>
-	        <excludes>
-	          <exclude>**/*.html</exclude>
-	        </excludes>
-	      	</configuration>
+        <groupId>org.kohsuke</groupId>
+    	<artifactId>pgp-maven-plugin</artifactId>
+    	<version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+        	<!-- For obvious security reasons, keyFile and pass phrase are not provided,
+        	  they should be in file present in the user's home directory -->
+      		<secretkey>keyfile:${user.home}/fathzer_private_key.asc</secretkey>
+      		<passphrase>file:${user.home}/fathzer_key_pwd.txt</passphrase>
+    	</configuration>
       </plugin>
-      
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-javadoc-plugin</artifactId>
 		<version>2.9</version>
 		<configuration>
 			<doencoding>UTF-8</doencoding>
-			<overview>${basedir}/src/overview.html</overview>
+			<overview>${basedir}/overview.html</overview>
 			<header>${project.version}</header>
 			<footer>${project.version}</footer>
 		</configuration>
