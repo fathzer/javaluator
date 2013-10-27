@@ -25,9 +25,9 @@ public class AppletTask extends Task {
 	public TaskResult doIt(Parameters param) {
 		System.out.println ("Copying demo");
 		try {
-			// Get previous jar name
 			Scenario sc = JavaluatorScenario.INSTANCE;
 			final FileObject fDemo = sc.getFsManager().resolveFile(sc.getWebRoot()+"/site/demo", sc.getOpts());
+			// Get previous jar files
 			FileObject[] foundFiles = fDemo.findFiles(new FileSelector() {
 				@Override
 				public boolean traverseDescendents(FileSelectInfo info) throws Exception {
