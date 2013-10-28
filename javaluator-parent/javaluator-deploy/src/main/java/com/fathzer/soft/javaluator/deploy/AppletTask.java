@@ -23,6 +23,7 @@ public class AppletTask extends Task {
 
 	@Override
 	public TaskResult doIt(Parameters param) {
+		//FIXME Take the demo in the deployment directory
 		System.out.println ("Copying demo");
 		try {
 			Scenario sc = JavaluatorScenario.INSTANCE;
