@@ -21,6 +21,7 @@ import javax.swing.JCheckBox;
 
 import com.fathzer.soft.ajlib.swing.widget.TextWidget;
 import com.fathzer.soft.ajlib.swing.widget.PasswordWidget;
+import com.fathzer.soft.ajlib.swing.worker.Worker;
 import com.fathzer.soft.deployer.Parameters;
 import com.fathzer.soft.deployer.Scenario;
 import com.fathzer.soft.deployer.Task;
@@ -31,6 +32,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import javax.swing.JProgressBar;
 
 public class DeployPanel extends JPanel {
 	private final class GuiListener implements PropertyChangeListener, ItemListener {
@@ -50,6 +53,7 @@ public class DeployPanel extends JPanel {
 	private static final String PASSWORD = "PASSWORD";
 	private static final String SAVE_PASSWORD = "SAVE_PASSWORD";
 	private static final String USER = "USER";
+	private static final String VERSION = "VERSION";
 
 	private JPanel topPanel;
 	private JPanel connectionPanel;
@@ -68,6 +72,9 @@ public class DeployPanel extends JPanel {
 
 	private GuiListener listener;
 	private Scenario scenario;
+	private JPanel centerPanel;
+	private JLabel progressLabel;
+	private JProgressBar progressBar;
 
 	/**
 	 * Create the panel.
@@ -77,7 +84,7 @@ public class DeployPanel extends JPanel {
 		listener = new GuiListener();
 		setLayout(new BorderLayout(0, 0));
 		add(getTopPanel(), BorderLayout.NORTH);
-		add(getLog(), BorderLayout.CENTER);
+		add(getCenterPanel(), BorderLayout.CENTER);
 	}
 	
 	public void saveState() {
@@ -89,6 +96,7 @@ public class DeployPanel extends JPanel {
 		} else {
 			prefs.remove(PASSWORD);
 		}
+		prefs.put(VERSION, getVersion().getText());
 	}
 
 	public void restoreState() {
@@ -98,6 +106,7 @@ public class DeployPanel extends JPanel {
 		if (getSavePassword().isSelected()) {
 			getPassword().setText(prefs.get(PASSWORD, EMPTY));
 		}
+		getVersion().setText(prefs.get(VERSION, EMPTY));
 	}
 
 	private void updateGoButton() {
@@ -288,20 +297,79 @@ public class DeployPanel extends JPanel {
 			go.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					go.setEnabled(false);
-					log.setText("");
-					//TODO Implement this in a Worker thread
-					scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
-					Parameters params = new Parameters(getVersion().getText());
-					for (int i = 0; i < scenario.getTasks().size(); i++) {
-						if (taskBoxes.get(i).isSelected()) scenario.getTasks().get(i).doIt(params);
-					}
-					scenario.close();
-					log.append("done");
-					go.setEnabled(true);
+					getLog().setText("");
+					getProgressBar().setVisible(true);
+					getProgressBar().setIndeterminate(true);
+					Worker<Void, Void> worker = new Worker<Void, Void>() {
+						@Override
+						protected Void doProcessing() throws Exception {
+							scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
+							Parameters params = new Parameters(getVersion().getText());
+							for (int i = 0; i < scenario.getTasks().size(); i++) {
+								if (taskBoxes.get(i).isSelected()) {
+									System.out.println ("Running task "+i);
+									scenario.getTasks().get(i).doIt(params);
+								}
+							}
+							return null;
+						}
+
+						@Override
+						protected void done() {
+							scenario.close();
+							getLog().append("done");
+							go.setEnabled(true);
+							getProgressBar().setVisible(false);
+							super.done();
+						}
+					};
+					worker.execute();
 				}
 			});
 			go.setEnabled(false);
 		}
 		return go;
+	}
+	private JPanel getCenterPanel() {
+		if (centerPanel == null) {
+			centerPanel = new JPanel();
+			GridBagLayout gbl_centerPanel = new GridBagLayout();
+			centerPanel.setLayout(gbl_centerPanel);
+			GridBagConstraints gbc_log = new GridBagConstraints();
+			gbc_log.weighty = 1.0;
+			gbc_log.weightx = 1.0;
+			gbc_log.insets = new Insets(0, 0, 5, 0);
+			gbc_log.anchor = GridBagConstraints.NORTH;
+			gbc_log.fill = GridBagConstraints.BOTH;
+			gbc_log.gridx = 0;
+			gbc_log.gridy = 2;
+			centerPanel.add(getLog(), gbc_log);
+			GridBagConstraints gbc_progressLabel = new GridBagConstraints();
+			gbc_progressLabel.anchor = GridBagConstraints.WEST;
+			gbc_progressLabel.insets = new Insets(0, 0, 5, 0);
+			gbc_progressLabel.gridx = 0;
+			gbc_progressLabel.gridy = 0;
+			centerPanel.add(getProgressLabel(), gbc_progressLabel);
+			GridBagConstraints gbc_progressBar = new GridBagConstraints();
+			gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
+			gbc_progressBar.weightx = 1.0;
+			gbc_progressBar.gridx = 0;
+			gbc_progressBar.gridy = 1;
+			centerPanel.add(getProgressBar(), gbc_progressBar);
+		}
+		return centerPanel;
+	}
+	private JLabel getProgressLabel() {
+		if (progressLabel == null) {
+			progressLabel = new JLabel("");
+		}
+		return progressLabel;
+	}
+	private JProgressBar getProgressBar() {
+		if (progressBar == null) {
+			progressBar = new JProgressBar();
+			progressBar.setVisible(false);
+		}
+		return progressBar;
 	}
 }
