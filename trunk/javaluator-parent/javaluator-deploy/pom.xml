@@ -44,12 +44,22 @@
 	            <phase>install</phase>
 	            <configuration>
 	              <target>
-					<zip destfile="../Javaluator-v${project.version}.zip">
+					<property name="releaseDir" value="${basedir}/deployment"/>
+					<delete dir="${releaseDir}"/>
+					<zip destfile="${releaseDir}/Javaluator-v${project.version}.zip">
 					    <zipfileset dir="${basedir}" includes="license.html"/>
 					    <zipfileset dir="../javaluator/target" includes="*.jar"/>
 					    <zipfileset dir="../javaluator-examples/target" includes="*.jar"/>
 					    <zipfileset dir="../javaluator-demo/target" includes="*.jar" excludes="original*.*"/>
 					</zip>
+					<unjar src="../javaluator/target/javaluator-${project.version}-javadoc.jar" dest="${releaseDir}/doc">
+						<patternset>
+							<exclude name="META-INF/*.*"/>
+							<exclude name="META-INF"/>
+						</patternset>
+					</unjar>
+					<copy file="relnotes.txt" todir="${releaseDir}"/>
+					<copy file="../javaluator-demo/target/javaluator-demo-${project.version}.jar" todir="${releaseDir}"/>
 	              </target>
 	            </configuration>
 	            <goals>
