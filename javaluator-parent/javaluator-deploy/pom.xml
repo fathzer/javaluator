@@ -16,7 +16,7 @@
   	<dependency>
   		<groupId>com.fathzer</groupId>
   		<artifactId>ajlib</artifactId>
-  		<version>0.2.1</version>
+  		<version>0.2.2</version>
   	</dependency>
   	<dependency>
   		<groupId>com.jcraft</groupId>
@@ -35,6 +35,30 @@
 		          <skip>true</skip>
 				</configuration>
           </plugin>
+          
+	      <plugin>
+	        <artifactId>maven-antrun-plugin</artifactId>
+	        <version>1.7</version>
+	        <executions>
+	          <execution>
+	            <phase>install</phase>
+	            <configuration>
+	              <target>
+					<zip destfile="../Javaluator-v${project.version}.zip">
+					    <zipfileset dir="${basedir}" includes="license.html"/>
+					    <zipfileset dir="../javaluator/target" includes="*.jar"/>
+					    <zipfileset dir="../javaluator-examples/target" includes="*.jar"/>
+					    <zipfileset dir="../javaluator-demo/target" includes="*.jar" excludes="original*.*"/>
+					</zip>
+	              </target>
+	            </configuration>
+	            <goals>
+	              <goal>run</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+
       </plugins>
   </build>
   
