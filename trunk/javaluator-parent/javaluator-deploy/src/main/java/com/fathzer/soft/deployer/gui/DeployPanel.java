@@ -3,15 +3,17 @@ package com.fathzer.soft.deployer.gui;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagLayout;
 
-import javax.swing.JTextArea;
 import javax.swing.JLabel;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -33,9 +35,91 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
 
 public class DeployPanel extends JPanel {
+	private final class DeployWorker extends Worker<Void, Progress> {
+		private TextPaneWriter writer = new TextPaneWriter(getLog());
+		private Task currentTask;
+
+		public void doCancel() {
+			super.cancel(false);
+			if (currentTask!=null) currentTask.cancel();
+		}
+
+		@Override
+		protected Void doProcessing() throws Exception {
+			scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
+			Parameters params = new Parameters(getVersion().getText());
+			int nb=0;
+			for (int i = 0; i < scenario.getTasks().size(); i++) {
+				if (taskBoxes.get(i).isSelected()) {
+					Task currentTask = scenario.getTasks().get(i);
+					publish (new Progress(nb, "Running \""+currentTask.getName()+"\" ...", Level.STD));
+					currentTask.setLogWriter(new Task.LogWriter() {
+						@Override
+						public void write(String message) {
+							publish(new Progress(-1, message, Level.STD));
+						}
+						@Override
+						public void warn(String message) {
+							publish(new Progress(-1, message, Level.WARNING));
+						}
+					});
+					try {
+						currentTask.doIt(params);
+					} catch (Throwable e) {
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						PrintWriter pw = new PrintWriter(out) {
+							@Override
+							public void print(String x) {
+								super.print("  "+x);
+							}
+						};
+						e.printStackTrace(pw);
+						pw.flush();
+						publish(new Progress(-1, "An error occurred\n"+out.toString(), Level.ERROR));
+					}
+					nb++;
+					publish(new Progress(nb, null, Level.STD));
+					if (isCancelled()) {
+						break;
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		protected void process(List<Progress> progresses) {
+			for (Progress p : progresses) {
+				if (p.taskId>=0) getProgressBar().setValue(p.taskId);
+				if (p.message!=null) {
+					if (p.taskId<0) writer.append("  ", Color.black);
+					Color c = Color.black;
+					if (p.level.equals(Level.WARNING)) {
+						c = new Color(200,100,0);
+					} else if (p.level.equals(Level.ERROR)) {
+						c = Color.red;
+					}
+					writer.append(p.message, c);
+					writer.append("\n", Color.black);
+				}
+			}
+		}
+
+		@Override
+		protected void done() {
+			scenario.close();
+			if (!isCancelled()) writer.append("Done", Color.black);
+			go.setVisible(true);
+			getProgressBar().setVisible(false);
+			super.done();
+		}
+	}
 	private final class GuiListener implements PropertyChangeListener, ItemListener {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -58,7 +142,7 @@ public class DeployPanel extends JPanel {
 	private JPanel topPanel;
 	private JPanel connectionPanel;
 	private JPanel actionsPanel;
-	private JTextArea log;
+	private JTextPane log;
 	private JLabel lblUser;
 	private TextWidget user;
 	private JLabel lblPassword;
@@ -69,12 +153,15 @@ public class DeployPanel extends JPanel {
 	private JPanel panel;
 	private List<JCheckBox> taskBoxes;
 	private JButton go;
-
-	private GuiListener listener;
-	private Scenario scenario;
+	private JButton cancel;
 	private JPanel centerPanel;
 	private JLabel progressLabel;
 	private JProgressBar progressBar;
+	private JScrollPane scrollPane;
+
+	private GuiListener listener;
+	private Scenario scenario;
+	private DeployWorker worker;
 
 	/**
 	 * Create the panel.
@@ -213,12 +300,20 @@ public class DeployPanel extends JPanel {
 			gbc_go.gridx = 1;
 			gbc_go.gridy = 1;
 			actionsPanel.add(getGo(), gbc_go);
+			GridBagConstraints gbc_cancel = new GridBagConstraints();
+			gbc_cancel.weightx = 1.0;
+			gbc_cancel.fill = GridBagConstraints.BOTH;
+			gbc_cancel.gridheight = 0;
+			gbc_cancel.gridx = 1;
+			gbc_cancel.gridy = 1;
+			actionsPanel.add(getCancel(), gbc_cancel);
 		}
 		return actionsPanel;
 	}
-	private JTextArea getLog() {
+	private JTextPane getLog() {
 		if (log == null) {
-			log = new JTextArea();
+			log = new JTextPane();
+			log.setEditable(false);
 		}
 		return log;
 	}
@@ -291,13 +386,18 @@ public class DeployPanel extends JPanel {
 		}
 		return panel;
 	}
+	private static enum Level {
+		STD, WARNING, ERROR
+	}
 	private static class Progress {
 		private int taskId;
 		private String message;
-		public Progress(int taskId, String message) {
+		private Level level;
+		public Progress(int taskId, String message, Level level) {
 			super();
 			this.taskId = taskId;
 			this.message = message;
+			this.level = level;
 		}
 	}
 	private JButton getGo() {
@@ -305,78 +405,51 @@ public class DeployPanel extends JPanel {
 			go = new JButton("Go !");
 			go.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					go.setEnabled(false);
-					getLog().setText("");
-					getProgressBar().setValue(0);
-					getProgressBar().setVisible(true);
-					int nb = 0;
-					for (JCheckBox box : taskBoxes) {
-						if (box.isSelected()) nb++;
+					String err = scenario.verify(new Parameters(getVersion().getText()));
+					if (err!=null) {
+						JOptionPane.showMessageDialog(DeployPanel.this, "Unable to start deployment:\n"+err, "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						go.setVisible(false);
+						getLog().setText("");
+						getProgressBar().setValue(0);
+						getProgressBar().setVisible(true);
+						int nb = 0;
+						for (JCheckBox box : taskBoxes) {
+							if (box.isSelected()) nb++;
+						}
+						getProgressBar().setMaximum(nb);
+						worker = new DeployWorker();
+						worker.execute();
 					}
-					getProgressBar().setMaximum(nb);
-					Worker<Void, Progress> worker = new Worker<Void, Progress>() {
-						@Override
-						protected Void doProcessing() throws Exception {
-							scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
-							Parameters params = new Parameters(getVersion().getText());
-							for (int i = 0; i < scenario.getTasks().size(); i++) {
-								if (taskBoxes.get(i).isSelected()) {
-									Task task = scenario.getTasks().get(i);
-									publish (new Progress(i, "Running \""+task.getName()));
-									task.setLogWriter(new Task.LogWriter() {
-										@Override
-										public void write(String string) {
-											publish(new Progress(-1, string));
-										}
-									});
-									task.doIt(params);
-									publish(new Progress(i+1, null));
-								}
-							}
-							return null;
-						}
-
-						@Override
-						protected void process(List<Progress> progresses) {
-							for (Progress p : progresses) {
-								if (p.taskId>=0) getProgressBar().setValue(p.taskId);
-								if (p.message!=null) {
-									getLog().append(p.message);
-									getLog().append("\n");
-								}
-							}
-						}
-
-						@Override
-						protected void done() {
-							scenario.close();
-							getLog().append("done");
-							go.setEnabled(true);
-							getProgressBar().setVisible(false);
-							super.done();
-						}
-					};
-					worker.execute();
 				}
 			});
 			go.setEnabled(false);
 		}
 		return go;
 	}
+	private JButton getCancel() {
+		if (cancel==null) {
+			cancel = new JButton("Cancel");
+			cancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (worker!=null) worker.doCancel();
+				}
+			});
+		}
+		return cancel;
+	}
 	private JPanel getCenterPanel() {
 		if (centerPanel == null) {
 			centerPanel = new JPanel();
 			GridBagLayout gbl_centerPanel = new GridBagLayout();
 			centerPanel.setLayout(gbl_centerPanel);
-			GridBagConstraints gbc_log = new GridBagConstraints();
-			gbc_log.weighty = 1.0;
-			gbc_log.weightx = 1.0;
-			gbc_log.insets = new Insets(0, 0, 5, 0);
-			gbc_log.anchor = GridBagConstraints.NORTH;
-			gbc_log.fill = GridBagConstraints.BOTH;
-			gbc_log.gridx = 0;
-			gbc_log.gridy = 2;
-			centerPanel.add(getLog(), gbc_log);
+			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+			gbc_scrollPane.weighty = 1.0;
+			gbc_scrollPane.weightx = 1.0;
+			gbc_scrollPane.fill = GridBagConstraints.BOTH;
+			gbc_scrollPane.gridx = 0;
+			gbc_scrollPane.gridy = 2;
+			centerPanel.add(getScrollPane(), gbc_scrollPane);
 			GridBagConstraints gbc_progressLabel = new GridBagConstraints();
 			gbc_progressLabel.anchor = GridBagConstraints.WEST;
 			gbc_progressLabel.insets = new Insets(0, 0, 5, 0);
@@ -384,6 +457,7 @@ public class DeployPanel extends JPanel {
 			gbc_progressLabel.gridy = 0;
 			centerPanel.add(getProgressLabel(), gbc_progressLabel);
 			GridBagConstraints gbc_progressBar = new GridBagConstraints();
+			gbc_progressBar.insets = new Insets(0, 0, 5, 0);
 			gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
 			gbc_progressBar.weightx = 1.0;
 			gbc_progressBar.gridx = 0;
@@ -404,5 +478,14 @@ public class DeployPanel extends JPanel {
 			progressBar.setVisible(false);
 		}
 		return progressBar;
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			JPanel noScrollPane = new JPanel(new BorderLayout());
+			noScrollPane.add(getLog(), BorderLayout.CENTER);
+			scrollPane.setViewportView(noScrollPane);
+		}
+		return scrollPane;
 	}
 }

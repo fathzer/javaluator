@@ -2,6 +2,8 @@ package com.fathzer.soft.deployer.gui;
 
 import java.awt.Container;
 
+import javax.swing.JMenuBar;
+
 import com.fathzer.soft.ajlib.swing.framework.Application;
 import com.fathzer.soft.deployer.Scenario;
 
@@ -16,6 +18,11 @@ public class Deployer extends Application {
 
 	public Scenario getScenario() {
 		return scenario;
+	}
+
+	@Override
+	protected JMenuBar buildMenuBar() {
+		return null;
 	}
 
 	@Override

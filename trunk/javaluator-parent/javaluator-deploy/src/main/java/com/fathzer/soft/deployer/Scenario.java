@@ -1,7 +1,7 @@
 package com.fathzer.soft.deployer;
 
 import java.io.File;
-import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.commons.vfs2.FileSelectInfo;
@@ -59,6 +59,14 @@ public abstract class Scenario {
 	}
 
 	public abstract List<Task> getTasks();
+	
+	public String verify(Parameters params) {
+		for (Task task : getTasks()) {
+			String message = task.verify(params);
+			if (message!=null) return MessageFormat.format("{0} said \"{1}\"", task.getName(), message);
+		}
+		return null;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#finalize()
