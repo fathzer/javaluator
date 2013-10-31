@@ -291,6 +291,15 @@ public class DeployPanel extends JPanel {
 		}
 		return panel;
 	}
+	private static class Progress {
+		private int taskId;
+		private String message;
+		public Progress(int taskId, String message) {
+			super();
+			this.taskId = taskId;
+			this.message = message;
+		}
+	}
 	private JButton getGo() {
 		if (go == null) {
 			go = new JButton("Go !");
@@ -298,20 +307,44 @@ public class DeployPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					go.setEnabled(false);
 					getLog().setText("");
+					getProgressBar().setValue(0);
 					getProgressBar().setVisible(true);
-					getProgressBar().setIndeterminate(true);
-					Worker<Void, Void> worker = new Worker<Void, Void>() {
+					int nb = 0;
+					for (JCheckBox box : taskBoxes) {
+						if (box.isSelected()) nb++;
+					}
+					getProgressBar().setMaximum(nb);
+					Worker<Void, Progress> worker = new Worker<Void, Progress>() {
 						@Override
 						protected Void doProcessing() throws Exception {
 							scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
 							Parameters params = new Parameters(getVersion().getText());
 							for (int i = 0; i < scenario.getTasks().size(); i++) {
 								if (taskBoxes.get(i).isSelected()) {
-									System.out.println ("Running task "+i);
-									scenario.getTasks().get(i).doIt(params);
+									Task task = scenario.getTasks().get(i);
+									publish (new Progress(i, "Running \""+task.getName()));
+									task.setLogWriter(new Task.LogWriter() {
+										@Override
+										public void write(String string) {
+											publish(new Progress(-1, string));
+										}
+									});
+									task.doIt(params);
+									publish(new Progress(i+1, null));
 								}
 							}
 							return null;
+						}
+
+						@Override
+						protected void process(List<Progress> progresses) {
+							for (Progress p : progresses) {
+								if (p.taskId>=0) getProgressBar().setValue(p.taskId);
+								if (p.message!=null) {
+									getLog().append(p.message);
+									getLog().append("\n");
+								}
+							}
 						}
 
 						@Override

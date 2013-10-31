@@ -13,7 +13,7 @@ public class ReleaseTask extends Task {
 	@Override
 	public TaskResult doIt(Parameters param) {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 		}
 		// TODO Auto-generated method stub
