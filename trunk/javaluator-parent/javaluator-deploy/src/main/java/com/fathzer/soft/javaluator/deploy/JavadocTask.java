@@ -12,8 +12,12 @@ public class JavadocTask extends Task {
 
 	@Override
 	public TaskResult doIt(Parameters param) {
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+		}
 		// TODO Auto-generated method stub
-		return new TaskResult();
+		return null;
 	}
 
 }

@@ -12,8 +12,15 @@ public class TutorialTask extends Task {
 
 	@Override
 	public TaskResult doIt(Parameters param) {
+		try {
+			log("starting");
+			Thread.sleep(1000);
+			log("second step");
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		// TODO Auto-generated method stub
-		return new TaskResult();
+		return null;
 	}
 
 }
