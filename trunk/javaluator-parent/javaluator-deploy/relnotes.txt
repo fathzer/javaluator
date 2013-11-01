@@ -1,5 +1,5 @@
 x
-version	2.0.0 (20/07/2013)
+version	2.0.0 (01/11/2013)
 improvement
 	Change package name to com.fathzer.soft.javaluator in order to release the package to Maven central. Because of this change, this version is not compatible with previous ones.
 	

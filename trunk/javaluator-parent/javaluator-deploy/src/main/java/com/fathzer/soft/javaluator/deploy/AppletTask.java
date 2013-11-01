@@ -80,6 +80,6 @@ public class AppletTask extends Task {
 	}
 
 	private File getAppletJar(Parameters param) {
-		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir()+"javaluator-demo-"+param.getVersion()+".jar");
+		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir(),"javaluator-demo-"+param.getVersion()+".jar");
 	}
 }
