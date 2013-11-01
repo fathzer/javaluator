@@ -4,11 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
-
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSelectInfo;
-import org.apache.commons.vfs2.FileSelector;
 
 import com.fathzer.soft.deployer.Parameters;
 import com.fathzer.soft.deployer.Task;
@@ -28,26 +25,7 @@ public class AppletTask extends Task {
 
 	@Override
 	public void doIt(Parameters param) throws Exception {
-		//FIXME Take the demo in the deployment directory
 		JavaluatorScenario sc = JavaluatorScenario.INSTANCE;
-		log ("Getting previous demo files ...");
-		final FileObject fDemo = sc.getFsManager().resolveFile(sc.getWebRoot()+"/site/demo", sc.getOpts());
-		// Get previous jar files
-		FileObject[] foundFiles = fDemo.findFiles(new FileSelector() {
-			@Override
-			public boolean traverseDescendents(FileSelectInfo info) throws Exception {
-				return info.getFile().equals(fDemo);
-			}
-			
-			@Override
-			public boolean includeFile(FileSelectInfo info) throws Exception {
-				return info.getFile().getName().getBaseName().endsWith(".jar");
-			}
-		});
-		if (foundFiles==null) foundFiles = new FileObject[0];
-		
-		if (isCancelled()) return;
-		
 		log ("Copying demo files ...");
 		String id = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 		// Copy the jar file
@@ -69,14 +47,7 @@ public class AppletTask extends Task {
 
 		// Erase the old jar files
 		log ("Erasing obsolete demo files ...");
-		for (FileObject fileObject : foundFiles) {
-			String baseName = fileObject.getName().getBaseName();
-			if (!baseName.equals(remoteName)) {
-				if (!fileObject.delete()) {
-					warn ("ALERT : unable to delete file "+fileObject);
-				}
-			}
-		}
+		sc.deleteWebDirContent("site/demo", ".jar", Collections.singleton(remoteName));
 	}
 
 	private File getAppletJar(Parameters param) {

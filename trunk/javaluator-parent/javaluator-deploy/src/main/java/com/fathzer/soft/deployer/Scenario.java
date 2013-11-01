@@ -1,13 +1,14 @@
 package com.fathzer.soft.deployer;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
-import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.VFS;
@@ -23,6 +24,8 @@ public abstract class Scenario {
 	private DefaultFileSystemManager fsManager;
 	private FileSystemOptions opts;
 	private FileSelector dummySelector;
+	
+	private transient boolean somethingReleased;
 
 	protected Scenario(String name, String releaseRoot, String webRoot) {
 		super();
@@ -34,16 +37,17 @@ public abstract class Scenario {
 			this.name = name;
 			this.releaseRoot = releaseRoot;
 			this.webRoot = webRoot;
-		} catch (FileSystemException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public void setAuthentication(String user, char[] password) {
+	public void open(String user, char[] password) {
+		somethingReleased = false;
 		try {
 			StaticUserAuthenticator auth = new StaticUserAuthenticator(null, user, new String(password));
 			DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
-		} catch (FileSystemException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -79,11 +83,11 @@ public abstract class Scenario {
 		super.finalize();
 	}
 	
-	public void copyToWeb(File file, String location) throws FileSystemException {
-		copyToWeb(file, location, file.getName());
+	public void copyToWeb(File file, String remoteLocation) throws IOException {
+		copyToWeb(file, remoteLocation, file.getName());
 	}
 	
-	public void copyToWeb(File file, String remoteLocation, String remoteName) throws FileSystemException {
+	public void copyToWeb(File file, String remoteLocation, String remoteName) throws IOException {
 		FileObject dest = fsManager.resolveFile(webRoot+"/"+remoteLocation+"/"+remoteName, opts);
 		boolean safeCopy = dest.getType().equals(FileType.FILE_OR_FOLDER) || dest.getType().equals(FileType.FOLDER);
 		if (safeCopy) {
@@ -100,7 +104,7 @@ public abstract class Scenario {
 		}
 	}
 	
-	private FileObject getAlternate(FileObject dest) throws FileSystemException {
+	private FileObject getAlternate(FileObject dest) throws IOException {
 		FileObject result;
 		for (int i = 0; i < Integer.MAX_VALUE; i++) {
 			result = fsManager.resolveFile(dest.getParent(), dest.getName()+"."+i);
@@ -109,12 +113,39 @@ public abstract class Scenario {
 		return null;
 	}
 	
-	public void copyToRelease(File file, String location) throws FileSystemException {
+	/** Deletes the content of a web site directory.
+	 * <br>The content of sub-directories is leaved untouched.
+	 * @param remoteLocation The directory path, relative to the web root path.
+	 * @param fileSuffix The suffix of the files to be deleted (null to delete all files).
+	 * @param excludes A set of file names to ignore (these files will not be deleted).
+	 * @throws IOException 
+	 */
+	public void deleteWebDirContent(String remoteLocation, final String fileSuffix, Set<String> excludes) throws IOException {
+		final FileObject tuto = fsManager.resolveFile(webRoot+"/"+remoteLocation, opts);
+		FileObject[] sources = tuto.findFiles(new FileSelector() {
+			@Override
+			public boolean traverseDescendents(FileSelectInfo info) throws Exception {
+				return info.getFile().equals(tuto);
+			}
+			@Override
+			public boolean includeFile(FileSelectInfo info) throws Exception {
+				return info.getFile().getName().getBaseName().endsWith(fileSuffix);
+			}
+		});
+		for (FileObject source : sources) {
+			if (!excludes.contains(source.getName().getBaseName())) {
+				source.delete();
+			}
+		}
+	}
+	
+	public void copyToRelease(File file, String location) throws IOException {
 		copyToRelease(file, location, file.getName());
 	}
 	
-	private void copyToRelease(File file, String remoteLocation, String remoteName) throws FileSystemException {
+	private void copyToRelease(File file, String remoteLocation, String remoteName) throws IOException {
 		fsManager.resolveFile(releaseRoot+"/"+remoteLocation+"/"+remoteName, opts).copyFrom(fsManager.toFileObject(file), getDummySelector());
+		this.somethingReleased = true;
 	}
 
 	private FileSelector getDummySelector() {
@@ -134,16 +165,19 @@ public abstract class Scenario {
 		return dummySelector;
 	}
 
-	public DefaultFileSystemManager getFsManager() {
+	protected DefaultFileSystemManager getFsManager() {
 		return fsManager;
 	}
 
-	public FileSystemOptions getOpts() {
+	protected FileSystemOptions getOpts() {
 		return opts;
 	}
 	
 	public void close() {
-		System.out.println ("Closing remote connection");
 		fsManager.close();
+	}
+
+	public boolean isFileReleased() {
+		return somethingReleased;
 	}
 }

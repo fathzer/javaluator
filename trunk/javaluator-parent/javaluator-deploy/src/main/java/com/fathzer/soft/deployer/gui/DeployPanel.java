@@ -24,6 +24,7 @@ import javax.swing.JCheckBox;
 import com.fathzer.soft.ajlib.swing.widget.TextWidget;
 import com.fathzer.soft.ajlib.swing.widget.PasswordWidget;
 import com.fathzer.soft.ajlib.swing.worker.Worker;
+import com.fathzer.soft.deployer.LogWriter;
 import com.fathzer.soft.deployer.Parameters;
 import com.fathzer.soft.deployer.Scenario;
 import com.fathzer.soft.deployer.Task;
@@ -52,42 +53,51 @@ public class DeployPanel extends JPanel {
 
 		@Override
 		protected Void doProcessing() throws Exception {
-			scenario.setAuthentication(getUser().getText(), getPassword().getPassword());
-			Parameters params = new Parameters(getVersion().getText());
-			int nb=0;
-			for (int i = 0; i < scenario.getTasks().size(); i++) {
-				if (taskBoxes.get(i).isSelected()) {
-					Task currentTask = scenario.getTasks().get(i);
-					publish (new Progress(nb, "Running \""+currentTask.getName()+"\" ...", Level.STD));
-					currentTask.setLogWriter(new Task.LogWriter() {
-						@Override
-						public void write(String message) {
-							publish(new Progress(-1, message, Level.STD));
+			LogWriter logWriter = new LogWriter() {
+				@Override
+				public void write(String message) {
+					publish(new Progress(-1, message, Level.STD));
+				}
+				@Override
+				public void warn(String message) {
+					publish(new Progress(-1, message, Level.WARNING));
+				}
+			};
+			scenario.open(getUser().getText(), getPassword().getPassword());
+			try {
+				Parameters params = new Parameters(getVersion().getText());
+				int nb=0;
+				for (int i = 0; i < scenario.getTasks().size(); i++) {
+					if (taskBoxes.get(i).isSelected()) {
+						Task currentTask = scenario.getTasks().get(i);
+						publish (new Progress(nb, "Running \""+currentTask.getName()+"\" ...", Level.STD));
+						currentTask.setLogWriter(logWriter);
+						try {
+							currentTask.doIt(params);
+						} catch (Throwable e) {
+							ByteArrayOutputStream out = new ByteArrayOutputStream();
+							PrintWriter pw = new PrintWriter(out) {
+								@Override
+								public void print(String x) {
+									super.print("  "+x);
+								}
+							};
+							e.printStackTrace(pw);
+							pw.flush();
+							publish(new Progress(-1, "An error occurred\n"+out.toString(), Level.ERROR));
 						}
-						@Override
-						public void warn(String message) {
-							publish(new Progress(-1, message, Level.WARNING));
+						nb++;
+						publish(new Progress(nb, null, Level.STD));
+						if (isCancelled()) {
+							break;
 						}
-					});
-					try {
-						currentTask.doIt(params);
-					} catch (Throwable e) {
-						ByteArrayOutputStream out = new ByteArrayOutputStream();
-						PrintWriter pw = new PrintWriter(out) {
-							@Override
-							public void print(String x) {
-								super.print("  "+x);
-							}
-						};
-						e.printStackTrace(pw);
-						pw.flush();
-						publish(new Progress(-1, "An error occurred\n"+out.toString(), Level.ERROR));
 					}
-					nb++;
-					publish(new Progress(nb, null, Level.STD));
-					if (isCancelled()) {
-						break;
-					}
+				}
+			} finally {
+				scenario.close();
+				if (!isCancelled()) writer.append("Done", Color.black);
+				if (scenario.isFileReleased()) {
+					publish(new Progress(-1, "\nDon't forget to give, in the sourceforge file browser, the linux, BSD, etc... attributes to the new released files", Level.WARNING));
 				}
 			}
 			return null;
@@ -113,8 +123,6 @@ public class DeployPanel extends JPanel {
 
 		@Override
 		protected void done() {
-			scenario.close();
-			if (!isCancelled()) writer.append("Done", Color.black);
 			go.setVisible(true);
 			getProgressBar().setVisible(false);
 			super.done();

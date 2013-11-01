@@ -6,31 +6,9 @@
     <version>2.0.0</version>
   </parent>
   <artifactId>javaluator</artifactId>
-  <name>javaluator</name>
-  <description>Javaluator is a simple, but powerful, infix expression evaluator for Java.</description>
-  <url>http://javaluator.soft.fathzer.com</url>
   
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.kohsuke</groupId>
-    	<artifactId>pgp-maven-plugin</artifactId>
-    	<version>1.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-        	<!-- For obvious security reasons, keyFile and pass phrase are not provided,
-        	  they should be in file present in the user's home directory -->
-      		<secretkey>keyfile:${user.home}/fathzer_private_key.asc</secretkey>
-      		<passphrase>file:${user.home}/fathzer_key_pwd.txt</passphrase>
-    	</configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>

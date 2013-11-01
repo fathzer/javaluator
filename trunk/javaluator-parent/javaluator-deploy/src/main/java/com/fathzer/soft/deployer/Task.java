@@ -1,11 +1,6 @@
 package com.fathzer.soft.deployer;
 
 public abstract class Task {
-	public interface LogWriter {
-		public void write(String message);
-		public void warn(String message);
-	}
-	
 	private String name;
 	private LogWriter writer;
 	private boolean cancelled;
