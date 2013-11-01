@@ -25,13 +25,13 @@ public class JavaluatorScenario extends Scenario {
 		return tasks;
 	}
 	
-	public String getDeploymentDir() {
-		return "deployment";
+	public File getDeploymentDir() {
+		return new File("deployment");
 	}
 
 	@Override
 	public String verify(Parameters params) {
-		File file = new File(getDeploymentDir());
+		File file = getDeploymentDir();
 		return file.exists() && file.isDirectory() ? super.verify(params) : "Unable to find directory "+file.getAbsolutePath();
 	}
 }

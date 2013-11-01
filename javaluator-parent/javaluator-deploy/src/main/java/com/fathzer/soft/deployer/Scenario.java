@@ -4,10 +4,12 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
@@ -82,10 +84,39 @@ public abstract class Scenario {
 	}
 	
 	public void copyToWeb(File file, String remoteLocation, String remoteName) throws FileSystemException {
-//		System.out.println ("copy "+file.getCanonicalPath()+" to "+webRoot+"/"+remoteLocation+"/"+remoteName);
-		fsManager.resolveFile(webRoot+"/"+remoteLocation+"/"+remoteName, opts).copyFrom(fsManager.toFileObject(file), getDummySelector());
+		FileObject dest = fsManager.resolveFile(webRoot+"/"+remoteLocation+"/"+remoteName, opts);
+		boolean safeCopy = dest.getType().equals(FileType.FILE_OR_FOLDER) || dest.getType().equals(FileType.FOLDER);
+		if (safeCopy) {
+			// If the file already exists and is a folder, then, do the copy in a temporary folder, and switch folders in order
+			// to prevent leaving the web site in an undetermined state for too long time
+			FileObject tmpTarget = getAlternate(dest);
+			tmpTarget.copyFrom(fsManager.toFileObject(file), getDummySelector());
+			FileObject tmpTarget2 = getAlternate(dest);
+			dest.moveTo(tmpTarget2);
+			tmpTarget.moveTo(dest);
+			tmpTarget2.delete(getDummySelector());
+		} else {
+			dest.copyFrom(fsManager.toFileObject(file), getDummySelector());
+		}
 	}
 	
+	private FileObject getAlternate(FileObject dest) throws FileSystemException {
+		FileObject result;
+		for (int i = 0; i < Integer.MAX_VALUE; i++) {
+			result = fsManager.resolveFile(dest.getParent(), dest.getName()+"."+i);
+			if (result.getType().equals(FileType.IMAGINARY)) return result;
+		}
+		return null;
+	}
+	
+	public void copyToRelease(File file, String location) throws FileSystemException {
+		copyToRelease(file, location, file.getName());
+	}
+	
+	private void copyToRelease(File file, String remoteLocation, String remoteName) throws FileSystemException {
+		fsManager.resolveFile(releaseRoot+"/"+remoteLocation+"/"+remoteName, opts).copyFrom(fsManager.toFileObject(file), getDummySelector());
+	}
+
 	private FileSelector getDummySelector() {
 		if (dummySelector==null) {
 			dummySelector = new FileSelector() {
