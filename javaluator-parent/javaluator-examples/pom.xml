@@ -37,6 +37,27 @@
 		    </execution>
 		  </executions>
 		</plugin>
-	  </plugins>
+
+      <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-javadoc-plugin</artifactId>
+		<version>2.9</version>
+		<configuration>
+			<doencoding>UTF-8</doencoding>
+			<overview>${basedir}/overview.html</overview>
+			<header>${project.version}</header>
+			<footer>${project.version}</footer>
+		</configuration>
+		<executions>
+			<execution>
+				<id>javadoc_generation</id>
+				<phase>package</phase>
+				<goals>
+					<goal>jar</goal>
+				</goals>
+			</execution>
+		</executions>
+      </plugin>
+		</plugins>
   </build>
 </project>

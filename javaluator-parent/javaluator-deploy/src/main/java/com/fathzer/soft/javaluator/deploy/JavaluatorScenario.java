@@ -17,7 +17,9 @@ public class JavaluatorScenario extends Scenario {
 	
 	private JavaluatorScenario() {
 		super("Deploy Javaluator", RELEASE_ROOT, WEB_ROOT);
-		tasks = Arrays.asList(new Task[] {new ReleaseTask(), new JavadocTask(), new TutorialTask(), new AppletTask()});
+		tasks = Arrays.asList(new Task[] {
+				new ReleaseTask(), new JavadocTask(), new TutorialTask(), new AppletTask()
+		});
 	}
 
 	@Override
@@ -33,5 +35,10 @@ public class JavaluatorScenario extends Scenario {
 	public String verify(Parameters params) {
 		File file = getDeploymentDir();
 		return file.exists() && file.isDirectory() ? super.verify(params) : "Unable to find directory "+file.getAbsolutePath();
+	}
+
+	@Override
+	public void close() {
+		super.close();
 	}
 }

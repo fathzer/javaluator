@@ -3,6 +3,11 @@
   <groupId>com.fathzer</groupId>
   <artifactId>javaluator-parent</artifactId>
   <version>2.0.0</version>
+
+  <name>javaluator</name>
+  <description>Javaluator is a simple, but powerful, infix expression evaluator for Java.</description>
+  <url>http://javaluator.fathzer.com</url>
+
   <packaging>pom</packaging>
   <modules>
   	<module>javaluator</module>
@@ -32,7 +37,21 @@
       <name>Jean-Marc Astesana</name>
       <email>admin@fathzer.com</email>
     </developer>
-  </developers>  
+  </developers>
+  
+  <distributionManagement>
+    <repository>
+      <id>ReleaseFathzer</id>
+      <name>Release fathzer.com</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>SnapshotFathzer</id>
+      <name>Snapshot fathzer.com</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
   
   <dependencies>
   	<dependency>
@@ -51,6 +70,25 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.kohsuke</groupId>
+        <artifactId>pgp-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+      	  <!-- For obvious security reasons, keyFile and pass phrase are not provided,
+      	    they should be in file present in the user's home directory -->
+    		<secretkey>keyfile:${user.home}/fathzer_private_key.asc</secretkey>
+    		<passphrase>file:${user.home}/fathzer_key_pwd.txt</passphrase>
         </configuration>
       </plugin>
     </plugins>
