@@ -7,8 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 
-import com.fathzer.soft.deployer.Parameters;
-import com.fathzer.soft.deployer.Task;
+import com.fathzer.soft.jdeployer.Parameters;
+import com.fathzer.soft.jdeployer.Task;
 
 public class AppletTask extends Task {
 
@@ -24,14 +24,13 @@ public class AppletTask extends Task {
 	}
 
 	@Override
-	public void doIt(Parameters param) throws Exception {
-		JavaluatorScenario sc = JavaluatorScenario.INSTANCE;
+	public void doIt(Parameters params) throws Exception {
 		log ("Copying demo files ...");
 		String id = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 		// Copy the jar file
-		File jarFile = getAppletJar(param);
+		File jarFile = getAppletJar(params);
 		String remoteName = "JavaluatorDemo"+id+".jar";
-		sc.copyToWeb(jarFile, "site/demo", remoteName);
+		params.getProcess().copyToWeb(jarFile, "site/demo", remoteName);
 		// Copy the demoId file
 		File idFile = new File("demoId.txt");
 		BufferedWriter out = new BufferedWriter(new FileWriter(idFile));
@@ -40,17 +39,17 @@ public class AppletTask extends Task {
 		} finally {
 			out.close();
 		}
-		sc.copyToWeb(idFile, "site/demo");
+		params.getProcess().copyToWeb(idFile, "site/demo");
 		idFile.delete();
 
 		if (isCancelled()) return;
 
 		// Erase the old jar files
 		log ("Erasing obsolete demo files ...");
-		sc.deleteWebDirContent("site/demo", ".jar", Collections.singleton(remoteName));
+		params.getProcess().deleteWebDirContent("site/demo", ".jar", Collections.singleton(remoteName));
 	}
 
-	private File getAppletJar(Parameters param) {
-		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir(),"javaluator-demo-"+param.getVersion()+".jar");
+	private File getAppletJar(Parameters params) {
+		return new File(params.getProcess().getLocalRoot(),"javaluator-demo-"+params.getVersion()+".jar");
 	}
 }
