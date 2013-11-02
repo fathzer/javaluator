@@ -2,8 +2,8 @@ package com.fathzer.soft.javaluator.deploy;
 
 import java.io.File;
 
-import com.fathzer.soft.deployer.Parameters;
-import com.fathzer.soft.deployer.Task;
+import com.fathzer.soft.jdeployer.Parameters;
+import com.fathzer.soft.jdeployer.Task;
 
 public class ReleaseTask extends Task {
 
@@ -21,10 +21,10 @@ public class ReleaseTask extends Task {
 	@Override
 	public void doIt(Parameters params) throws Exception {
 		log ("Uploading release to SourceForge");
-		JavaluatorScenario.INSTANCE.copyToRelease(getReleaseFile(params), ".");
+		params.getProcess().copyToRelease(getReleaseFile(params), ".");
 	}
 
 	private File getReleaseFile(Parameters params) {
-		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir(),"Javaluator-v"+params.getVersion()+".zip");
+		return new File(params.getProcess().getLocalRoot(),"Javaluator-v"+params.getVersion()+".zip");
 	}
 }

@@ -2,8 +2,8 @@ package com.fathzer.soft.javaluator.deploy;
 
 import java.io.File;
 
-import com.fathzer.soft.deployer.Parameters;
-import com.fathzer.soft.deployer.Task;
+import com.fathzer.soft.jdeployer.Parameters;
+import com.fathzer.soft.jdeployer.Task;
 
 public class JavadocTask extends Task {
 
@@ -13,9 +13,9 @@ public class JavadocTask extends Task {
 
 	@Override
 	public String verify(Parameters params) {
-		File file = getRelNotesFile();
+		File file = getRelNotesFile(params);
 		if (!file.exists() || !file.isFile()) return "Unable to find file "+file.getAbsolutePath();
-		file = getJavaDocDirectory();
+		file = getJavaDocDirectory(params);
 		if (!file.exists() || !file.isDirectory()) return "Unable to find directory "+file.getAbsolutePath();
 		return super.verify(params);
 	}
@@ -24,17 +24,17 @@ public class JavadocTask extends Task {
 	public void doIt(Parameters params) throws Exception {
 		log ("Copying releaseNotes");
 		// Relnotes
-		JavaluatorScenario.INSTANCE.copyToWeb(getRelNotesFile(), "/en/doc");
+		params.getProcess().copyToWeb(getRelNotesFile(params), "/en/doc");
 
 		// Copy javadoc
 		log ("Copying javadoc");
-		JavaluatorScenario.INSTANCE.copyToWeb(getJavaDocDirectory(), "/en/doc", "javadoc");
+		params.getProcess().copyToWeb(getJavaDocDirectory(params), "/en/doc", "javadoc");
 	}
 	
-	private File getRelNotesFile() {
-		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir(), "relnotes.txt");
+	private File getRelNotesFile(Parameters params) {
+		return new File(params.getProcess().getLocalRoot(), "relnotes.txt");
 	}
-	private File getJavaDocDirectory() {
-		return new File(JavaluatorScenario.INSTANCE.getDeploymentDir(), "doc");
+	private File getJavaDocDirectory(Parameters params) {
+		return new File(params.getProcess().getLocalRoot(), "doc");
 	}
 }
