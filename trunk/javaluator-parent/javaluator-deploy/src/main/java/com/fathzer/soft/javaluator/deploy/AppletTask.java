@@ -42,7 +42,7 @@ public class AppletTask extends Task {
 		context.copyToWeb(idFile, "site/demo");
 		idFile.delete();
 
-		if (isCancelled()) return;
+		if (context.isCancelled()) return;
 
 		// Erase the old jar files
 		context.log ("Erasing obsolete demo files ...");
