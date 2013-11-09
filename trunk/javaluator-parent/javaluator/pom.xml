@@ -1,49 +1,66 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.fathzer</groupId>
-    <artifactId>javaluator-parent</artifactId>
-    <version>2.0.0</version>
-  </parent>
-  <artifactId>javaluator</artifactId>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.2.1</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fathzer</groupId>
+		<artifactId>javaluator-parent</artifactId>
+		<version>2.0.0</version>
+	</parent>
+	<artifactId>javaluator</artifactId>
 
-      <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-javadoc-plugin</artifactId>
-		<version>2.9</version>
-		<configuration>
-			<doencoding>UTF-8</doencoding>
-			<overview>${basedir}/overview.html</overview>
-			<header>${project.version}</header>
-			<footer>${project.version}</footer>
-		</configuration>
-		<executions>
-			<execution>
-				<id>javadoc_generation</id>
-				<phase>package</phase>
-				<goals>
-					<goal>jar</goal>
-				</goals>
-			</execution>
-		</executions>
-      </plugin>
-    </plugins>
-  </build>
-  
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<doencoding>UTF-8</doencoding>
+					<overview>${basedir}/overview.html</overview>
+					<header>${project.version}</header>
+					<footer>${project.version}</footer>
+				</configuration>
+				<executions>
+					<execution>
+						<id>javadoc_generation</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<id>sonar</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sonar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
 </project>
