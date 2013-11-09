@@ -17,6 +17,7 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <sonar.language>java</sonar.language>
   </properties>
   
   <licenses>

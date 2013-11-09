@@ -62,72 +62,72 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	}
 	
 	/** A constant that represents pi (3.14159...) */
-	public final static Constant PI = new Constant("pi");
+	public static final Constant PI = new Constant("pi");
 	/** A constant that represents e (2.718281...) */
-	public final static Constant E = new Constant("e");
+	public static final Constant E = new Constant("e");
 	
 	/** Returns the smallest integer >= argument */
-	public final static Function CEIL = new Function("ceil", 1);
+	public static final Function CEIL = new Function("ceil", 1);
 	/** Returns the largest integer <= argument */
-	public final static Function FLOOR = new Function("floor", 1);
+	public static final Function FLOOR = new Function("floor", 1);
 	/** Returns the closest integer of a number */
-	public final static Function ROUND = new Function("round", 1);
+	public static final Function ROUND = new Function("round", 1);
 	/** Returns the absolute value of a number */
-	public final static Function ABS = new Function("abs", 1);
+	public static final Function ABS = new Function("abs", 1);
 
 	/** Returns the trigonometric sine of an angle. The angle is expressed in radian.*/
-	public final static Function SINE = new Function("sin", 1);
+	public static final Function SINE = new Function("sin", 1);
 	/** Returns the trigonometric cosine of an angle. The angle is expressed in radian.*/
-	public final static Function COSINE = new Function("cos", 1);
+	public static final Function COSINE = new Function("cos", 1);
 	/** Returns the trigonometric tangent of an angle. The angle is expressed in radian.*/
-	public final static Function TANGENT = new Function("tan", 1);
+	public static final Function TANGENT = new Function("tan", 1);
 	/** Returns the trigonometric arc-cosine of an angle. The angle is expressed in radian.*/
-	public final static Function ACOSINE = new Function("acos", 1);
+	public static final Function ACOSINE = new Function("acos", 1);
 	/** Returns the trigonometric arc-sine of an angle. The angle is expressed in radian.*/
-	public final static Function ASINE = new Function("asin", 1);
+	public static final Function ASINE = new Function("asin", 1);
 	/** Returns the trigonometric arc-tangent of an angle. The angle is expressed in radian.*/
-	public final static Function ATAN = new Function("atan", 1);
+	public static final Function ATAN = new Function("atan", 1);
 
 	/** Returns the hyperbolic sine of a number.*/
-	public final static Function SINEH = new Function("sinh", 1);
+	public static final Function SINEH = new Function("sinh", 1);
 	/** Returns the hyperbolic cosine of a number.*/
-	public final static Function COSINEH = new Function("cosh", 1);
+	public static final Function COSINEH = new Function("cosh", 1);
 	/** Returns the hyperbolic tangent of a number.*/
-	public final static Function TANGENTH = new Function("tanh", 1);
+	public static final Function TANGENTH = new Function("tanh", 1);
 
 	/** Returns the minimum of n numbers (n>=1) */
-	public final static Function MIN = new Function("min", 1, Integer.MAX_VALUE);
+	public static final Function MIN = new Function("min", 1, Integer.MAX_VALUE);
 	/** Returns the maximum of n numbers (n>=1) */
-	public final static Function MAX = new Function("max", 1, Integer.MAX_VALUE);
+	public static final Function MAX = new Function("max", 1, Integer.MAX_VALUE);
 	/** Returns the sum of n numbers (n>=1) */
-	public final static Function SUM = new Function("sum", 1, Integer.MAX_VALUE);
+	public static final Function SUM = new Function("sum", 1, Integer.MAX_VALUE);
 	/** Returns the average of n numbers (n>=1) */
-	public final static Function AVERAGE = new Function("avg", 1, Integer.MAX_VALUE);
+	public static final Function AVERAGE = new Function("avg", 1, Integer.MAX_VALUE);
 
 	/** Returns the natural logarithm of a number */
-	public final static Function LN = new Function("ln", 1);
+	public static final Function LN = new Function("ln", 1);
 	/** Returns the decimal logarithm of a number */
-	public final static Function LOG = new Function("log", 1);
+	public static final Function LOG = new Function("log", 1);
 	
 	/** Returns a pseudo random number */
-	public final static Function RANDOM = new Function("random", 0);
+	public static final Function RANDOM = new Function("random", 0);
 
 	/** The negate unary operator in the standard operator precedence.*/
-	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
+	public static final Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
 	/** The negate unary operator in the Excel like operator precedence.*/
-	public final static Operator NEGATE_HIGH = new Operator("-", 1, Operator.Associativity.RIGHT, 5);
+	public static final Operator NEGATE_HIGH = new Operator("-", 1, Operator.Associativity.RIGHT, 5);
 	/** The substraction operator.*/
-	public final static Operator MINUS = new Operator("-", 2, Operator.Associativity.LEFT, 1);
+	public static final Operator MINUS = new Operator("-", 2, Operator.Associativity.LEFT, 1);
 	/** The addition operator.*/
-	public final static Operator PLUS = new Operator("+", 2, Operator.Associativity.LEFT, 1);
+	public static final Operator PLUS = new Operator("+", 2, Operator.Associativity.LEFT, 1);
 	/** The multiplication operator.*/
-	public final static Operator MULTIPLY = new Operator("*", 2, Operator.Associativity.LEFT, 2);
+	public static final Operator MULTIPLY = new Operator("*", 2, Operator.Associativity.LEFT, 2);
 	/** The division operator.*/
-	public final static Operator DIVIDE = new Operator("/", 2, Operator.Associativity.LEFT, 2);
+	public static final Operator DIVIDE = new Operator("/", 2, Operator.Associativity.LEFT, 2);
 	/** The exponentiation operator.*/
-	public final static Operator EXPONENT = new Operator("^", 2, Operator.Associativity.LEFT, 4);
+	public static final Operator EXPONENT = new Operator("^", 2, Operator.Associativity.LEFT, 4);
 	/** The <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo operator</a>.*/
-	public final static Operator MODULO = new Operator("%", 2, Operator.Associativity.LEFT, 2);
+	public static final Operator MODULO = new Operator("%", 2, Operator.Associativity.LEFT, 2);
 
 	/** The standard whole set of predefined operators */
 	private static final Operator[] OPERATORS = new Operator[]{NEGATE, MINUS, PLUS, MULTIPLY, DIVIDE, EXPONENT, MODULO};
