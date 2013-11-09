@@ -214,7 +214,7 @@ public abstract class AbstractEvaluator<T> {
 	public T evaluate(String expression, Object evaluationContext) {
 		final Stack<T> values = new Stack<T>(); // values stack
 		final Stack<Token> stack = new Stack<Token>(); // operator stack
-		final Stack<Integer> previousValuesSize = functions.size()==0?null:new Stack<Integer>();
+		final Stack<Integer> previousValuesSize = functions.isEmpty()?null:new Stack<Integer>();
 		final Iterator<String> tokens = tokenize(expression);
 		Token previous = null;
 		while (tokens.hasNext()) {
@@ -256,13 +256,11 @@ public abstract class AbstractEvaluator<T> {
 					// there are mismatched parentheses.
 					throw new IllegalArgumentException("Parentheses mismatched");
 				}
-				if (!stack.isEmpty()) {
-					if (stack.peek().isFunction()) {
-						// If the token at the top of the stack is a function token, pop it
-						// onto the output queue.
-						int argCount = values.size()-previousValuesSize.pop();
-						doFunction(values, (Function)stack.pop().getFunction(), argCount, evaluationContext);
-					}
+				if (!stack.isEmpty() && stack.peek().isFunction()) {
+					// If the token at the top of the stack is a function token, pop it
+					// onto the output queue.
+					int argCount = values.size()-previousValuesSize.pop();
+					doFunction(values, (Function)stack.pop().getFunction(), argCount, evaluationContext);
 				}
 			} else if (token.isFunctionArgumentSeparator()) {
 				if (previous==null) throw new IllegalArgumentException("expression can't start with a function argument separator");

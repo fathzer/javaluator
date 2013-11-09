@@ -202,9 +202,9 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 */
 	@Override
 	protected Double evaluate(Constant constant, Object evaluationContext) {
-		if (constant==PI) {
+		if (PI.equals(constant)) {
 			return Math.PI;
-		} else if (constant==E) {
+		} else if (E.equals(constant)) {
 			return Math.E;
 		} else {
 			return super.evaluate(constant, evaluationContext);
@@ -216,19 +216,19 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	 */
 	@Override
 	protected Double evaluate(Operator operator, Iterator<Double> operands, Object evaluationContext) {
-		if (operator==NEGATE || operator==NEGATE_HIGH) {
+		if (NEGATE.equals(operator) || NEGATE_HIGH.equals(operator)) {
 			return -operands.next();
-		} else if (operator==MINUS) {
+		} else if (MINUS.equals(operator)) {
 			return operands.next() - operands.next();
-		} else if (operator==PLUS) {
+		} else if (PLUS.equals(operator)) {
 			return operands.next() + operands.next();
-		} else if (operator==MULTIPLY) {
+		} else if (MULTIPLY.equals(operator)) {
 			return operands.next() * operands.next();
-		} else if (operator==DIVIDE) {
+		} else if (DIVIDE.equals(operator)) {
 			return operands.next() / operands.next();
-		} else if (operator==EXPONENT) {
+		} else if (EXPONENT.equals(operator)) {
 			return Math.pow(operands.next(),operands.next());
-		} else if (operator==MODULO) {
+		} else if (MODULO.equals(operator)) {
 			return operands.next() % operands.next();
 		} else {
 			return super.evaluate(operator, operands, evaluationContext);
@@ -241,53 +241,53 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	@Override
 	protected Double evaluate(Function function, Iterator<Double> arguments, Object evaluationContext) {
 		Double result;
-		if (function==ABS) {
+		if (ABS.equals(function)) {
 			result = Math.abs(arguments.next());
-		} else if (function==CEIL) {
+		} else if (CEIL.equals(function)) {
 			result = Math.ceil(arguments.next());
-		} else if (function==FLOOR) {
+		} else if (FLOOR.equals(function)) {
 			result = Math.floor(arguments.next());
-		} else if (function==ROUND) {
+		} else if (ROUND.equals(function)) {
 			Double arg = arguments.next();
 			if (arg==Double.NEGATIVE_INFINITY || arg==Double.POSITIVE_INFINITY) {
 				result = arg;
 			} else {
 				result = (double) Math.round(arg);
 			}
-		} else if (function==SINEH) {
+		} else if (SINEH.equals(function)) {
 			result = Math.sinh(arguments.next());
-		} else if (function==COSINEH) {
+		} else if (COSINEH.equals(function)) {
 			result = Math.cosh(arguments.next());
-		} else if (function==TANGENTH) {
+		} else if (TANGENTH.equals(function)) {
 			result = Math.tanh(arguments.next());
-		} else if (function==SINE) {
+		} else if (SINE.equals(function)) {
 			result = Math.sin(arguments.next());
-		} else if (function==COSINE) {
+		} else if (COSINE.equals(function)) {
 			result = Math.cos(arguments.next());
-		} else if (function==TANGENT) {
+		} else if (TANGENT.equals(function)) {
 			result = Math.tan(arguments.next());
-		} else if (function==ACOSINE) {
+		} else if (ACOSINE.equals(function)) {
 			result = Math.acos(arguments.next());
-		} else if (function==ASINE) {
+		} else if (ASINE.equals(function)) {
 			result = Math.asin(arguments.next());
-		} else if (function==ATAN) {
+		} else if (ATAN.equals(function)) {
 			result = Math.atan(arguments.next());
-		} else if (function==MIN) {
+		} else if (MIN.equals(function)) {
 			result = arguments.next();
 			while (arguments.hasNext()) {
 				result = Math.min(result, arguments.next());
 			}
-		} else if (function==MAX) {
+		} else if (MAX.equals(function)) {
 			result = arguments.next();
 			while (arguments.hasNext()) {
 				result = Math.max(result, arguments.next());
 			}
-		} else if (function==SUM) {
+		} else if (SUM.equals(function)) {
 			result = 0.;
 			while (arguments.hasNext()) {
 				result = result + arguments.next();
 			}
-		} else if (function==AVERAGE) {
+		} else if (AVERAGE.equals(function)) {
 			result = 0.;
 			int nb = 0;
 			while (arguments.hasNext()) {
@@ -295,11 +295,11 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 				nb++;
 			}
 			result = result/nb;
-		} else if (function==LN) {
+		} else if (LN.equals(function)) {
 			result = Math.log(arguments.next());
-		} else if (function==LOG) {
+		} else if (LOG.equals(function)) {
 			result = Math.log10(arguments.next());
-		} else if (function==RANDOM) {
+		} else if (RANDOM.equals(function)) {
 			result = Math.random();
 		} else {
 			result = super.evaluate(function, arguments, evaluationContext);

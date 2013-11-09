@@ -3,6 +3,7 @@ package com.fathzer.soft.javaluator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** The parameters of an evaluator.
@@ -12,12 +13,12 @@ import java.util.Map;
  */
 public class Parameters {
 	private String functionSeparator;
-	private final ArrayList<Operator> operators;
-	private final ArrayList<Function> functions;
-	private final ArrayList<Constant> constants;
+	private final List<Operator> operators;
+	private final List<Function> functions;
+	private final List<Constant> constants;
 	private final Map<String, String> translations;
-	private final ArrayList<BracketPair> expressionBrackets;
-	private final ArrayList<BracketPair> functionBrackets;
+	private final List<BracketPair> expressionBrackets;
+	private final List<BracketPair> functionBrackets;
 
 	/** Constructor.
 	 * <br>This method builds an instance with no operator, no function, no constant, no translation and no bracket
