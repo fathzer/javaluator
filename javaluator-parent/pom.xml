@@ -17,7 +17,6 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-    <sonar.language>java</sonar.language>
   </properties>
   
   <licenses>
@@ -39,20 +38,6 @@
       <email>admin@fathzer.com</email>
     </developer>
   </developers>
-  
-  <distributionManagement>
-    <repository>
-      <id>ReleaseFathzer</id>
-      <name>Release fathzer.com</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>SnapshotFathzer</id>
-      <name>Snapshot fathzer.com</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-  </distributionManagement>
   
   <dependencies>
   	<dependency>
