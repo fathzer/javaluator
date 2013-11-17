@@ -31,10 +31,18 @@ public class Operator {
 	 * @throws NullPointerException if symbol or associativity are null
 	 */
 	public Operator(String symbol, int operandCount, Associativity associativity, int precedence) {
-		if (symbol==null || associativity==null) throw new NullPointerException();
-		if (symbol.length()==0) throw new IllegalArgumentException("Operator symbol can't be null");
-		if ((operandCount<1) || (operandCount>2)) throw new IllegalArgumentException("Only unary and binary operators are supported");
-		if (Associativity.NONE.equals(associativity)) throw new IllegalArgumentException("None associativity operators are not supported");
+		if (symbol==null || associativity==null) {
+			throw new NullPointerException();
+		}
+		if (symbol.length()==0) {
+			throw new IllegalArgumentException("Operator symbol can't be null");
+		}
+		if ((operandCount<1) || (operandCount>2)) {
+			throw new IllegalArgumentException("Only unary and binary operators are supported");
+		}
+		if (Associativity.NONE.equals(associativity)) {
+			throw new IllegalArgumentException("None associativity operators are not supported");
+		}
 		this.symbol = symbol;
 		this.operandCount = operandCount;
 		this.associativity = associativity;
@@ -90,16 +98,25 @@ public class Operator {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (obj instanceof Operator)) {
+			return false;
+		}
 		Operator other = (Operator) obj;
 		if (operandCount != other.operandCount) return false;
 		if (associativity != other.associativity) return false;
 		if (symbol == null) {
-			if (other.symbol != null) return false;
-		} else if (!symbol.equals(other.symbol)) return false;
-		if (precedence != other.precedence) return false;
+			if (other.symbol != null) {
+				return false;
+			}
+		} else if (!symbol.equals(other.symbol)) {
+			return false;
+		}
+		if (precedence != other.precedence) {
+			return false;
+		}
 		return true;
 	}
 }
