@@ -28,8 +28,12 @@ public class Function {
 	 * @throws IllegalArgumentException if minArgumentCount is less than 0 or greater than maxArgumentCount or if the function name is null or empty.
 	 */
 	public Function(String name, int minArgumentCount, int maxArgumentCount) {
-		if ((minArgumentCount<0) || (minArgumentCount>maxArgumentCount)) throw new IllegalArgumentException("Invalid argument count");
-		if (name==null || name.length()==0) throw new IllegalArgumentException("Invalid function name");
+		if ((minArgumentCount<0) || (minArgumentCount>maxArgumentCount)) {
+			throw new IllegalArgumentException("Invalid argument count");
+		}
+		if (name==null || name.length()==0) {
+			throw new IllegalArgumentException("Invalid function name");
+		}
 		this.name = name;
 		this.minArgumentCount = minArgumentCount;
 		this.maxArgumentCount = maxArgumentCount;

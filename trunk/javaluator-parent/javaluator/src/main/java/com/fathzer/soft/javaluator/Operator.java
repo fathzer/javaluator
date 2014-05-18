@@ -105,8 +105,9 @@ public class Operator {
 			return false;
 		}
 		Operator other = (Operator) obj;
-		if (operandCount != other.operandCount) return false;
-		if (associativity != other.associativity) return false;
+		if ((operandCount != other.operandCount) || (associativity != other.associativity)) {
+			return false;
+		}
 		if (symbol == null) {
 			if (other.symbol != null) {
 				return false;
