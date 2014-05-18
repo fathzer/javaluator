@@ -38,7 +38,9 @@ public class Tokenizer {
 	 */
 	private boolean onlyOneChar(List<String> delimiters) {
 		for (String delimiter : delimiters) {
-			if (delimiter.length()!=1) return false;
+			if (delimiter.length()!=1) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -57,8 +59,10 @@ public class Tokenizer {
 		StringBuilder result = new StringBuilder();
 		result.append('(');
 		for (String delim : delimiters) { // For each delimiter
-			if (result.length()!=1) result.append('|'); // Add it to the union
-				result.append("\\Q").append(delim).append("\\E"); // Quote the delimiter as it could contain some regexpr reserved characters
+			if (result.length()!=1) {
+				result.append('|'); // Add it to the union
+			}
+			result.append("\\Q").append(delim).append("\\E"); // Quote the delimiter as it could contain some regexpr reserved characters
 		}
 		result.append(')');
 		return Pattern.compile(result.toString());

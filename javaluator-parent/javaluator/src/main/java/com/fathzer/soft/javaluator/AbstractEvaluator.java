@@ -232,7 +232,9 @@ public abstract class AbstractEvaluator<T> {
 		while (tokens.hasNext()) {
 			// read one token from the input stream
 			String trimmed = tokens.next().trim();
-			if (trimmed.length()==0) continue; // Ignore blank tokens
+			if (trimmed.length()==0) {
+				continue; // Ignore blank tokens
+			}
 			final Token token = toToken(previous, trimmed);
 			if (token.isOpenBracket()) {
 				// If the token is a left parenthesis, then push it onto the stack.
