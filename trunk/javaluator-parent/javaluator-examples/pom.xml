@@ -60,4 +60,5 @@
       </plugin>
 		</plugins>
   </build>
+  <version>2.1.0</version>
 </project>
