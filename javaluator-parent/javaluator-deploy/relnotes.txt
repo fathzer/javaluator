@@ -1,4 +1,12 @@
 x
+version	3.0.0 (27/05/2014)
+improvement
+	Because of the changes in AbstractEvaluator.tokenize method, <b>this version is not totally compatible with previous ones</b>. In particular, implementations that have overloaded AbstractEvaluator.tokenize method might not work.
+	In order to have a clearer definition of the roles of the AbstractEvaluator.tokenize method, the following changes have been made, making now this method fully responsible for turning the evaluated expression into tokens:<ul><li>The tokens returned by AbstractEvaluator.tokenize method are no more trimmed by the evaluator.</li><li>The empty tokens returned by AbstractEvaluator.tokenize method are no more ignored by the evaluator.</li>
+	The Tokenizer constructor is now public.
+fix
+	Fix "-" operator in BooleanSetEvaluator example. 
+
 version	2.0.0 (01/11/2013)
 improvement
 	Change package name to com.fathzer.soft.javaluator in order to release the package to Maven central. Because of this change, this version is not compatible with previous ones.

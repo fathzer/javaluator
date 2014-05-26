@@ -79,7 +79,8 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		// Implementation of supported operators
 		BitSet o1 = operands.next();
 		if (operator == NEGATE) {
-			o1.flip(0, o1.size());
+			int length = ((BitSetEvaluationContext)evaluationContext).getBitSetLength();
+			o1.flip(0, length);
 		} else {
 			BitSet o2 = operands.next();
 			if (operator == OR) {
@@ -121,12 +122,21 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 	private static void doIt(BooleanSetEvaluator evaluator, String expression, BitSetEvaluationContext context) {
 		// Evaluate the expression
 		BitSet result = evaluator.evaluate(expression, context);
-		// Converts the result to a String
-		StringBuilder builder = new StringBuilder(context.getBitSetLength());
-		for (int i = 0; i < context.getBitSetLength(); i++) {
-			builder.append(result.get(i)?'1':'0');
-		}
 		// Display the result
-		System.out.println (expression+" = "+builder.toString());
+		System.out.println (expression+" = "+toBinaryString(result));
+	}
+
+	/** Converts a bitSet to its binary representation.
+	 * @param bitSet A bit set
+	 * @return a String composed of 0 and 1. 1 indicates that the corresponding bit is set.
+	 */
+	public static String toBinaryString(BitSet bitSet) {
+		// Converts the result to a String
+		StringBuilder builder = new StringBuilder(bitSet.length());
+		for (int i = 0; i < bitSet.length(); i++) {
+			builder.append(bitSet.get(i)?'1':'0');
+		}
+		String res = builder.toString();
+		return res;
 	}
 }

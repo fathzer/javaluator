@@ -66,7 +66,6 @@ public abstract class AbstractEvaluator<T> {
 		boolean needFunctionSeparator = false;
 		if (parameters.getFunctions()!=null) {
 			for (Function function : parameters.getFunctions()) {
-				//TODO if function name contains operators or reserved chars => error
 				this.functions.put(parameters.getTranslation(function.getName()), function);
 				if (function.getMaximumArgumentCount()>1) {
 					needFunctionSeparator = true;
@@ -231,21 +230,18 @@ public abstract class AbstractEvaluator<T> {
 		Token previous = null;
 		while (tokens.hasNext()) {
 			// read one token from the input stream
-			String trimmed = tokens.next().trim();
-			if (trimmed.length()==0) {
-				continue; // Ignore blank tokens
-			}
-			final Token token = toToken(previous, trimmed);
+			String strToken = tokens.next();
+			final Token token = toToken(previous, strToken);
 			if (token.isOpenBracket()) {
 				// If the token is a left parenthesis, then push it onto the stack.
 				stack.push(token);
 				if (previous!=null && previous.isFunction()) {
 					if (!functionBrackets.containsKey(token.getBrackets().getOpen())) {
-						throw new IllegalArgumentException("Invalid bracket after function: "+trimmed);
+						throw new IllegalArgumentException("Invalid bracket after function: "+strToken);
 					}
 				} else {
 					if (!expressionBrackets.containsKey(token.getBrackets().getOpen())) {
-						throw new IllegalArgumentException("Invalid bracket in expression: "+trimmed);
+						throw new IllegalArgumentException("Invalid bracket in expression: "+strToken);
 					}
 				}
 			} else if (token.isCloseBracket()) {
