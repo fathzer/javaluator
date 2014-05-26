@@ -1,13 +1,14 @@
 package com.fathzer.soft.javaluator;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /** An abstract evaluator, able to evaluate infix expressions.
  * <br>Some standard evaluators are included in the library, you can define your own by subclassing this class.
@@ -120,7 +121,7 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void output(Stack<T> values, Token token, Object evaluationContext) {
+	private void output(Deque<T> values, Token token, Object evaluationContext) {
 		if (token.isLiteral()) { // If the token is a literal, a constant, or a variable name
 			String literal = token.getLiteral();
 			Constant ct = this.constants.get(literal);
@@ -175,14 +176,14 @@ public abstract class AbstractEvaluator<T> {
 		throw new RuntimeException("evaluate(Function, Iterator) is not implemented for "+function.getName());
 	}
 	
-	private void doFunction(Stack<T> values, Function function, int argCount, Object evaluationContext) {
+	private void doFunction(Deque<T> values, Function function, int argCount, Object evaluationContext) {
 		if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
 			throw new IllegalArgumentException("Invalid argument count for "+function.getName());
 		}
 		values.push(evaluate(function, getArguments(values, argCount), evaluationContext));
 	}
 	
-	private Iterator<T> getArguments(Stack<T> values, int nb) {
+	private Iterator<T> getArguments(Deque<T> values, int nb) {
 		// Be aware that arguments are in reverse order on the values stack.
 		// Don't forget to reorder them in the original order (the one they appear in the evaluated formula)
 		if (values.size()<nb) {
@@ -223,9 +224,9 @@ public abstract class AbstractEvaluator<T> {
 	 * @see AbstractVariableSet
 	 */
 	public T evaluate(String expression, Object evaluationContext) {
-		final Stack<T> values = new Stack<T>(); // values stack
-		final Stack<Token> stack = new Stack<Token>(); // operator stack
-		final Stack<Integer> previousValuesSize = functions.isEmpty()?null:new Stack<Integer>();
+		final Deque<T> values = new ArrayDeque<T>(); // values stack
+		final Deque<Token> stack = new ArrayDeque<Token>(); // operator stack
+		final Deque<Integer> previousValuesSize = functions.isEmpty()?null:new ArrayDeque<Integer>();
 		final Iterator<String> tokens = tokenize(expression);
 		Token previous = null;
 		while (tokens.hasNext()) {
