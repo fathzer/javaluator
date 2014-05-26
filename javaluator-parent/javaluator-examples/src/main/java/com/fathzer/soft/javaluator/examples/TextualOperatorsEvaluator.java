@@ -28,17 +28,7 @@ public class TextualOperatorsEvaluator extends AbstractEvaluator<Boolean> {
 		PARAMETERS.add(NEGATE);
 	}
 
-	public static void main(String[] args) {
-		Map<String,String> variableToValue = new HashMap<String, String>();
-		variableToValue.put("type", "PORT");
-		AbstractEvaluator<Boolean> evaluator = new TextualOperatorsEvaluator();
-		System.out.println ("type=PORT -> "+evaluator.evaluate("type=PORT", variableToValue));
-		System.out.println ("type=NORTH -> "+evaluator.evaluate("type=NORTH", variableToValue));
-		System.out.println ("type=PORT AND true -> "+evaluator.evaluate("type=PORT AND true", variableToValue));
-	}
-
-
-	protected TextualOperatorsEvaluator() {
+	public TextualOperatorsEvaluator() {
 		super(PARAMETERS);
 	}
 
@@ -75,5 +65,14 @@ public class TextualOperatorsEvaluator extends AbstractEvaluator<Boolean> {
 	@Override
 	protected Iterator<String> tokenize(String expression) {
 		return Arrays.asList(expression.split("\\s")).iterator();
+	}
+	
+	public static void main(String[] args) {
+		Map<String,String> variableToValue = new HashMap<String, String>();
+		variableToValue.put("type", "PORT");
+		AbstractEvaluator<Boolean> evaluator = new TextualOperatorsEvaluator();
+		System.out.println ("type=PORT -> "+evaluator.evaluate("type=PORT", variableToValue));
+		System.out.println ("type=NORTH -> "+evaluator.evaluate("type=NORTH", variableToValue));
+		System.out.println ("type=PORT AND true -> "+evaluator.evaluate("type=PORT AND true", variableToValue));
 	}
 }

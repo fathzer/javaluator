@@ -14,13 +14,14 @@ import java.util.regex.Pattern;
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
-public class Tokenizer implements AbstractTokenizer {
+public class Tokenizer {
 	private Pattern pattern;
 	private String tokenDelimiters;
 	private boolean trimTokens;
 	
 	/** Constructor.
-	 * @param delimiters the delimiters
+	 * <br>By default, this tokenizer trims all the tokens.
+	 * @param delimiters the delimiters of the tokenizer, usually, the operators symbols, the brackets and the function argument separator are used as delimiter in the string.
 	 */
 	public Tokenizer(List<String> delimiters) {
 		if (onlyOneChar(delimiters)) {
@@ -35,6 +36,21 @@ public class Tokenizer implements AbstractTokenizer {
 		trimTokens = true;
 	}
 	
+	/** Tests whether this tokens trims the tokens returned by {@link #tokenize(String)} method. 
+	 * @return true if tokens are trimmed.
+	 */
+	public boolean isTrimTokens() {
+		return trimTokens;
+	}
+
+	/** Sets the trimTokens attribute.
+	 * @param trimTokens true to have the tokens returned by {@link #tokenize(String)} method trimmed.
+	 * <br>Note that empty tokens are always omitted by this class.
+	 */
+	public void setTrimTokens(boolean trimTokens) {
+		this.trimTokens = trimTokens;
+	}
+
 	/** Tests whether a String list contains only 1 character length elements.
 	 * @param delimiters The list to test
 	 * @return true if it contains only one char length elements (or no elements) 
@@ -54,6 +70,7 @@ public class Tokenizer implements AbstractTokenizer {
 		// the longer may be before the shorter (&& should be before &) or the regexpr
 		// parser will recognize && as two &.
 		Collections.sort(delimiters, new Comparator<String>() {
+			@Override
 			public int compare(String o1, String o2) {
 				return -o1.compareTo(o2);
 			}
@@ -84,12 +101,12 @@ public class Tokenizer implements AbstractTokenizer {
 	}
 
 	/** Converts a string into tokens.
+	 * <br>Example: The result for the expression "<i>-1+min(10,3)</i>" evaluated for a DoubleEvaluator is an iterator on "-", "1", "+", "min", "(", "10", ",", "3", ")".
 	 * @param string The string to be split into tokens
 	 * @return The tokens
 	 */
 	public Iterator<String> tokenize(String string) {
 		if (pattern!=null) {
-			System.out.println ("Use Pattern matcher"); //FIXME
 			List<String> res = new ArrayList<String>();
 			Matcher m = pattern.matcher(string);
 			int pos = 0;
@@ -110,37 +127,47 @@ public class Tokenizer implements AbstractTokenizer {
 			// Return the result
 			return res.iterator();
 		} else {
-			System.out.println ("Use StringTokenizer"); //FIXME
-			final StringTokenizer tokens = new StringTokenizer(string, tokenDelimiters, true);
-			return new Iterator<String>() {
-				private String nextToken = null;
-				public boolean hasNext() {
-					return buildNextToken();
+			return new StringTokenizerIterator(new StringTokenizer(string, tokenDelimiters, true));
+		}
+	}
+	
+	private class StringTokenizerIterator implements Iterator<String> {
+		private StringTokenizer tokens;
+		/** Constructor.
+		 * @param tokens The Stringtokenizer on which is based this instance.
+		 */
+		public StringTokenizerIterator(StringTokenizer tokens) {
+			this.tokens = tokens;
+		}
+		private String nextToken = null;
+		@Override
+		public boolean hasNext() {
+			return buildNextToken();
+		}
+		@Override
+		public String next() {
+			if (!buildNextToken()) {
+				throw new NoSuchElementException();
+			}
+			String token = nextToken;
+			nextToken = null;
+			return token;
+		}
+		private boolean buildNextToken() {
+			while ((nextToken == null) && tokens.hasMoreTokens()) {
+				nextToken = tokens.nextToken();
+				if (trimTokens) {
+					nextToken = nextToken.trim();
 				}
-				public String next() {
-					if (!buildNextToken()) {
-						throw new NoSuchElementException();
-					}
-					String token = nextToken;
+				if (nextToken.isEmpty()) {
 					nextToken = null;
-					return token;
 				}
-				private boolean buildNextToken() {
-					while ((nextToken == null) && tokens.hasMoreTokens()) {
-						nextToken = tokens.nextToken();
-						if (trimTokens) {
-							nextToken = nextToken.trim();
-						}
-						if (nextToken.isEmpty()) {
-							nextToken = null;
-						}
-					}
-					return nextToken!=null;
-				}
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-			};
+			}
+			return nextToken!=null;
+		}
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 }

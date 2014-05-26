@@ -19,6 +19,10 @@ public class StaticVariableSet<T> implements AbstractVariableSet<T> {
 		this.varToValue = new HashMap<String, T>();
 	}
 	
+	/** Gets the value of a variable.
+	 * @param variableName The name of the variable.
+	 * @return The value of the variable.
+	 */
 	public T get(String variableName) {
 		return this.varToValue.get(variableName);
 	}

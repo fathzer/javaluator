@@ -7,6 +7,12 @@ import java.util.Locale;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
 import com.fathzer.soft.javaluator.Parameters;
 
+/** An example of how to localize an existing evaluator to match French locale.
+ * <br>As a French, I prefer "moyenne" to "avg" and "somme" to "sum".
+ * <br>As the default argument function (',') is used as decimal separator in France,
+ * I may also change it to ';'.
+ * <br> Here is how I can do that very easily.
+ */
 public class LocalizedEvaluator extends DoubleEvaluator {
 	/** Defines the new function (square root).*/
 	private static final Parameters PARAMS;
@@ -43,5 +49,12 @@ public class LocalizedEvaluator extends DoubleEvaluator {
 			// If the number has a wrong format, throw the right exception.
 			throw new IllegalArgumentException(literal+" is not a number");
 		}
+	}
+	
+	public static void main(String[] args) {
+		// Test that all this stuff is ok
+		LocalizedEvaluator evaluator = new LocalizedEvaluator();
+		String expression = "3 000 +moyenne(3 ; somme(1,5 ; 7 ; -3,5))";
+		System.out.println (expression+" = "+evaluator.format.format(evaluator.evaluate(expression)));
 	}
 }
