@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.fathzer</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>javaluator-deploy</artifactId>
+  <version>2.0.0</version>
+  
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>2.5.1</version>
+		        <configuration>
+		          <skip>true</skip>
+				</configuration>
+          </plugin>
+          
+	      <plugin>
+	        <artifactId>maven-antrun-plugin</artifactId>
+	        <version>1.7</version>
+	        <executions>
+	          <execution>
+	            <phase>install</phase>
+	            <configuration>
+	              <target>
+					<property name="javaluator.version" value="3.0.0"/>
+	                <property name="examples.version" value="2.1.0"/>
+					<property name="demo.version" value="2.1.0"/>
+					
+					<property name="releaseDir" value="deployment"/>
+					<delete dir="${releaseDir}"/>
+					<chmod file="../javaluator-demo/target/javaluator-demo-${demo.version}.jar" perm="ugo+rx"/>
+					<zip destfile="${releaseDir}/Javaluator-v${javaluator.version}.zip" duplicate="fail">
+					    <zipfileset dir="${basedir}" includes="license.html"/>
+					    <zipfileset dir="../javaluator/target" includes="*.jar"/>
+					    <zipfileset dir="../javaluator-examples/target" includes="*.jar"/>
+					    <zipfileset dir="../javaluator-demo/target" includes="*${demo.version}.jar" filemode="755"/>
+					    <zipfileset dir="../javaluator-demo/target" includes="*-sources.jar"/>
+					</zip>
+					<unjar src="../javaluator/target/javaluator-${javaluator.version}-javadoc.jar" dest="${releaseDir}/doc">
+						<patternset>
+							<exclude name="META-INF/*.*"/>
+							<exclude name="META-INF"/>
+						</patternset>
+					</unjar>
+					<unjar src="../javaluator-examples/target/javaluator-examples-${examples.version}-sources.jar" dest="${releaseDir}/tuto">
+						<patternset>
+							<include name="**/*.java"/>
+						</patternset>
+						<mapper type="flatten"/>
+					</unjar>
+					<copy file="relnotes.txt" todir="${releaseDir}"/>
+					<copy file="../javaluator-demo/target/javaluator-demo-${demo.version}.jar" todir="${releaseDir}"/>
+	              </target>
+	            </configuration>
+	            <goals>
+	              <goal>run</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-deploy-plugin</artifactId>
+              <version>2.8.1</version>
+		        <configuration>
+		          <skip>true</skip>
+				</configuration>
+          </plugin>
+	  </plugins>
+  </build>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>com.fathzer</groupId>
+  		<artifactId>jdeployer</artifactId>
+  		<version>1.0.0</version>
+  	</dependency>
+  </dependencies>
+</project>
