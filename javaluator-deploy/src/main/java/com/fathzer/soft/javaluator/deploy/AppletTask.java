@@ -19,7 +19,9 @@ public class AppletTask extends Task {
 	@Override
 	public String verify(Context context) {
 		File jar = getAppletJar(context);
-		if (!jar.exists() || !jar.isFile()) return "Unable to find file "+jar.getAbsolutePath();
+		if (!jar.exists() || !jar.isFile()) {
+			return "Unable to find file "+jar.getAbsolutePath();
+		}
 		return super.verify(context);
 	}
 
@@ -50,6 +52,6 @@ public class AppletTask extends Task {
 	}
 
 	private File getAppletJar(Context context) {
-		return new File(context.getProcess().getLocalRoot(),"javaluator-demo-"+context.getVersion()+".jar");
+		return new File(context.getProcess().getLocalRoot(),"javaluator-demo-"+System.getProperty("appletVersion",context.getVersion())+".jar");
 	}
 }
