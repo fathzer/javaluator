@@ -13,7 +13,7 @@ import java.util.Locale;
  * <li>-: Unary minus</li>
  * <li>*: Multiplication</li>
  * <li>/: Division</li>
- * <li>^: Exponentiation</li>
+ * <li>^: Exponentiation.<br>Warning: Exponentiation is implemented using java.lang.Math.pow which has some limitations (please read oracle documentation about this method to known details).<br>For example (-1)^(1/3) returns NaN.</li>
  * <li>%: Modulo</li>
  * </ul>
  * Built-in functions:<ul>
@@ -139,7 +139,12 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
 	private static Parameters DEFAULT_PARAMETERS;
-	private static final NumberFormat FORMATTER = NumberFormat.getNumberInstance(Locale.US);
+	private static final ThreadLocal<NumberFormat> FORMATTER = new ThreadLocal<NumberFormat>() {
+	  @Override
+	  protected NumberFormat initialValue() {
+	  	return NumberFormat.getNumberInstance(Locale.US);
+	  }
+	};
 	
 	/** Gets a copy of DoubleEvaluator standard default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
@@ -192,7 +197,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	@Override
 	protected Double toValue(String literal, Object evaluationContext) {
 		ParsePosition p = new ParsePosition(0);
-		Number result = FORMATTER.parse(literal, p);
+		Number result = FORMATTER.get().parse(literal, p);
 		if (p.getIndex()==0 || p.getIndex()!=literal.length()) {
 			throw new IllegalArgumentException(literal+" is not a number");
 		}

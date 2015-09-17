@@ -1,4 +1,8 @@
 x
+version	3.0.1 (??/09/2015)
+fix
+	DoubleEvaluator was not thread safe, even when each thread instantiate a new instance. 
+
 version	3.0.0 (27/05/2014)
 improvement
 	Because of the changes in AbstractEvaluator.tokenize method, <b>this version is not totally compatible with previous ones</b>. In particular, implementations that have overloaded AbstractEvaluator.tokenize method might not work.

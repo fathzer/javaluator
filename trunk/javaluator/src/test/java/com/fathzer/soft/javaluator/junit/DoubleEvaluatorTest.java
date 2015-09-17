@@ -28,6 +28,7 @@ public class DoubleEvaluatorTest {
 		assertEquals(-3, evaluator.evaluate("1+-4"), 0.001);
 		assertEquals(2, evaluator.evaluate("3-1"), 0.001);
 		assertEquals(-4, evaluator.evaluate("-2^2"),0.001);
+		assertEquals(2, evaluator.evaluate("4^0.5"),0.001);
 		
 		assertEquals(1, evaluator.evaluate("sin ( pi /2)"),0.001);
 		assertEquals(-1, evaluator.evaluate("cos(pi)"),0.001);
@@ -97,6 +98,11 @@ public class DoubleEvaluatorTest {
 		evaluator.evaluate("min(,2)");
 	}
 
+	@Test (expected=IllegalArgumentException.class)
+	public void TestFunctionSeparatorHidenByBrackets() {
+		System.out.println (new DoubleEvaluator().evaluate("max((10,15),20)"));
+	}
+	
 	@Test (expected=IllegalArgumentException.class)
 	public void testSomethingBetweenFunctionAndOpenBracket() {
 		evaluator.evaluate("sin3(45)");
