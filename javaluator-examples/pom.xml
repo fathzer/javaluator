@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>com.fathzer</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<artifactId>javaluator-examples</artifactId>
-	<version>2.1.0</version>
+	<version>3.0.1</version>
 
 	<name>javaluator-examples</name>
 	<description>Some examples of use of Javaluator.</description>
@@ -22,18 +22,20 @@
 		<dependency>
 			<groupId>com.fathzer</groupId>
 			<artifactId>javaluator</artifactId>
-			<version>3.0.0</version>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-install-plugin</artifactId>
-			<version>2.5.1</version>
-			<configuration>
-				<skip>true</skip>
-			</configuration>
-		</plugin>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
