@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fathzer</groupId>
 	<artifactId>parent-pom</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<packaging>pom</packaging>
 
 	<name>parent</name>
@@ -63,7 +63,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.5</version>
       </plugin>
     </plugins>
   </pluginManagement>
