@@ -138,7 +138,7 @@ class Canvas {
 		echo "<script type=\"text/javascript\">";
 		echo "window.cookieconsent_options = {\"message\":\"This website uses cookies to ensure you get the best experience on our website\",\"dismiss\":\"Got it!\",\"learnMore\":\"More info\",\"link\":\"http://www.google.com/policies/privacy/partners/\",\"theme\":\"dark-top\"};";
 		echo "</script>";
-		echo "<script type=\"text/javascript\" src=\"//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.9/cookieconsent.min.js\"></script>";
 		// End Cookie Consent plugin
 	}
 	
