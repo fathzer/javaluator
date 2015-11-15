@@ -6,7 +6,7 @@
 	background-color: black;
 	width: 100%;
 	height: 70px;
-	background-image: url('http://www.yapbam.net/site/charlie.jpg');
+	background-image: url('https://www.yapbam.net/site/charlie.png');
 	background-repeat: no-repeat;
 	background-position: center;
 }
