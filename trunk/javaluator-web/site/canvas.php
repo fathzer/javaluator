@@ -145,7 +145,7 @@ class Canvas {
 	function closeHeadOpenContent() {
 		echo "</head>\n";
 		echo "<body>\n";
-//echo '<a href="https://twitter.com/hashtag/JeSuisCharlie?src=hash"><div class="charlie"></div></a>';
+echo '<a href="https://twitter.com/hashtag/JeSuisCharlie?src=hash"><div class="charlie"></div></a>';
 		include "facebook.php";
 		echo "<div id=\"page\"><div id=\"top\">";
 		echo "<div id=\"flattr\"><script id='fb8le2w'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=Fathzer&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb8le2w');</script></div>";
