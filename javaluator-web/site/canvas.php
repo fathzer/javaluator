@@ -120,20 +120,19 @@ class Canvas {
 	}
 	
 	function openHead() {
-		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".$this->languageCode."\" lang=\"".$this->languageCode."\">\n";
+		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+		echo "<html xmlns=\"//www.w3.org/1999/xhtml\" xml:lang=\"".$this->languageCode."\" lang=\"".$this->languageCode."\">\n";
 		echo "<head>\n";
 		echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"/>\n";
 		echo "<meta name=\"keywords\" content=\"".$this->keyWords."\"/>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://".$_SERVER['SERVER_NAME']."/site/site.css.php\"/>\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"//".$_SERVER['SERVER_NAME']."/site/site.css.php\"/>\n";
 		include "superfish.php";
-		echo "<script type=\"text/javascript\" src=\"http://astesana.net/adBlockStats/jquery.isAdBlocked.js\">\n";
 		echo "<meta name=\"description\" content=\"".$this->description."\"/>\n";
 		echo "<title>".$this->title."</title>\n";
 		echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">";
 		echo "{lang: '".$this->languageCode."'}";
 		echo "</script>";
-		echo "<script type=\"text/javascript\" src=\"http://".$_SERVER['SERVER_NAME']."/site/goup.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"//".$_SERVER['SERVER_NAME']."/site/goup.js\"></script>";
 		// Begin Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent
 		echo "<script type=\"text/javascript\">";
 		echo "window.cookieconsent_options = {\"message\":\"This website uses cookies to ensure you get the best experience on our website\",\"dismiss\":\"Got it!\",\"learnMore\":\"More info\",\"link\":\"http://www.google.com/policies/privacy/partners/\",\"theme\":\"dark-top\"};";
@@ -159,8 +158,8 @@ echo '<a href="https://twitter.com/hashtag/JeSuisCharlie?src=hash"><div class="c
 		echo "<div id=\"localizedLink\">";
 		foreach ($languages as &$lng) {
 			if ($lng !== $this->languageCode) {
-				echo "<a href=\"http://".$_SERVER['SERVER_NAME']."/".$lng."/home\">";
-				echo "<img alt=\"".$lng."\" src=\"http://".$_SERVER['SERVER_NAME']."/site/flags/".$lng.".png\"/>";
+				echo "<a href=\"//".$_SERVER['SERVER_NAME']."/".$lng."/home\">";
+				echo "<img alt=\"".$lng."\" src=\"//".$_SERVER['SERVER_NAME']."/site/flags/".$lng.".png\"/>";
 				echo "</a>";
 			}
 		}
@@ -193,22 +192,6 @@ echo '<a href="https://twitter.com/hashtag/JeSuisCharlie?src=hash"><div class="c
 		echo "</div><!--end of page-->\n";
 		echo '<p id="back-top"><a href="#"><span></span>'.$this->goupWording.'</a></p>';
 		$this->generateGoogleAnalytics();
-		echo '<script>
-				var params = {id:"javaluator", callback:function(data) {
-					console.log(data);
-				}};
-				var blocked = $("#adContainer").isAdBlocked(params);
-				if (blocked) {';
-		if (isset($this->adBlockMessage)) {
-			echo '	var message = "'.$this->adBlockMessage.'";
-					$("#adContainer").append(message);
-					$("#adContainer").append(\'<div id="donate">'.$this->getDonateButton().'</div>\');
-					$("#adContainer").addClass("altAdvertising");';
-		} else {
-			echo 'console.log("No alternate add message defined");';
-		}
-		echo '				}
-		</script>';
 		echo "</body>\n";
 		echo "</html>\n";
 	}
@@ -238,6 +221,8 @@ echo '<a href="https://twitter.com/hashtag/JeSuisCharlie?src=hash"><div class="c
 		echo "<script type=\"text/javascript\"\n";
 		echo "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n";
 		echo "</script>\n";
+		echo "<script type=\"text/javascript\" src=\"//".$_SERVER['SERVER_NAME']."/site/testAdBlocked.js\"></script>\n";
+		echo '<script>testAdBlocked("'.$this->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
 		echo "</div>\n";
 	}
 	
