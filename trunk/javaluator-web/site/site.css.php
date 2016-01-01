@@ -2,14 +2,6 @@
 <?php
 	include "cssConstants.php";
 ?>
-.charlie{
-	background-color: black;
-	width: 100%;
-	height: 70px;
-	background-image: url('https://www.yapbam.net/site/charlie.png');
-	background-repeat: no-repeat;
-	background-position: center;
-}
 #page{
 	margin: 0.5em;
 }
