@@ -1,11 +1,8 @@
 <?php
-class RelNotes {
+include_once "canvas.php";
+class RelNotes extends Canvas {
 	function RelNotes() {
-		// Retrieve localization data
-		// 1°) Retrieve language code
-		$dummy = explode("/",trim($_SERVER['REQUEST_URI'],"/"),2);
-		$this->languageCode = $dummy[0];
-		include (substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]))."/".$this->languageCode."/canvasLocalization.php");
+		parent::Canvas();
 
 		// The attributes needed for file processing
 		$this->divOpened = false; // Has the version opened a div element (the "not yet released" version didn't open a div element)
@@ -19,7 +16,8 @@ class RelNotes {
 	}
 	
 	function build($file) {
-		echo '<h1>'.$this->relnotesTitle.'</h1>'."\n";
+		parent::generateHeader();
+		echo '<h1>'.$this->translations->relnotesTitle.'</h1>'."\n";
 		$fic = fopen($file, 'r');
 		if (!$fic) {
 			// unable to find the relnotes file
@@ -29,7 +27,7 @@ class RelNotes {
 			while (!feof($fic)) {
 				$ligne = fgetcsv($fic, 0, "\t");
 				$code = $ligne[0];
-				$line = $ligne[1];
+				$line = count($ligne)>1 ? $ligne[1] : "";
 				if ($code=='version') {
 					$this->openVersion($line);
 				} else if ($code=='improvement') {
@@ -44,7 +42,8 @@ class RelNotes {
 			}
 			$this->closeVersion();
 			fclose($fic);
-		}		
+		}
+		parent::generateFooter();
 	}
 	
 	private function openVersion($version) {
