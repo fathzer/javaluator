@@ -1,19 +1,23 @@
 <?php
-function startsWith($haystack, $needle){
-	return !strncmp($haystack, $needle, strlen($needle));
-}
-
 class Canvas {
+	private $canvasRelPath;
+	private $isColorBoxSet = false;
+	
+	private static function startsWith($haystack, $needle){
+		return !strncmp($haystack, $needle, strlen($needle));
+	}
+	
 	function Canvas() {
-		$this->documentRoot = substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
+		$documentRoot = substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
+		$canvasRoot = $documentRoot.substr(realpath(__DIR__),strlen(realpath($documentRoot)));
+		$this->canvasRelPath = substr($canvasRoot, strlen($documentRoot));
 		// Retrieve language code and relative url (relative to language - fr/toto -> toto)
 		$dummy = explode("/",trim($_SERVER['REQUEST_URI'],"/"),2);
 		$this->languageCode = $dummy[0];
-		$dummy = explode("?",$dummy[1]);
-		$this->relUrl = $dummy[0];
+		$this->relUrl = explode("?",$dummy[1])[0];
 		// Parse the menu hierarchy
 		$arr = array();
-		$fic = fopen($this->documentRoot."/".$this->languageCode."/menu.csv", 'r');
+		$fic = fopen($documentRoot."/".$this->languageCode."/menu.csv", 'r');
 		if (!$fic) {
 			// unable to find the menu file
 		} else {
@@ -31,7 +35,18 @@ class Canvas {
 			fclose($fic);
 		}
 		$this->menuHierarchy = $this->explodeTree($arr);
-		include ($this->documentRoot."/".$this->languageCode."/canvasLocalization.php");
+		$json = file_get_contents($documentRoot."/".$this->languageCode."/siteLocalization.json");
+		$this->siteCustomTranslations = json_decode($json, false);
+		$json = file_get_contents($canvasRoot."/translations/canvas_".$this->languageCode.".json");
+		$this->translations = json_decode($json, false);
+	}
+	
+	function setContentWidth($width) {
+		$this->contentWidth = $width;
+	}
+	
+	function setColorBox($boolean) {
+		$this->isColorBoxSet = $boolean;
 	}
 	
 	/**
@@ -51,7 +66,7 @@ class Canvas {
 	 *
 	 * @return array
 	 */
-	function explodeTree($array, $delimiter = '/') {
+	private function explodeTree($array, $delimiter = '/') {
 	  if(!is_array($array)) return false;
 	  $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
 	  $returnArr = array();
@@ -79,8 +94,8 @@ class Canvas {
 	  }
 	  return $returnArr;
 	}
-	
-	function plot($root, $arr, $delimiter='/', $mother_run=true) {
+
+	private function plot($root, $arr, $delimiter='/', $mother_run=true) {
 		if($mother_run){
 			// the beginning of plotTree. We're at rootlevel
 			echo "<ul class=\"sf-menu\">";
@@ -91,12 +106,11 @@ class Canvas {
 			// determine the destination url of this node.
 			if (is_array($v)) {
 				$url = "#";
-			} else if (startsWith($v,"http://") || startsWith($v,"https://")) {
+			} else if (Canvas::startsWith($v,"http://") || Canvas::startsWith($v,"https://")) {
 				$url = $v;
 			} else {
-				$url = "../".$v;
+				$url = "//".$_SERVER['SERVER_NAME']."/".$this->languageCode."/".$v ;
 			}
-//			$url = ( is_array($v) ? "#" : "../".$v );
 			$cur = strpos($this->menuPath, $root.$k);
 			// show the actual node
 			echo "<li>";
@@ -124,19 +138,41 @@ class Canvas {
 		echo "<html xmlns=\"//www.w3.org/1999/xhtml\" xml:lang=\"".$this->languageCode."\" lang=\"".$this->languageCode."\">\n";
 		echo "<head>\n";
 		echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"/>\n";
-		echo "<meta name=\"keywords\" content=\"".$this->keyWords."\"/>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"//".$_SERVER['SERVER_NAME']."/site/site.css.php\"/>\n";
-		include "superfish.php";
+		echo "<meta name=\"keywords\" content=\"".$this->siteCustomTranslations->keyWords."\"/>\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$this->canvasRelPath."/site.css.php";
+		if (isset($this->contentWidth)) {
+			echo "?contentWidth=$this->contentWidth";
+		}
+		echo "\"/>\n";
+		$jqueryRoot=$this->canvasRelPath."/jquery/"; ?>
+		<link rel="stylesheet" type="text/css" href="<?php echo $jqueryRoot;?>css/superfish.css" media="screen"/> 
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.hoverintent/1.8.1/jquery.hoverIntent.min.js"></script> 
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/superfish/1.7.7/js/superfish.min.js"></script>
+		
+		<?php if ($this->isColorBoxSet) {?>
+		<link rel="stylesheet" type="text/css" href="<?php echo $jqueryRoot;?>css/colorbox.css" media="screen"/> 
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.6.3/jquery.colorbox-min.js"></script>
+		<?php }?>
+		
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('ul.sf-menu').superfish();
+			});
+		</script>
+		<?php
 		echo "<meta name=\"description\" content=\"".$this->description."\"/>\n";
 		echo "<title>".$this->title."</title>\n";
 		echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">";
 		echo "{lang: '".$this->languageCode."'}";
 		echo "</script>";
-		echo "<script type=\"text/javascript\" src=\"//".$_SERVER['SERVER_NAME']."/site/goup.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$this->canvasRelPath."/goup.js\"></script>\n";
 		// Begin Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent
-		echo "<script type=\"text/javascript\">";
-		echo "window.cookieconsent_options = {\"message\":\"This website uses cookies to ensure you get the best experience on our website\",\"dismiss\":\"Got it!\",\"learnMore\":\"More info\",\"link\":\"http://www.google.com/policies/privacy/partners/\",\"theme\":\"dark-top\"};";
-		echo "</script>";
+		echo "<script type=\"text/javascript\">\n";
+		$cv = $this->translations->cookieValidation;
+		echo "window.cookieconsent_options = {\"message\":\"".$cv->message."\",\"dismiss\":\"".$cv->ok."\",\"learnMore\":\"".$cv->more."\",\"link\":\"https://www.google.com/policies/privacy/partners/\",\"theme\":\"dark-top\"};";
+		echo "\n</script>\n";
 		echo "<script type=\"text/javascript\" src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.9/cookieconsent.min.js\"></script>";
 		// End Cookie Consent plugin
 	}
@@ -144,10 +180,21 @@ class Canvas {
 	function closeHeadOpenContent() {
 		echo "</head>\n";
 		echo "<body>\n";
-		include "facebook.php";
+?>
+		<div id="fb-root"></div>
+		<script type="text/javascript">
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/<?php echo $this->translations->fullLocale;?>/all.js#xfbml=1";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+			</script>
+<?php		
 		echo "<div id=\"page\"><div id=\"top\">";
 		echo "<div id=\"flattr\"><script id='fb8le2w'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=Fathzer&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb8le2w');</script></div>";
-		echo "<a href=\"http://".$_SERVER['SERVER_NAME']."\"> <img src=\"http://".$_SERVER['SERVER_NAME']."/site/title.png\" alt=\"Home\" /></a>";
+		echo "<a href=\"//".$_SERVER['SERVER_NAME']."\"> <img src=\"".$this->canvasRelPath."/title.png\" alt=\"Home\" /></a>";
 		echo "</div><!--end of top-->\n";
 		echo "<div id=\"menuBar\">&nbsp;";
 		// Generate the menu
@@ -158,7 +205,7 @@ class Canvas {
 		foreach ($languages as &$lng) {
 			if ($lng !== $this->languageCode) {
 				echo "<a href=\"//".$_SERVER['SERVER_NAME']."/".$lng."/home\">";
-				echo "<img alt=\"".$lng."\" src=\"//".$_SERVER['SERVER_NAME']."/site/flags/".$lng.".png\"/>";
+				echo "<img alt=\"".$lng."\" src=\"".$this->canvasRelPath."/flags/".$lng.".png\"/>";
 				echo "</a>";
 			}
 		}
@@ -182,48 +229,46 @@ class Canvas {
 		echo "<div style=\"clear:both;\"></div>\n";
 		echo "</div><!--end of container-->\n";
 		echo "<div id=\"footer\">\n";
-		echo "<div id=\"ILike\"><g:plusone size=\"medium\"></g:plusone></div>\n";
+		echo '<div id="ILike"><g:plusone href="http://javaluator.sourceforge.net\" size="medium"></g:plusone></div>'."\n";
 		echo "<div class=\"fb-like\" data-href=\"http://javaluator.sourceforge.net\" data-send=\"false\" data-width=\"450\" data-show-faces=\"true\"></div>";
 		echo "<div class=\"hosted\">\n";
 		echo $this->hostedBy." <a class=\"SFLogo\" href=\"http://sourceforge.net/\"><img src=\"http://sflogo.sourceforge.net/sflogo.php?group_id=276272&amp;type=10\" alt=\"SourceForge.net\"/></a>\n";
 		echo "</div>\n";
 		echo "</div><!--end of footer-->\n";
 		echo "</div><!--end of page-->\n";
-		echo '<p id="back-top"><a href="#"><span></span>'.$this->goupWording.'</a></p>';
+		echo '<p id="back-top"><a href="#"><span></span>'.$this->translations->goupWording."</a></p>\n";
 		echo "<script type=\"text/javascript\" src=\"//astesana.net/banner/charlie.js\"></script>\n";
 		$this->generateGoogleAnalytics();
 		echo "</body>\n";
-		echo "</html>\n";
-	}
-
-	function getDonateButton() {
-		if (isset($this->donate)) {
-			return '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'.
-					'<input type="hidden" name="cmd" value="_s-xclick">'.
-					'<input type="hidden" name="hosted_button_id" value="SA5ASSD6NJYLW">'.
-					$this->donate.'</form>';
-		} else {
-			return "";
-		}
+		echo "</html>";
 	}
 	
 	private function generateAdverstising() {
-		echo "<span class=\"pubTitle\">".$this->pubAreaTitle."</span> \n";
+		echo "<span class=\"pubTitle\">".$this->translations->pubAreaTitle."</span> \n";
 		echo '<div id="adContainer">';
 		echo "<script type=\"text/javascript\"><!--\n";
 		echo "google_ad_client = \"pub-4534386577866276\";\n";
-		echo "/* YapbamHome */\n";
 		echo "google_ad_slot = \"2668678279\";\n";
 		echo "google_ad_width = 160;\n";
 		echo "google_ad_height = 600;\n";
 		echo "//-->\n";
 		echo "</script>\n";
-		echo "<script type=\"text/javascript\"\n";
-		echo "src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\n";
-		echo "</script>\n";
-		echo "<script type=\"text/javascript\" src=\"//".$_SERVER['SERVER_NAME']."/site/testAdBlocked.js\"></script>\n";
-		echo '<script>testAdBlocked("'.$this->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
+		echo "<script type=\"text/javascript\" src=\"//pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"".$this->canvasRelPath."/testAdBlocked.js\"></script>\n";
+		echo '<script>testAdBlocked("'.$this->translations->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
 		echo "</div>\n";
+	}
+	
+	function getDonateButton() {
+		if (isset($this->translations->paypalAlt)) {
+			$button = "<input type=\"image\" src=\"https://www.paypalobjects.com/".$this->translations->fullLocale."/i/btn/btn_donate_SM.gif\" border=\"0\" name=\"submit\" alt=\"".$this->translations->paypalAlt."\">";
+			return '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'.
+					'<input type="hidden" name="cmd" value="_s-xclick">'.
+					'<input type="hidden" name="hosted_button_id" value="'.'SA5ASSD6NJYLW'.'">'.
+					$button.'</form>';
+		} else {
+			return "";
+		}
 	}
 	
 	private function generateGoogleAnalytics() {
@@ -233,7 +278,7 @@ class Canvas {
 		echo "</script>\n";
 		echo "<script type=\"text/javascript\">\n";
 		echo "try {\n";
-		echo "var pageTracker = _gat._getTracker(\"UA-1810735-4\");\n";
+		echo "var pageTracker = _gat._getTracker(\"".'UA-1810735-4'."\");\n";
 		echo "pageTracker._trackPageview();\n";
 		echo "} catch(err) {}</script>\n";
 	}

@@ -1,6 +1,10 @@
 <?php header("Content-type: text/css"); ?>
 <?php
 	include "cssConstants.php";
+	if (array_key_exists('contentWidth', $_GET)) {
+		$content_width = $_GET['contentWidth'];
+	}
+	header("Content-type: text/css");
 ?>
 #page{
 	margin: 0.5em;
