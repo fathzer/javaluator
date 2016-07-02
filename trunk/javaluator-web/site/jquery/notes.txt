@@ -1,0 +1,12 @@
+Fichiers de ColorBox :
+css/colorbox.css
+css/images/border.png
+css/images/controls.png
+css/images/loading.gif
+css/images/loading_background.png
+
+Fichiers de Superfish :
+js/supersubs.js
+css/superfish.css -> C'est l� que sont les modifs faites pour se conformer au l&f du site
+css/superfish-navbar.css
+css/superfish-vertical.css

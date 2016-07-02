@@ -8,7 +8,7 @@
 	"fullLocale":"en_US",
 
 	"cookieValidation":{
-		"message":"This website uses cookies.",
+		"message":"This site uses cookies from Google to customize advertising and analyse site usage. Data related to this site usage is shared with Google. Browsing this site implies you accept this.",
 		"ok":"Got it!",
 		"more":"More info"
 	}

@@ -1,0 +1,16 @@
+{
+	"languages":["en"],
+	"likeURL":"http://javaluator.sourceforge.net",
+	"paypalId":"SA5ASSD6NJYLW",
+	"adSense":{
+		"clientId":"pub-4534386577866276",
+		"slot":"2668678279"
+	},
+	"googleAnalyticsTrackerId":"UA-1810735-4",
+	"adBlockStatsId":"javaluator",
+	"hosted":{
+		"link":"http://sourceforge.net/",
+		"icon":"http://sflogo.sourceforge.net/sflogo.php?group_id=276272&amp;type=10",
+		"alt":"SourceForge.net"
+	}
+}

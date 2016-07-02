@@ -8,7 +8,7 @@
 	"fullLocale":"fr_FR",
 	
 	"cookieValidation":{
-		"message":"Ce site utilise des cookies.",
+		"message":"Ce site utilise des cookies provenant de Google afin de personnaliser les annonces et analyser le trafic. Les informations relatives à votre utilisation du site sont partagées avec Google. En restant sur ce site, vous acceptez l'utilisation de ces cookies.",
 		"ok":"Ok",
 		"more":"Plus d'information"
 	}
