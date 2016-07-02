@@ -36,7 +36,7 @@
 /*** DEMO SKIN ***/
 .sf-menu {
 	float: left;
-/*	margin-bottom: 1em; //YAPBAM removed to have the right height */
+	margin-bottom: 1em;
 }
 .sf-menu ul {
 	box-shadow: 2px 2px 6px rgba(0,0,0,.2);
@@ -44,38 +44,32 @@
 	*width: 12em; /* no auto sub width for IE7, see white-space comment below */
 }
 .sf-menu a {
-	/*border-left: 1px solid #fff; //YAPBAM removed (as 2 more lines) to prevent having white borders*/
-	/*border-top: 1px solid #dFeEFF; /* fallback colour must use full shorthand */
-	/*border-top: 1px solid rgba(255,255,255,.5);*/
+	border-left: 1px solid #fff;
+	border-top: 1px solid #dFeEFF; /* fallback colour must use full shorthand */
+	border-top: 1px solid rgba(255,255,255,.5);
 	padding: .75em 1em;
 	text-decoration:none;
 	zoom: 1; /* IE7 */
 }
 .sf-menu a {
-	color: #ccc; /* YAPBAM Right color */
-	text-transform: uppercase; /* YAPBAM Uppercased letters in menu */
+	color: #13a;
 }
-.sf-menu a.current  {/* YAPBAM to have current highlighted */
-	color:		#fff; 
-	font-weight : bold;
-}
-
 .sf-menu li {
-	/*background: #BDFFD2; /* YAPBAM Transparent background for menu */
+	background: #BDD2FF;
 	white-space: nowrap; /* no need for Supersubs plugin */
 	*white-space: normal; /* ...unless you support IE7 (let it wrap) */
 	-webkit-transition: background .2s;
 	transition: background .2s;
 }
 .sf-menu ul li {
-	background: #333; /* YAPBAM Right color */
+	background: #AABDE6;
 }
 .sf-menu ul ul li {
-	background: #333; /* YAPBAM Right color */
+	background: #9AAEDB;
 }
 .sf-menu li:hover,
 .sf-menu li.sfHover {
-	background: #555555;  /* YAPBAM Right color */
+	background: #CFDEFF;
 	/* only transition out, not in */
 	-webkit-transition: none;
 	transition: none;

@@ -35,10 +35,24 @@ class Canvas {
 			fclose($fic);
 		}
 		$this->menuHierarchy = $this->explodeTree($arr);
-		$json = file_get_contents($documentRoot."/".$this->languageCode."/siteLocalization.json");
-		$this->siteCustomTranslations = json_decode($json, false);
-		$json = file_get_contents($canvasRoot."/translations/canvas_".$this->languageCode.".json");
-		$this->translations = json_decode($json, false);
+		$this->siteCustomTranslations = $this->parseJSon($documentRoot."/".$this->languageCode."/siteLocalization.json");
+		$this->translations = $this->parseJSon($canvasRoot."/translations/canvas_".$this->languageCode.".json");
+		$this->customization = $this->parseJSon($canvasRoot."/customization/custom.json");
+		if (!isset($this->customization) || !isset($this->translations) || !isset($this->siteCustomTranslations)) {
+			exit();
+		}
+	}
+	
+	private function parseJSon($filePath) {
+		$json = file_get_contents($filePath);
+		$result = json_decode($json, false);
+		if (!isset($result)) {
+			echo "FATAL_ERROR: Unable to parse json file ".$filePath;
+			if (isset($json)) {
+				var_dump ($json);
+			}
+		}
+		return $result;
 	}
 	
 	function setContentWidth($width) {
@@ -162,7 +176,7 @@ class Canvas {
 			});
 		</script>
 		<?php
-		echo "<meta name=\"description\" content=\"".$this->description."\"/>\n";
+		echo "<meta name=\"description\" content=\"".$this->siteCustomTranslations->description."\"/>\n";
 		echo "<title>".$this->title."</title>\n";
 		echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">";
 		echo "{lang: '".$this->languageCode."'}";
@@ -193,16 +207,17 @@ class Canvas {
 			</script>
 <?php		
 		echo "<div id=\"page\"><div id=\"top\">";
+//TODO Documentation is not clear about how to add a flattr button to a site.
+//The following code seems obsolete and fb8le2w is not my account id, strange.
 		echo "<div id=\"flattr\"><script id='fb8le2w'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=Fathzer&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb8le2w');</script></div>";
-		echo "<a href=\"//".$_SERVER['SERVER_NAME']."\"> <img src=\"".$this->canvasRelPath."/title.png\" alt=\"Home\" /></a>";
+		echo "<a href=\"//".$_SERVER['SERVER_NAME']."\"> <img src=\"".$this->canvasRelPath."/customization/title.png\" alt=\"Home\" /></a>";
 		echo "</div><!--end of top-->\n";
 		echo "<div id=\"menuBar\">&nbsp;";
 		// Generate the menu
 		$this->plot("", $this->menuHierarchy);
 		// Generate the language icons
-		$languages = array("en");
 		echo "<div id=\"localizedLink\">";
-		foreach ($languages as &$lng) {
+		foreach ($this->customization->languages as &$lng) {
 			if ($lng !== $this->languageCode) {
 				echo "<a href=\"//".$_SERVER['SERVER_NAME']."/".$lng."/home\">";
 				echo "<img alt=\"".$lng."\" src=\"".$this->canvasRelPath."/flags/".$lng.".png\"/>";
@@ -229,11 +244,14 @@ class Canvas {
 		echo "<div style=\"clear:both;\"></div>\n";
 		echo "</div><!--end of container-->\n";
 		echo "<div id=\"footer\">\n";
-		echo '<div id="ILike"><g:plusone href="http://javaluator.sourceforge.net\" size="medium"></g:plusone></div>'."\n";
-		echo "<div class=\"fb-like\" data-href=\"http://javaluator.sourceforge.net\" data-send=\"false\" data-width=\"450\" data-show-faces=\"true\"></div>";
-		echo "<div class=\"hosted\">\n";
-		echo $this->hostedBy." <a class=\"SFLogo\" href=\"http://sourceforge.net/\"><img src=\"http://sflogo.sourceforge.net/sflogo.php?group_id=276272&amp;type=10\" alt=\"SourceForge.net\"/></a>\n";
-		echo "</div>\n";
+		echo '<div id="ILike"><g:plusone href="'.$this->customization->likeURL."\" size=\"medium\"></g:plusone></div>\n";
+		echo "<div class=\"fb-like\" data-href=\"".$this->customization->likeURL."\" data-send=\"false\" data-width=\"450\" data-show-faces=\"true\"></div>\n";
+		if (isset($this->customization->hosted)) {
+			echo "<div class=\"hosted\">\n";
+			$hosted = $this->customization->hosted;
+			echo $this->translations->hostedBy." <a class=\"SFLogo\" href=\"".$hosted->link."\"><img src=\"".$hosted->icon."\" alt=\"".$hosted->alt."\"/></a>\n";
+			echo "</div>\n";
+		}
 		echo "</div><!--end of footer-->\n";
 		echo "</div><!--end of page-->\n";
 		echo '<p id="back-top"><a href="#"><span></span>'.$this->translations->goupWording."</a></p>\n";
@@ -247,15 +265,15 @@ class Canvas {
 		echo "<span class=\"pubTitle\">".$this->translations->pubAreaTitle."</span> \n";
 		echo '<div id="adContainer">';
 		echo "<script type=\"text/javascript\"><!--\n";
-		echo "google_ad_client = \"pub-4534386577866276\";\n";
-		echo "google_ad_slot = \"2668678279\";\n";
+		echo 'google_ad_client = "'.$this->customization->adSense->clientId."\";\n";
+		echo 'google_ad_slot = "'.$this->customization->adSense->slot."\";\n";
 		echo "google_ad_width = 160;\n";
 		echo "google_ad_height = 600;\n";
 		echo "//-->\n";
 		echo "</script>\n";
 		echo "<script type=\"text/javascript\" src=\"//pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 		echo "<script type=\"text/javascript\" src=\"".$this->canvasRelPath."/testAdBlocked.js\"></script>\n";
-		echo '<script>testAdBlocked("'.$this->translations->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
+		echo '<script>testAdBlocked("'.$this->customization->adBlockStatsId.'","'.$this->translations->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
 		echo "</div>\n";
 	}
 	
@@ -264,7 +282,7 @@ class Canvas {
 			$button = "<input type=\"image\" src=\"https://www.paypalobjects.com/".$this->translations->fullLocale."/i/btn/btn_donate_SM.gif\" border=\"0\" name=\"submit\" alt=\"".$this->translations->paypalAlt."\">";
 			return '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'.
 					'<input type="hidden" name="cmd" value="_s-xclick">'.
-					'<input type="hidden" name="hosted_button_id" value="'.'SA5ASSD6NJYLW'.'">'.
+					'<input type="hidden" name="hosted_button_id" value="'.$this->customization->paypalId.'">'.
 					$button.'</form>';
 		} else {
 			return "";
@@ -278,7 +296,7 @@ class Canvas {
 		echo "</script>\n";
 		echo "<script type=\"text/javascript\">\n";
 		echo "try {\n";
-		echo "var pageTracker = _gat._getTracker(\"".'UA-1810735-4'."\");\n";
+		echo "var pageTracker = _gat._getTracker(\"".$this->customization->googleAnalyticsTrackerId."\");\n";
 		echo "pageTracker._trackPageview();\n";
 		echo "} catch(err) {}</script>\n";
 	}

@@ -1,8 +1,8 @@
-function testAdBlocked(message, donateButton) {
+function testAdBlocked(id, message, donateButton) {
 	$.getScript("//astesana.net/adBlockStats/jquery.isAdBlocked.js")
 		.done(function(script, textStatus) {
 			try {
-				var params = {id:"javaluator", callback:function(data) {
+				var params = {id:id, callback:function(data) {
 					console.log(data);
 				}};
 				var blocked = $("#adContainer").isAdBlocked(params);
@@ -20,6 +20,7 @@ function testAdBlocked(message, donateButton) {
 				console.log(error);
 			}
 		}).fail(function(jqxhr, settings, exception) {
-			console.log("Triggered ajaxError handler.");
+			console.log("Unable to call addBlockStats.");
+			console.log(jqxhr);
 		});
 }
