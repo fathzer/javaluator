@@ -1,6 +1,6 @@
 <?php header("Content-type: text/javascript"); ?>
 <?php
-	include "cssConstants.php";
+	include "customization/cssConstants.php";
 ?>
 /** This script allows to emphasize the last question clicked.*/
 var current=0; // The currently selected question number.

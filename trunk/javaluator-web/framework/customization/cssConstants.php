@@ -5,5 +5,5 @@
 	$border_color = "#BBB";
 	$cool_text_color = "#608060";
 	$google_width = 160;
-	$content_width = 700;
+	$content_width = 730;
 ?>
