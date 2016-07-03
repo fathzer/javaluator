@@ -1,21 +1,28 @@
 ﻿﻿<?php
 /* Download Javaluator (en) */
-include substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]))."/framework/canvas.php";
-include substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]))."/framework/cssConstants.php";
-$page = new Canvas();
-$page->openHead();?>
-<style type="text/css">
-	h1 {
-		color: <?php echo $cool_text_color?>;
+$siteRoot = substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
+include_once $siteRoot."/framework/canvas.php";
+
+class Download extends Canvas {
+	function Download() {
+		parent::Canvas();
 	}
-	.note {
-		text-color: <?php echo $cool_text_color?>;
-		font-size: 75%;
-		font-style: italic;
+
+	function generateExtraHeader() {
+		global $siteRoot;
+		include $siteRoot."/framework/customization/cssConstants.php";
+		?>
+		<style type="text/css">
+			h1 {
+				color: <?php echo $cool_text_color?>;
+			}
+		</style>
+<?php
 	}
-</style>
-<?php $page->closeHeadOpenContent();?>
-<h1>Where could you download Javaluator ? </h1>
+}
+$page = new Download();
+$page->generateHeader();?>
+<h1>Where could you download Javaluator?</h1>
 <a href="http://sourceforge.net/projects/javaluator/files/latest"><img src="../../framework/download.png"/>Here !</a>
 <p>Javaluator is also available through Maven:<br><code>
 &lt;dependency&gt;<br>

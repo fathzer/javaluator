@@ -47,6 +47,7 @@ class Canvas {
 			// This should happen when the url is not referenced in the menu
 			$this->title = "";
 		}
+//		var_dump($this);
 	}
 	
 	private function parseJSon($filePath) {
@@ -152,7 +153,7 @@ class Canvas {
 		echo "</ul>";
 	}
 	
-	function openHead() {
+	private function openHead() {
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		echo "<html xmlns=\"//www.w3.org/1999/xhtml\" xml:lang=\"".$this->languageCode."\" lang=\"".$this->languageCode."\">\n";
 		echo "<head>\n";
@@ -196,7 +197,7 @@ class Canvas {
 		// End Cookie Consent plugin
 	}
 	
-	function closeHeadOpenContent() {
+	private function closeHeadOpenContent() {
 		echo "</head>\n";
 		echo "<body>\n";
 ?>
@@ -238,7 +239,11 @@ class Canvas {
 	
 	function generateHeader() {
 		$this->openHead();
+		$this->generateExtraHeader();
 		$this->closeHeadOpenContent();
+	}
+	
+	protected function generateExtraHeader() {
 	}
 	
 	function generateFooter() {
@@ -278,10 +283,10 @@ class Canvas {
 		echo "</script>\n";
 		echo "<script type=\"text/javascript\" src=\"//pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 		echo "<script type=\"text/javascript\" src=\"".$this->canvasRelPath."/testAdBlocked.js\"></script>\n";
-		if (!isset($this->translations->adBlockMessage)) {
-			$this->translations->adBlockMessage = "";
+		if (!isset($this->siteCustomTranslations->adBlockMessage)) {
+			$this->siteCustomTranslations->adBlockMessage = "";
 		}
-		echo '<script>testAdBlocked("'.$this->customization->adBlockStatsId.'","'.$this->translations->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
+		echo '<script>testAdBlocked("'.$this->customization->adBlockStatsId.'","'.$this->siteCustomTranslations->adBlockMessage.'", \''.$this->getDonateButton()."');</script>";
 		echo "</div>\n";
 	}
 	

@@ -1,6 +1,6 @@
 <?php header("Content-type: text/css"); ?>
 <?php
-	include "cssConstants.php";
+	include "customization/cssConstants.php";
 	if (array_key_exists('contentWidth', $_GET)) {
 		$content_width = $_GET['contentWidth'];
 	}
@@ -24,14 +24,11 @@ pre, code {
 	padding: 5px;
 	margin: 5px 0;
 	border-radius: 7px;
-	-moz-tab-size: 2;
-	-o-tab-size:   2;
-	tab-size:      2;
 }
 #top {
 	margin:0 auto;
 	margin-bottom: 10px;
-	width: <?php echo ($google_width + $content_width + 55)?>px;
+	width: <?php echo ($google_width + $content_width + 25)?>px;
 }
 #flattr {
 	float: right;
@@ -46,7 +43,7 @@ pre, code {
 	margin-bottom: 0px;
 	margin-left: auto;
 	margin-right: auto;
-	width: <?php echo ($google_width + $content_width + 55)?>px;
+	width: <?php echo ($google_width + $content_width + 25)?>px;
 	background-color: #333;
 	border-radius: 7px;
 }
@@ -64,7 +61,7 @@ pre, code {
 #container {
 	margin:0 auto;
 	margin-top: 10px;
-	width: <?php echo ($google_width + $content_width + 55)?>px;
+	width: <?php echo ($google_width + $content_width + 25)?>px;
 /*	border-style: solid;
 	border-width: thin;
 	border-color: <?php echo $border_color?>;*/
@@ -75,7 +72,7 @@ pre, code {
 	float: left;
 	margin-top: 5px;
 	padding-left: 5px;
-	width: <?php echo ($content_width + 30)?>px;
+	width: <?php echo ($content_width)?>px;
 }
 #content a:link, #content a:visited {
 	color: #2a6;
@@ -118,7 +115,7 @@ pre, code {
 #footer {
 	margin:0 auto;
 	margin-top: 10px;
-	width: <?php echo ($google_width + $content_width + 55)?>px;
+	width: <?php echo ($google_width + $content_width + 25)?>px;
 /*	border-style: solid;
 	border-width: thin;
 	border-color: <?php echo $border_color?>;*/
@@ -158,7 +155,7 @@ pre, code {
 	position: fixed;
 	bottom: 5px;
 	right: 5px;
-/*	margin-left: <?php echo ($google_width + $content_width + 60);?>px;*/
+/*	margin-left: <?php echo ($google_width + $content_width + 30);?>px;*/
 }
 
 #back-top a {
