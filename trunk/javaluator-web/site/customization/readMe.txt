@@ -1,1 +1,0 @@
-hosted object is optionnal.
