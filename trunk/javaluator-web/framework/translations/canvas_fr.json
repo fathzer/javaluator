@@ -1,0 +1,15 @@
+{
+	"hostedBy":"H&eacute;berg&eacute; par",
+	
+	"goupWording":"Haut de page",
+	"pubAreaTitle":"Publicit&eacute;s",
+	"relnotesTitle":"Notes de mise &agrave; jour",
+	"paypalAlt":"PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !",
+	"fullLocale":"fr_FR",
+	
+	"cookieValidation":{
+		"message":"Ce site utilise des cookies provenant de Google afin de personnaliser les annonces et analyser le trafic. Les informations relatives à votre utilisation du site sont partagées avec Google. En restant sur ce site, vous acceptez l'utilisation de ces cookies.",
+		"ok":"Ok",
+		"more":"Plus d'information"
+	}
+}

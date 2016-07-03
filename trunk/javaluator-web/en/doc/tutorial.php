@@ -1,8 +1,8 @@
 ﻿<?php
 /* Tutorial (en) */
 $srcRoot=substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
-include $srcRoot."/site/canvas.php";
-include_once($srcRoot."/site/geshi/geshi.php");
+include $srcRoot."/framework/canvas.php";
+include_once($srcRoot."/custom/geshi/geshi.php");
 $page = new Canvas();
 $page->generateHeader();
 if (isset($_GET['chapter'])) {

@@ -1,10 +1,10 @@
 ﻿<?php
 /* Home page (en) */
 $siteRoot = substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
-include $siteRoot."/site/canvas.php";
+include $siteRoot."/framework/canvas.php";
 $page = new Canvas();
 $page->generateHeader();
-include $siteRoot."/site/Mobile_Detect.php";
+include $siteRoot."/custom/Mobile_Detect.php";
 $detect = new Mobile_Detect();
 ?>
 Javaluator is a simple, but powerful, <a href="http://en.wikipedia.org/wiki/Infix_notation">infix</a>
@@ -26,14 +26,14 @@ Double result = new DoubleEvaluator().evaluate(expression);</code>
 	} else {
 		document.write("<hr/><br/>Try it now !!!<br/><br/>");
 		var attributes = { code:'com.fathzer.soft.javaluator.demo.DemoApplet',
-			archive:'../../site/demo/JavaluatorDemo<?php include $siteRoot."/site/demo/demoId.txt"?>.jar',
+			archive:'../../custom/demo/JavaluatorDemo<?php include $siteRoot."/custom/demo/demoId.txt"?>.jar',
 			width:730, height:300} ;
 		deployJava.runApplet(attributes, {}, '1.6');
 	}
 </script><noscript>A browser with JavaScript enabled is required for this page to operate properly.</noscript>
 -->
 <applet code = 'com.fathzer.soft.javaluator.demo.DemoApplet' 
-        archive = '../../site/demo/JavaluatorDemo<?php include $siteRoot."/site/demo/demoId.txt"?>.jar', 
+        archive = '../../custom/demo/JavaluatorDemo<?php include $siteRoot."/custom/demo/demoId.txt"?>.jar', 
         width = 730, 
         height = 300>
 </applet>
