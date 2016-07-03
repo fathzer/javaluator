@@ -1,4 +1,4 @@
-x
+Next release	Known bug:	Known bugs:	Change:	Changes:	Bug fix:	Bug fixes:
 version	3.0.1 (19/09/2015)
 fix
 	DoubleEvaluator was not thread safe, even when each thread instantiate a new instance.
