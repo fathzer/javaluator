@@ -1,10 +1,10 @@
 ﻿<?php
 /* Javaluator faq (en) */
-include substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]))."/site/canvas.php";
+include substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]))."/framework/canvas.php";
 $page = new Canvas();
 $page->generateHeader();
 ?>
-<script type="text/javascript" src="http://<?php echo $_SERVER['SERVER_NAME'];?>/site/selectChapters.php"> </script>
+<script type="text/javascript" src="http://<?php echo $_SERVER['SERVER_NAME'];?>/framework/selectChapters.php"> </script>
 <div id="docContent"><h1>Frequently asked questions</h1>
 <ul>
   <li><a href="#q1" onclick="select('1')">Is Javaluator free ?</a></li>

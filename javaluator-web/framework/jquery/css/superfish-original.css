@@ -1,0 +1,107 @@
+
+/*** ESSENTIAL STYLES ***/
+.sf-menu, .sf-menu * {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.sf-menu li {
+	position: relative;
+}
+.sf-menu ul {
+	position: absolute;
+	display: none;
+	top: 100%;
+	left: 0;
+	z-index: 99;
+}
+.sf-menu > li {
+	float: left;
+}
+.sf-menu li:hover > ul,
+.sf-menu li.sfHover > ul {
+	display: block;
+}
+
+.sf-menu a {
+	display: block;
+	position: relative;
+}
+.sf-menu ul ul {
+	top: 0;
+	left: 100%;
+}
+
+
+/*** DEMO SKIN ***/
+.sf-menu {
+	float: left;
+	margin-bottom: 1em;
+}
+.sf-menu ul {
+	box-shadow: 2px 2px 6px rgba(0,0,0,.2);
+	min-width: 12em; /* allow long menu items to determine submenu width */
+	*width: 12em; /* no auto sub width for IE7, see white-space comment below */
+}
+.sf-menu a {
+	border-left: 1px solid #fff;
+	border-top: 1px solid #dFeEFF; /* fallback colour must use full shorthand */
+	border-top: 1px solid rgba(255,255,255,.5);
+	padding: .75em 1em;
+	text-decoration:none;
+	zoom: 1; /* IE7 */
+}
+.sf-menu a {
+	color: #13a;
+}
+.sf-menu li {
+	background: #BDD2FF;
+	white-space: nowrap; /* no need for Supersubs plugin */
+	*white-space: normal; /* ...unless you support IE7 (let it wrap) */
+	-webkit-transition: background .2s;
+	transition: background .2s;
+}
+.sf-menu ul li {
+	background: #AABDE6;
+}
+.sf-menu ul ul li {
+	background: #9AAEDB;
+}
+.sf-menu li:hover,
+.sf-menu li.sfHover {
+	background: #CFDEFF;
+	/* only transition out, not in */
+	-webkit-transition: none;
+	transition: none;
+}
+
+/*** arrows **/
+.sf-menu a.sf-with-ul {
+	padding-right: 2.25em;
+	min-width: 1px; /* trigger IE7 hasLayout so spans position accurately */
+}
+.sf-sub-indicator {
+	position: absolute;
+	display: block;
+	right: .75em;
+	top: .9em;
+	width: 10px;
+	height: 10px;
+	text-indent: -999em;
+	overflow: hidden;
+	background: url(../images/arrows-ffffff.png) no-repeat 0 -100px;
+}
+
+li:hover > a .sf-sub-indicator,
+li.sfHover > a .sf-sub-indicator {
+	background-position: -10px -100px;
+}
+
+/* point right for anchors in subs */
+.sf-menu ul .sf-sub-indicator {
+	background-position: 0 0;
+}
+.sf-menu ul li:hover > a .sf-sub-indicator,
+.sf-menu ul li.sfHover > a .sf-sub-indicator {
+	background-position: -10px 0;
+}
