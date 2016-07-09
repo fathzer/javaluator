@@ -1,21 +1,22 @@
 <?php
 class Canvas {
-	private $canvasRelPath;
-	private $isColorBoxSet = false;
-	public $documentRoot;
-	
 	private static function startsWith($haystack, $needle){
 		return !strncmp($haystack, $needle, strlen($needle));
 	}
 	
 	function Canvas() {
+		$this->isColorBoxSet = false;
 		$this->documentRoot = substr($_SERVER["SCRIPT_FILENAME"],0,strlen($_SERVER["SCRIPT_FILENAME"])-strlen($_SERVER["PHP_SELF"]));
 		$canvasRoot = $this->documentRoot.substr(realpath(__DIR__),strlen(realpath($this->documentRoot)));
 		$this->canvasRelPath = substr($canvasRoot, strlen($this->documentRoot));
 		// Retrieve language code and relative url (relative to language - fr/toto -> toto)
 		$dummy = explode("/",trim($_SERVER['REQUEST_URI'],"/"),2);
 		$this->languageCode = $dummy[0];
-		$this->relUrl = explode("?",$dummy[1])[0];
+		// Strange: some versions of php fail on line
+		// $this->relUrl = explode("?",$dummy[1])[0];
+		// So we will make the job in 2 lines
+		$dummy = explode("?",$dummy[1]);
+		$this->relUrl = $dummy[0];
 		// Parse the menu hierarchy
 		$arr = array();
 		$fic = fopen($this->documentRoot."/".$this->languageCode."/menu.csv", 'r');
@@ -56,6 +57,7 @@ class Canvas {
 		if (!isset($result)) {
 			echo "FATAL_ERROR: Unable to parse json file ".$filePath;
 			if (isset($json)) {
+				echo "<br>";
 				var_dump ($json);
 			}
 		}
@@ -211,7 +213,7 @@ class Canvas {
 			fjs.parentNode.insertBefore(js, fjs);
 		}(document, 'script', 'facebook-jssdk'));
 			</script>
-<?php		
+<?php
 		echo "<div id=\"page\"><div id=\"top\">";
 //TODO Documentation is not clear about how to add a flattr button to a site.
 //The following code seems obsolete and fb8le2w is not my account id, strange.
