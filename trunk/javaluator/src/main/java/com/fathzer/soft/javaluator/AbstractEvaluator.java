@@ -12,7 +12,7 @@ import java.util.Map;
 
 /** An abstract evaluator, able to evaluate infix expressions.
  * <br>Some standard evaluators are included in the library, you can define your own by subclassing this class.
- * <br>Please note that this class is not thread safe. Under multi-threaded context you may have to instantiate one instance per thread (for instance using java.lang.ThreadLocal).
+ * <br>This class is thread safe.
  * @param <T> The type of values handled by the evaluator 
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
