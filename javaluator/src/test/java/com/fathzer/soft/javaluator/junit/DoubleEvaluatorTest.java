@@ -100,7 +100,7 @@ public class DoubleEvaluatorTest {
 
 	@Test (expected=IllegalArgumentException.class)
 	public void TestFunctionSeparatorHidenByBrackets() {
-		System.out.println (new DoubleEvaluator().evaluate("max((10,15),20)"));
+		System.out.println (new DoubleEvaluator().evaluate("min((10,15),20)"));
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
