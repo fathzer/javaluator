@@ -307,6 +307,14 @@ public abstract class AbstractEvaluator<T> {
 					// If no left parentheses are encountered, either the separator was misplaced
 					// or parentheses were mismatched.
 					throw new IllegalArgumentException("Separator or parentheses mismatched");
+				} else {
+					// Verify we are in function scope
+					Token openBracket = stack.pop();
+					Token scopeToken = stack.peek();
+					stack.push(openBracket);
+					if (!scopeToken.isFunction()) {
+						throw new IllegalArgumentException("Argument separator used outside of function scope");
+					}
 				}
 			} else if (token.isFunction()) {
 				// If the token is a function token, then push it onto the stack.

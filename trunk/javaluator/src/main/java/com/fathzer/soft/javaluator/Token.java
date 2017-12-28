@@ -123,4 +123,10 @@ public class Token {
 		}
 		return (String)this.content;
 	}
+
+	@Override
+	public String toString() {
+		return "Token [kind=" + kind + ", content=" + content + "]";
+	}
+	
 }

@@ -25,12 +25,4 @@ public class ParametersTest {
 		DoubleEvaluator evaluator = new DoubleEvaluator(params);
 		assertEquals(2, evaluator.evaluate("avg(3;1)"),0.001);
 	}
-
-//	@Test (expected=IllegalArgumentException.class)
-//	public void sameTranslatedNames() {
-//		Parameters params = new Parameters();
-//		params.setTranslation(DoubleEvaluator.AVERAGE, "moy");
-//		params.setTranslation(DoubleEvaluator.SUM, "moy");
-//		DoubleEvaluator eval = new DoubleEvaluator(params);
-//	}
 }

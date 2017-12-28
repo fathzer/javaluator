@@ -1,6 +1,5 @@
 package com.fathzer.soft.javaluator.deploy.gui;
 
-import java.io.File;
 import java.util.Arrays;
 
 import com.fathzer.soft.javaluator.deploy.AppletTask;
@@ -15,7 +14,7 @@ public class JavaluatorDeployer {
 	public static void main(String[] args) {
 		Process p = new Process("Deploy Javaluator", "javaluator", Arrays.asList(new Task[] {
 				new ReleaseTask(), new JavadocTask(), new TutorialTask(), new AppletTask()
-		}), new File("deployment"));
+		}));
 		new DeployerGUI(p).launch();
 	}
 }

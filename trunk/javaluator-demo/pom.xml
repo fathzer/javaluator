@@ -3,21 +3,21 @@
   <parent>
     <groupId>com.fathzer</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
   <artifactId>javaluator-demo</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
   
     <dependencies>
   	<dependency>
   		<groupId>com.fathzer</groupId>
   		<artifactId>javaluator</artifactId>
-  		<version>3.0.1</version>
+  		<version>3.0.2</version>
   	</dependency>
   	<dependency>
   		<groupId>com.fathzer</groupId>
   		<artifactId>ajlib</artifactId>
-  		<version>0.3.2</version>
+  		<version>0.3.10</version>
   	</dependency>
   </dependencies>
   
