@@ -100,9 +100,14 @@ public class DoubleEvaluatorTest {
 
 	@Test (expected=IllegalArgumentException.class)
 	public void TestFunctionSeparatorHidenByBrackets() {
-		System.out.println (new DoubleEvaluator().evaluate("min((10,15),20)"));
+		new DoubleEvaluator().evaluate("min((10,15),20)");
 	}
-	
+
+	@Test
+	public void TestComplexFunctionAndParenthesis() {
+		assertEquals(15.0,new DoubleEvaluator().evaluate("min((max(((10-6)*2),7,(15))),19+min(1,5))"), 0.001);
+	}
+
 	@Test (expected=IllegalArgumentException.class)
 	public void testSomethingBetweenFunctionAndOpenBracket() {
 		evaluator.evaluate("sin3(45)");

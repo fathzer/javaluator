@@ -14,7 +14,9 @@ public class ReleaseTask extends Task {
 	@Override
 	public String verify(Context context) {
 		File file = getReleaseFile(context);
-		if (!file.exists() || !file.isFile()) return "Unable to find file "+file.getAbsolutePath();
+		if (!file.isFile()) {
+			return "Unable to find file "+file.getAbsolutePath();
+		}
 		return super.verify(context);
 	}
 
