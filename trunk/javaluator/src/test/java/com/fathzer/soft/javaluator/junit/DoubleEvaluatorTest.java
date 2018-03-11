@@ -142,4 +142,9 @@ public class DoubleEvaluatorTest {
 	public void testStartWithFunctionSeparator() {
 		evaluator.evaluate(",3");
 	}
+
+	@Test (expected=IllegalArgumentException.class)
+	public void testNoArgInAverageFunction() {
+		evaluator.evaluate("avg()");
+	}
 }
