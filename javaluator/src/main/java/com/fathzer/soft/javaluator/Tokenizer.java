@@ -69,6 +69,7 @@ public class Tokenizer {
 		// Be aware that, in case of delimiters containing others (example && and &),
 		// the longer may be before the shorter (&& should be before &) or the regexpr
 		// parser will recognize && as two &.
+		//TODO Create a test to verify that operators that includes others are working
 		Collections.sort(delimiters, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {

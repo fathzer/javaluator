@@ -11,7 +11,7 @@ public class BracketPair {
 	public static final BracketPair BRACKETS = new BracketPair('[', ']');
 	/** The braces pair: {}.*/
 	public static final BracketPair BRACES = new BracketPair('{', '}');
-	/** The angle brackets pair: <>.*/
+	/** The angle brackets pair: &lt;&gt;.*/
 	public static final BracketPair ANGLES = new BracketPair('<', '>');
 
 	private String open;

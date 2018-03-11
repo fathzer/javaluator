@@ -66,9 +66,9 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** A constant that represents e (2.718281...) */
 	public static final Constant E = new Constant("e");
 	
-	/** Returns the smallest integer >= argument */
+	/** Returns the smallest integer &gt;= argument */
 	public static final Function CEIL = new Function("ceil", 1);
-	/** Returns the largest integer <= argument */
+	/** Returns the largest integer &lt;= argument */
 	public static final Function FLOOR = new Function("floor", 1);
 	/** Returns the closest integer of a number */
 	public static final Function ROUND = new Function("round", 1);
@@ -95,13 +95,13 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** Returns the hyperbolic tangent of a number.*/
 	public static final Function TANGENTH = new Function("tanh", 1);
 
-	/** Returns the minimum of n numbers (n>=1) */
+	/** Returns the minimum of n numbers (n&gt;=1) */
 	public static final Function MIN = new Function("min", 1, Integer.MAX_VALUE);
-	/** Returns the maximum of n numbers (n>=1) */
+	/** Returns the maximum of n numbers (n&gt;=1) */
 	public static final Function MAX = new Function("max", 1, Integer.MAX_VALUE);
-	/** Returns the sum of n numbers (n>=1) */
+	/** Returns the sum of n numbers (n&gt;=1) */
 	public static final Function SUM = new Function("sum", 1, Integer.MAX_VALUE);
-	/** Returns the average of n numbers (n>=1) */
+	/** Returns the average of n numbers (n&gt;=1) */
 	public static final Function AVERAGE = new Function("avg", 1, Integer.MAX_VALUE);
 
 	/** Returns the natural logarithm of a number */
@@ -158,8 +158,9 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	
 	/** Gets a copy of DoubleEvaluator default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
-	 * <br>Each call to this method create a new instance of Parameters. 
-	 * @return a Paramaters instance
+	 * <br>Each call to this method create a new instance of Parameters.
+	 * @param style The operator precedence style of teh evaluator.
+	 * @return a Parameters instance
 	 */
 	public static Parameters getDefaultParameters(Style style) {
 		Parameters result = new Parameters();

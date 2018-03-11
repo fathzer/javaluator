@@ -5,7 +5,7 @@ package com.fathzer.soft.javaluator;
  * <br>Some expressions needs constants. For instance it is impossible to perform trigonometric calculus without using pi.
  * A constant allows you to use mnemonic in your expressions instead of the raw value of the constant.
  * <br>A constant for pi would be defined by :<br>
- * <code>Constant<Double> pi = new Constant<Double>("pi");</code>
+ * <code>Constant&lt;Double&gt; pi = new Constant&lt;Double&gt;("pi");</code>
  * <br>With such a constant, you will be able to evaluate the expression "sin(pi/4)"
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
