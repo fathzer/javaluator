@@ -107,6 +107,12 @@ public class DoubleEvaluatorTest {
 	public void TestComplexFunctionAndParenthesis() {
 		assertEquals(15.0,new DoubleEvaluator().evaluate("min((max(((10-6)*2),7,(15))),19+min(1,5))"), 0.001);
 	}
+	
+	@Test
+	public void TestScientificNotation() {
+		assertEquals(3e-2, evaluator.evaluate("3e-2"), 1e-5);
+		assertEquals(30.9317695E+115, evaluator.evaluate("30.9317695E+115"), 1.0);
+	}
 
 	@Test (expected=IllegalArgumentException.class)
 	public void testSomethingBetweenFunctionAndOpenBracket() {
