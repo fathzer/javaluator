@@ -2,9 +2,13 @@ package com.fathzer.soft.javaluator;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** An evaluator that is able to evaluate arithmetic expressions on real numbers.
  * <br>Built-in operators:<ul>
@@ -45,6 +49,8 @@ import java.util.Locale;
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
+//TODO Scientific notation compliance makes the evaluator more than 2 times slower ...
+//Probably we should make this optional.
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The order or operations (operator precedence) is not clearly defined, especially between the unary minus operator and exponentiation
 	 * operator (see <a href="http://en.wikipedia.org/wiki/Order_of_operations#Exceptions_to_the_standard">http://en.wikipedia.org/wiki/Order_of_operations</a>).
@@ -139,6 +145,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
 	private static Parameters DEFAULT_PARAMETERS;
+	private static final Pattern SCIENTIFIC_NOTATION_PATTERN = Pattern.compile("([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)[eE][+-]?\\d+)$");
 	private static final ThreadLocal<NumberFormat> FORMATTER = new ThreadLocal<NumberFormat>() {
 	  @Override
 	  protected NumberFormat initialValue() {
@@ -194,12 +201,54 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	public DoubleEvaluator(Parameters parameters) {
 		super(parameters);
 	}
+	
+	@Override
+	protected Iterator<String> tokenize(String expression) {
+		// There's a trap with scientific number notation (1E+50 for example):
+		// + is considered as an operator. We'll make a basic work around...
+		final List<String> tokens = new ArrayList<String>();
+		final Iterator<String> rawTokens = super.tokenize(expression);
+		while (rawTokens.hasNext()) {
+			tokens.add(rawTokens.next());
+		}
+		for (int i = 1; i < tokens.size()-1; i++) {
+			testScientificNotation(tokens, i);
+		}
+		return tokens.iterator();
+	}
+
+	private void testScientificNotation(List<String> tokens, int index) {
+		final String previous = tokens.get(index-1);
+		final String next = tokens.get(index+1);
+		final String current = tokens.get(index);
+		final String candidate = previous+current+next;
+		if (isScientificNotation(candidate)) {
+			tokens.set(index-1, candidate);
+			tokens.remove(index);
+			tokens.remove(index);
+		}
+	}
+	
+	public static boolean isScientificNotation(String str) {
+		Matcher matcher = SCIENTIFIC_NOTATION_PATTERN.matcher(str);
+		if (!matcher.find()) {
+			return false;
+		}
+		String matched = matcher.group();
+		return matched.length()==str.length();
+	}
 
 	@Override
 	protected Double toValue(String literal, Object evaluationContext) {
 		ParsePosition p = new ParsePosition(0);
 		Number result = FORMATTER.get().parse(literal, p);
 		if (p.getIndex()==0 || p.getIndex()!=literal.length()) {
+			// For an unknown reason, NumberFormat.getNumberInstance(...) returns a formatter that does not tolerate
+			// scientific notation :-(
+			// Let's try with Double.parse(...)
+			if (isScientificNotation(literal)) {
+				return Double.valueOf(literal);
+			}
 			throw new IllegalArgumentException(literal+" is not a number");
 		}
 		return result.doubleValue();
