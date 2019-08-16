@@ -49,8 +49,6 @@ import java.util.regex.Pattern;
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
-//TODO Scientific notation compliance makes the evaluator more than 2 times slower ...
-//Probably we should make this optional.
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The order or operations (operator precedence) is not clearly defined, especially between the unary minus operator and exponentiation
 	 * operator (see <a href="http://en.wikipedia.org/wiki/Order_of_operations#Exceptions_to_the_standard">http://en.wikipedia.org/wiki/Order_of_operations</a>).
@@ -185,6 +183,8 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		}
 		return DEFAULT_PARAMETERS;
 	}
+
+	private boolean supportsScientificNotation;
 	
 	/** Constructor.
 	 * <br>This default constructor builds an instance with all predefined operators, functions and constants. 
@@ -202,19 +202,35 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		super(parameters);
 	}
 	
+	/** Constructor.
+	 * <br>This constructor can be used to reduce the set of supported operators, functions or constants,
+	 * or to localize some function or constant's names.
+	 * @param parameters The parameters of the evaluator.
+	 * @param supportsScientificNotation true to support scientific number notation (false is the default).<br>
+	 * Please note that supporting scientific number notation makes the evaluator twice as slow.
+	 */
+	public DoubleEvaluator(Parameters parameters, boolean supportsScientificNotation) {
+		super(parameters);
+		this.supportsScientificNotation = supportsScientificNotation;
+	}
+
 	@Override
 	protected Iterator<String> tokenize(String expression) {
-		// There's a trap with scientific number notation (1E+50 for example):
-		// + is considered as an operator. We'll make a basic work around...
-		final List<String> tokens = new ArrayList<String>();
-		final Iterator<String> rawTokens = super.tokenize(expression);
-		while (rawTokens.hasNext()) {
-			tokens.add(rawTokens.next());
+		if (supportsScientificNotation) {
+			// There's a trap with scientific number notation (1E+50 for example):
+			// + is considered as an operator. We'll make a basic work around...
+			final List<String> tokens = new ArrayList<String>();
+			final Iterator<String> rawTokens = super.tokenize(expression);
+			while (rawTokens.hasNext()) {
+				tokens.add(rawTokens.next());
+			}
+			for (int i = 1; i < tokens.size()-1; i++) {
+				testScientificNotation(tokens, i);
+			}
+			return tokens.iterator();
+		} else {
+			return super.tokenize(expression);
 		}
-		for (int i = 1; i < tokens.size()-1; i++) {
-			testScientificNotation(tokens, i);
-		}
-		return tokens.iterator();
 	}
 
 	private void testScientificNotation(List<String> tokens, int index) {
@@ -246,7 +262,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 			// For an unknown reason, NumberFormat.getNumberInstance(...) returns a formatter that does not tolerate
 			// scientific notation :-(
 			// Let's try with Double.parse(...)
-			if (isScientificNotation(literal)) {
+			if (supportsScientificNotation && isScientificNotation(literal)) {
 				return Double.valueOf(literal);
 			}
 			throw new IllegalArgumentException(literal+" is not a number");
@@ -351,6 +367,8 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 				result = result + arguments.next();
 				nb++;
 			}
+			// Remember that method is called only if the number of parameters match with the function
+			// definition => nb will never remain 0 (There's a junit test that fails if it would not be the case).
 			result = result/nb;
 		} else if (LN.equals(function)) {
 			result = Math.log(arguments.next());
