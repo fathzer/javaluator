@@ -1,4 +1,6 @@
 # javaluator
+[![Javadocs](http://javadoc.io/badge/com.fathzer/javaluator.svg)](https://javadoc.io/doc/com.fathzer/javaluator)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.fathzer%3Ajavaluator&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.fathzer%3Ajavaluator)
+
 A java infix evaluator based on "Shunting Yard" algorithm.
 
 Evaluate an arithmetic expression is as simple as:
