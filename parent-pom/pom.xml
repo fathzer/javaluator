@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fathzer</groupId>
 	<artifactId>parent-pom</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<packaging>pom</packaging>
 
 	<name>parent</name>
@@ -22,8 +22,8 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://svn.code.sf.net/p/javaluator/code/trunk</url>
-		<connection>http://svn.code.sf.net/p/javaluator/code/trunk</connection>
+		<url>https://github.com/fathzer/javaluator/tree/master/parent-pom</url>
+		<connection>https://github.com/fathzer/javaluator.git</connection>
 	</scm>
 
 	<developers>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -61,7 +61,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -71,7 +71,7 @@
 			<plugin>
 				<groupId>org.kohsuke</groupId>
 				<artifactId>pgp-maven-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -90,7 +90,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -104,8 +104,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.1.1</version>
 				<configuration>
+					<source>8</source>
 					<doencoding>UTF-8</doencoding>
 					<overview>${basedir}/overview.html</overview>
 					<header>${project.version}</header>
