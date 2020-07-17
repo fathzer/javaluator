@@ -1,0 +1,3 @@
+javaluator-web/framework/* linguist-vendored
+javaluator-web/custom/geshi/* linguist-vendored
+javaluator-web/custom/Mobile_Detect.php -linguist-vendored
