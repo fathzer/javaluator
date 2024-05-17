@@ -95,6 +95,12 @@ public class ExamplesTest {
 		assertFalse(evaluator.evaluate("true && false"));
 		assertTrue(evaluator.evaluate("true || false"));
 		assertFalse(evaluator.evaluate("!true"));
+
+		try {
+			evaluator.evaluate("true!");
+			fail("Expected exception");
+		} catch (Exception expected) {
+		}
 	}
 
 }
