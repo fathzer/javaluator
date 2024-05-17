@@ -1,29 +1,38 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.fathzer</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>1.0.3</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fathzer</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1.0.8</version>
+	</parent>
 
-  <artifactId>javaluator</artifactId>
-  <version>3.0.3</version>
-  
-  <name>javaluator</name>
-  <description>Javaluator is a simple, but powerful, infix expression evaluator for Java.</description>
-  <url>http://javaluator.fathzer.com</url>
+	<artifactId>javaluator</artifactId>
+	<version>3.0.4</version>
 
-  <scm>
-    <url>http://svn.code.sf.net/p/javaluator/code/trunk</url>
-    <connection>http://svn.code.sf.net/p/javaluator/code/trunk</connection>
-  </scm>
+	<name>javaluator</name>
+	<description>Javaluator is a simple, but powerful, infix expression
+		evaluator for Java.</description>
+	<url>http://javaluator.fathzer.com</url>
 
-  <dependencies>
-  	<dependency>
-  		<groupId>net.jodah</groupId>
-  		<artifactId>concurrentunit</artifactId>
-  		<version>0.4.2</version>
-  		<scope>test</scope>
-  	</dependency>
-  </dependencies>
+	<scm>
+		<url>https://github.com/fathzer/javaluator.git</url>
+		<connection>https://github.com/fathzer/javaluator.git</connection>
+	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.jodah</groupId>
+			<artifactId>concurrentunit</artifactId>
+			<version>0.4.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
