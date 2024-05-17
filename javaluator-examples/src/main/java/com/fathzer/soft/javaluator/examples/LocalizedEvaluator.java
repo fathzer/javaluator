@@ -1,6 +1,6 @@
 package com.fathzer.soft.javaluator.examples;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
@@ -27,13 +27,22 @@ public class LocalizedEvaluator extends DoubleEvaluator {
 		PARAMS.setFunctionArgumentSeparator(';');
 	}
 
-	private DecimalFormat format;
+	private final NumberFormat format;
+	private final char effectiveThousandsSeparator;
 
 	public LocalizedEvaluator() {
 		super(PARAMS);
 		// Create a French number formatter
-		format = (DecimalFormat) DecimalFormat.getInstance(Locale.FRENCH);
+		format = NumberFormat.getInstance(Locale.FRENCH);
 		format.setGroupingUsed(true);
+		// Unfortunately, Java treatment of French thousands separator is ... weird:
+		// Most French people (like me some years ago) think the separator is a space.
+		// But java thought (at least until java 8) it was Non-breaking space. But since
+		// (at least Java 17) they changed their mind and now it's "Espace fine insécable".
+		// As they have other priorities than the stability of their API, trying to parse
+		// with the wrong category of space gives a wrong result.
+		// Let's try to be kind with or users: We will replace all kind of spaces by the one java accepts
+		effectiveThousandsSeparator = format.format(1000.0).charAt(1);
 	}
 
 	@Override
@@ -41,16 +50,18 @@ public class LocalizedEvaluator extends DoubleEvaluator {
 		// Override the method that converts a literal to a number, in order to match with
 		// the French decimal separator
 		try {
-			// For a strange reason, Java thinks that only non breaking spaces are French thousands
-			// separators. So, we will replace spaces in the literal by non breaking spaces
-			literal = literal.replace(' ', (char)0x00A0); 
+			// For a strange reason, Java thinks that only "fine non breaking spaces" or "non breaking spaces" are
+			// French thousands separators. So, we will replace all kind of spaces in the literal by the java one
+			literal = literal.replace(' ', effectiveThousandsSeparator); 
+			literal = literal.replace((char)0x00A0, effectiveThousandsSeparator); 
+			literal = literal.replace((char)0x202F, effectiveThousandsSeparator); 
 			return format.parse(literal).doubleValue();
 		} catch (ParseException e) {
 			// If the number has a wrong format, throw the right exception.
 			throw new IllegalArgumentException(literal+" is not a number");
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		// Test that all this stuff is ok
 		LocalizedEvaluator evaluator = new LocalizedEvaluator();
