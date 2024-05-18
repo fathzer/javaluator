@@ -13,20 +13,20 @@ public class Operator {
 		/** No associativity.*/
 		NONE
 	}
-	private String symbol;
-	private int precedence;
-	private int operandCount;
-	private Associativity associativity;
+	private final String symbol;
+	private final int precedence;
+	private final int operandCount;
+	private final Associativity associativity;
 
 	/** Constructor.
 	 * @param symbol The operator name (Currently, the name's length must be one character). 
 	 * @param operandCount The number of operands of the operator (must be 1 or 2).
-	 * @param associativity true if operator is left associative
+	 * @param associativity The associativity of the operator.
 	 * @param precedence The <a href="http://en.wikipedia.org/wiki/Order_of_operations">precedence</a> of the operator.
 	 * <br>The precedence is the priority of the operator. An operator with an higher precedence will be executed before an operator with a lower precedence.
 	 * Example : In "<i>1+3*4</i>" * has a higher precedence than +, so the expression is interpreted as 1+(3*4).
-	 * @throws IllegalArgumentException if operandCount if not 1 or 2 or if associativity is none
-	 * @throws NullPointerException if symbol or associativity are null
+	 * @throws IllegalArgumentException if operandCount if not 1 or 2, or if associativity is {@link Associativity#NONE} or null, or if symbol is null, empty
+	 * or starts/ends with a space character.
 	 */
 	public Operator(String symbol, int operandCount, Associativity associativity, int precedence) {
 		if (symbol==null || associativity==null) {

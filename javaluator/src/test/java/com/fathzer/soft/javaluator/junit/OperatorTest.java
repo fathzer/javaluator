@@ -37,13 +37,22 @@ public class OperatorTest {
 	public void noAssociativity() {
 		new Operator("+",2,null, 1);
 	}
+	@Test(expected = IllegalArgumentException.class)
+	public void IllegalAssociativity() {
+		new Operator("+",2,Associativity.NONE, 1);
+	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void OperandCountTooHigh() {
+	public void operandCountTooHigh() {
 		new Operator("+",3,Associativity.LEFT, 1);
 	}
 	@Test(expected = IllegalArgumentException.class)
-	public void OperandCountTooLow() {
+	public void operandCountTooLow() {
 		new Operator("+",0,Associativity.LEFT, 1);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void totallyWrong() {
+		new Operator(null,0,null, 1);
 	}
 }
