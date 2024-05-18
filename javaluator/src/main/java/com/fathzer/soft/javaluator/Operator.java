@@ -1,8 +1,6 @@
 package com.fathzer.soft.javaluator;
 
 /** An <a href="http://en.wikipedia.org/wiki/Operator_(mathematics)">operator</a>.
- * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
  */
 public class Operator {
 	/** An Operator's <a href="http://en.wikipedia.org/wiki/Operator_associativity">associativity</a>.
@@ -32,10 +30,13 @@ public class Operator {
 	 */
 	public Operator(String symbol, int operandCount, Associativity associativity, int precedence) {
 		if (symbol==null || associativity==null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException("Operator symbol and associativity can't be null");
 		}
-		if (symbol.length()==0) {
-			throw new IllegalArgumentException("Operator symbol can't be null");
+		if (!symbol.trim().equals(symbol)) {
+			throw new IllegalArgumentException("Operator can't start or end by a blank char");
+		}
+		if (symbol.isEmpty()) {
+			throw new IllegalArgumentException("Operator symbol can't be empty");
 		}
 		if ((operandCount<1) || (operandCount>2)) {
 			throw new IllegalArgumentException("Only unary and binary operators are supported");
@@ -87,8 +88,8 @@ public class Operator {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + operandCount;
-		result = prime * result + ((associativity == null) ? 0 : associativity.hashCode());
-		result = prime * result + ((symbol == null) ? 0 : symbol.hashCode());
+		result = prime * result + associativity.hashCode();
+		result = prime * result + symbol.hashCode();
 		result = prime * result + precedence;
 		return result;
 	}
@@ -104,17 +105,7 @@ public class Operator {
 		if (!(obj instanceof Operator)) {
 			return false;
 		}
-		Operator other = (Operator) obj;
-		if ((operandCount != other.operandCount) || (associativity != other.associativity)) {
-			return false;
-		}
-		if (symbol == null) {
-			if (other.symbol != null) {
-				return false;
-			}
-		} else if (!symbol.equals(other.symbol)) {
-			return false;
-		}
-		return precedence == other.precedence;
+		final Operator other = (Operator) obj;
+		return associativity==other.associativity && operandCount==other.operandCount && symbol.equals(other.symbol) && precedence==other.precedence;
 	}
 }
