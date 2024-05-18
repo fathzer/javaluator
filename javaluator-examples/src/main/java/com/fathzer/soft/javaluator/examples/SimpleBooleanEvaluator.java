@@ -8,11 +8,11 @@ import com.fathzer.soft.javaluator.*;
  */
 public class SimpleBooleanEvaluator extends AbstractEvaluator<Boolean> {
 	/** The negate unary operator.*/
-	public final static Operator NEGATE = new Operator("!", 1, Operator.Associativity.RIGHT, 3);
+	public static final Operator NEGATE = new Operator("!", 1, Operator.Associativity.RIGHT, 3);
 	/** The logical AND operator.*/
 	private static final Operator AND = new Operator("&&", 2, Operator.Associativity.LEFT, 2);
 	/** The logical OR operator.*/
-	public final static Operator OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
+	public static final Operator OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
 
 	private static final Parameters PARAMETERS;
 	

@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fathzer</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1.0.8</version>
+	</parent>
+	<artifactId>javaluator-parent-pom</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+	<name>javaluator-parent</name>
+	<description>The parent pom used by javaluator.</description>
+	<url>https://javaluator.fathzer.com</url>
+
+	<scm>
+		<url>https://github.com/fathzer/javaluator/tree/master/parent-pom</url>
+		<connection>https://github.com/fathzer/javaluator.git</connection>
+	</scm>
+
+	<properties>
+		<sonar.organization>fathzer</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<modules>
+		<module>javaluator</module>
+		<module>javaluator-examples</module>
+		<module>javaluator-demo</module>
+	</modules>
+</project>

@@ -324,7 +324,7 @@ public abstract class AbstractEvaluator<T> {
 				// If the token is an operator, op1, then:
 				while (!stack.isEmpty()) {
 					Token sc = stack.peek();
-					// While there is an operator token, o2, at the top of the stack
+					// While there is an operator token, op2, at the top of the stack
 					// op1 is left-associative and its precedence is less than or equal
 					// to that of op2,
 					// or op1 has precedence less than that of op2,
@@ -335,7 +335,7 @@ public abstract class AbstractEvaluator<T> {
 					if (sc.isOperator()
 							&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
 									(token.getPrecedence() < sc.getPrecedence()))) {
-						// Pop o2 off the stack, onto the output queue;
+						// Pop op2 off the stack, onto the output queue;
 						output(values, stack.pop(), evaluationContext);
 					} else {
 						break;
