@@ -14,6 +14,7 @@ public class OperatorTest {
 	public void test() {
 		final Operator plus = new Operator("+",2,Associativity.LEFT, 1);
 		assertEquals(DoubleEvaluator.PLUS, plus);
+		assertEquals(DoubleEvaluator.PLUS.hashCode(), plus.hashCode());
 		assertNotEquals(plus, new Operator("-",2,Associativity.LEFT, 1));
 		assertNotEquals(plus, new Operator("+",1,Associativity.LEFT, 1));
 		assertNotEquals(plus, new Operator("+",2,Associativity.RIGHT, 1));
