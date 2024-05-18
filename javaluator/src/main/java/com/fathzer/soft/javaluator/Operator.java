@@ -101,7 +101,7 @@ public class Operator {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (obj instanceof Operator)) {
+		if (!(obj instanceof Operator)) {
 			return false;
 		}
 		Operator other = (Operator) obj;
@@ -115,9 +115,6 @@ public class Operator {
 		} else if (!symbol.equals(other.symbol)) {
 			return false;
 		}
-		if (precedence != other.precedence) {
-			return false;
-		}
-		return true;
+		return precedence == other.precedence;
 	}
 }
