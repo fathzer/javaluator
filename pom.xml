@@ -20,12 +20,27 @@
 		<connection>https://github.com/fathzer/javaluator.git</connection>
 	</scm>
 
-	<properties>
-		<sonar.organization>fathzer</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.source>1.8</maven.compiler.source>
-	</properties>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<maven.compiler.target>1.6</maven.compiler.target>
+				<maven.compiler.source>1.6</maven.compiler.source>
+			</properties>
+		</profile>
+		<profile>
+			<id>sonar</id>
+			<properties>
+				<sonar.organization>fathzer</sonar.organization>
+				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+				<maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.source>1.8</maven.compiler.source>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>

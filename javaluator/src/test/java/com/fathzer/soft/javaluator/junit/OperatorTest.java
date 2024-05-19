@@ -19,6 +19,10 @@ public class OperatorTest {
 		assertNotEquals(plus, new Operator("+",1,Associativity.LEFT, 1));
 		assertNotEquals(plus, new Operator("+",2,Associativity.RIGHT, 1));
 		assertNotEquals(plus, new Operator("+",2,Associativity.LEFT, 2));
+		
+		@SuppressWarnings("unlikely-arg-type")
+		final boolean wrongEquals = plus.equals(null) || plus.equals("+");
+		assertFalse(wrongEquals);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
