@@ -1,4 +1,4 @@
-# javaluator
+# Javaluator
 [![Javadocs](http://javadoc.io/badge/com.fathzer/javaluator.svg)](https://javadoc.io/doc/com.fathzer/javaluator)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fathzer_javaluator&metric=alert_status)](https://sonarcloud.io/dashboard?id=fathzer_javaluator)
 
 A java infix evaluator based on "Shunting Yard" algorithm.
@@ -17,9 +17,9 @@ Key features:
 - Extensible: Define your own grammar, or extends the existing one.
 - Localizable: Define localized names for functions or constants.
 - Syntax check
-- Small footprint: 26kB, no additionnal library required.
+- Small footprint: 26kB, no additional library required.
 - Fully documented
 
-Please visit the project site to learn more : http://javaluator.fathzer.com
+Please visit the project's web site to learn more: https://javaluator.fathzer.com
 
-If you use Javaluator in your product, we will be happy to add a link to your product in the Javaluator web site
+If you use Javaluator in your product, we will be happy to add a link to your product in the Javaluator's web site.

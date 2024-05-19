@@ -20,6 +20,11 @@
 		<connection>https://github.com/fathzer/javaluator.git</connection>
 	</scm>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<animal-sniffer-signature>java16</animal-sniffer-signature>
+	</properties>
+
 	<profiles>
 		<profile>
 			<id>release</id>
@@ -36,8 +41,8 @@
 			<properties>
 				<sonar.organization>fathzer</sonar.organization>
 				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-				<maven.compiler.target>1.8</maven.compiler.target>
-				<maven.compiler.source>1.8</maven.compiler.source>
+				<check-dependencies-java-version>8</check-dependencies-java-version>
+				<maven.compiler.release>8</maven.compiler.release>
 			</properties>
 		</profile>
 	</profiles>
@@ -55,4 +60,14 @@
 		<module>javaluator-examples</module>
 		<module>javaluator-demo</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
