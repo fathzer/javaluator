@@ -23,6 +23,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<animal-sniffer-signature>java16</animal-sniffer-signature>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
 
 	<profiles>
@@ -31,19 +33,34 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<maven.compiler.target>1.6</maven.compiler.target>
-				<maven.compiler.source>1.6</maven.compiler.source>
-			</properties>
+			<modules>
+				<module>javaluator</module>
+				<module>javaluator-examples</module>
+			</modules>
 		</profile>
 		<profile>
 			<id>sonar</id>
 			<properties>
 				<sonar.organization>fathzer</sonar.organization>
 				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-				<check-dependencies-java-version>8</check-dependencies-java-version>
-				<maven.compiler.release>8</maven.compiler.release>
+				<maven.compiler.source>1.7</maven.compiler.source>
+				<maven.compiler.target>1.7</maven.compiler.target>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
 			</properties>
+			<modules>
+				<module>javaluator</module>
+				<module>javaluator-examples</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>demo</id>
+			<properties>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
+			</properties>
+			<modules>
+				<module>javaluator</module>
+				<module>javaluator-demo</module>
+			</modules>
 		</profile>
 	</profiles>
 
@@ -55,11 +72,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<modules>
-		<module>javaluator</module>
-		<module>javaluator-examples</module>
-		<module>javaluator-demo</module>
-	</modules>
 
 	<build>
 		<plugins>
