@@ -46,7 +46,7 @@ jobs:
         run: |
           mvn -P demo package
           mkdir ./demo
-          mv ./demo/target/javaluator-demo.jar ./demo
+          mv ./javaluator-demo/target/javaluator-demo.jar ./demo
           ls -l ./demo/*
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
