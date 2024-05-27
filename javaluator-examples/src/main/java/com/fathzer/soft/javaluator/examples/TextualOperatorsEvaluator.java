@@ -11,11 +11,11 @@ import com.fathzer.soft.javaluator.Parameters;
 
 public class TextualOperatorsEvaluator extends AbstractEvaluator<Boolean> {
 	/** The negate unary operator. */
-	public final static Operator NEGATE = new Operator("NOT", 1, Operator.Associativity.RIGHT, 3);
+	public static final Operator NEGATE = new Operator("NOT", 1, Operator.Associativity.RIGHT, 3);
 	/** The logical AND operator. */
 	private static final Operator AND = new Operator("AND", 2, Operator.Associativity.LEFT, 2);
 	/** The logical OR operator. */
-	public final static Operator OR = new Operator("OR", 2, Operator.Associativity.LEFT, 1);
+	public static final Operator OR = new Operator("OR", 2, Operator.Associativity.LEFT, 1);
 	
 	private static final Parameters PARAMETERS;
 
@@ -45,8 +45,7 @@ public class TextualOperatorsEvaluator extends AbstractEvaluator<Boolean> {
 	}
 
 	@Override
-	protected Boolean evaluate(Operator operator,
-			Iterator<Boolean> operands, Object evaluationContext) {
+	protected Boolean evaluate(Operator operator, Iterator<Boolean> operands, Object evaluationContext) {
 		if (operator == NEGATE) {
 			return !operands.next();
 		} else if (operator == OR) {

@@ -1,0 +1,35 @@
+name: Tutorial check
+on:
+  push:
+    branches:
+      - "*"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Tuto check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check out lichess-bot  
+        uses: actions/checkout@v4
+        with:
+          repository: fathzer/hosting
+          sparse-checkout: javaluator
+          path: './hosting'
+          
+      - name: seeMe
+        run: |
+          ls -l ./hosting
+          echo "--------------"
+          ls -l ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples/*.java
+          echo "--------------"
+          ./javaluator-examples/detectDiff.sh /hosting/javaluator/www/en/doc/tutorial ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples
+          echo "--------------"
+          cat diff.txt
+          
+        
