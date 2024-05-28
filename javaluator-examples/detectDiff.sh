@@ -1,20 +1,26 @@
 #bin/sh
 
-# ./detectDiff.sh ../../hosting/javaluator/www ./src/main/java/com/fathzer
+echo "comparing "$1" with "$2" for java different files"
 
-echo "compare"$1" with "$2
+if [ ! -d $1 ]
+then
+    echo "Directory "$1" is missing"
+	exit 2
+fi
 
-#ls -l $1/*.java
+if [ ! -d $2 ]
+then
+    echo "Directory "$2" is missing"
+	exit 2
+fi
 
-#echo "---------------"
-
-#ls -l $2
-
-
-diff -q $1 $2 | grep "\.javax" > diff.txt
+diff -q --strip-trailing-cr $1 $2 | grep "\.java" > diff.txt
 if [ -s diff.txt ]
 then
-    echo "do something because they're different"
+    echo "differences detected:"
+	cat diff.txt
+	exit 1
 else
-    echo "do something because they're identical"
+    echo "Every thing seems identical"
+	rm diff.txt
 fi

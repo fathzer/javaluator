@@ -1,8 +1,9 @@
+# This workflow build the demonstration application and publish it in Github pages.
 name: Demo
 on:
   push:
     branches:
-      - "*"
+      - "master"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

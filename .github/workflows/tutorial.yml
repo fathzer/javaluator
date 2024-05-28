@@ -1,8 +1,10 @@
+# This workflow checks that the examples contained in javaluator's tutorial in private project "fathzer/hosting" is up to date.
+# It requires a REPO_READ_TOKEN personal access token that can checkout this repository.
 name: Tutorial check
 on:
   push:
     branches:
-      - "*"
+      - "master"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check out lichess-bot  
+      - name: Check out hosting
         uses: actions/checkout@v4
         with:
           repository: fathzer/hosting
@@ -24,12 +26,6 @@ jobs:
           
       - name: seeMe
         run: |
-          ls -l ./hosting
-          echo "--------------"
-          ls -l ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples/*.java
-          echo "--------------"
-          ./javaluator-examples/detectDiff.sh /hosting/javaluator/www/en/doc/tutorial ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples
-          echo "--------------"
-          cat diff.txt
-          
+          chmod +x ./javaluator-examples/detectDiff.sh
+          ./javaluator-examples/detectDiff.sh ./hosting/javaluator/www/en/doc/tutorial ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples
         
