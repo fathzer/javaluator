@@ -7,7 +7,7 @@ import java.util.Map;
  * <br>Here, static means that the values of variables are set before starting to evaluate the expressions.
  * @param <T> The type of the values of the variable (the one handled by the evaluator).
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class StaticVariableSet<T> implements AbstractVariableSet<T> {
 	private final Map<String, T> varToValue;

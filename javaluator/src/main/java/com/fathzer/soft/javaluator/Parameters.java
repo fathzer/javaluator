@@ -9,7 +9,7 @@ import java.util.Map;
 /** The parameters of an evaluator.
  * <br>An evaluator may have different parameters as the supported operators, the supported functions, etc ...
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class Parameters {
 	private String functionSeparator;

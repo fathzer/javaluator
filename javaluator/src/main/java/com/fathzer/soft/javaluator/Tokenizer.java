@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /** A String tokenizer that accepts delimiters that are greater than one character.
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class Tokenizer {
 	private Pattern pattern;

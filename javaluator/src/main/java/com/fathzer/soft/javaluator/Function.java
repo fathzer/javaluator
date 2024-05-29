@@ -2,7 +2,7 @@ package com.fathzer.soft.javaluator;
 
 /** A <a href="http://en.wikipedia.org/wiki/Function_(mathematics)">function</a>.
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class Function {
 	private String name;

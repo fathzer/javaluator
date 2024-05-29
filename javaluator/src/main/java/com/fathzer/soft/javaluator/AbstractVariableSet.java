@@ -5,7 +5,7 @@ package com.fathzer.soft.javaluator;
  * <br>An AbstractVariableSet converts, during the expression evaluation, each variable to its value.
  * @param <T> The type of the values of the variable (the one handled by the evaluator).
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public interface AbstractVariableSet<T> {
 	/** Gets the value of a variable.

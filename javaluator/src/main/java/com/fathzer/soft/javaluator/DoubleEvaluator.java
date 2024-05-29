@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * <li>pi: Ratio of the circumference of a circle to its diameter</li>
  * </ul>
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The order or operations (operator precedence) is not clearly defined, especially between the unary minus operator and exponentiation
