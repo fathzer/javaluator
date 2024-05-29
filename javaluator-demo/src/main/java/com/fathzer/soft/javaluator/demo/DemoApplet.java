@@ -1,6 +1,7 @@
 package com.fathzer.soft.javaluator.demo;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 public class DemoApplet {
 	public static void main(String[] args) {
@@ -8,6 +9,6 @@ public class DemoApplet {
 		frame.setContentPane(new DemoPanel());
 		frame.pack();
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 }
