@@ -43,6 +43,20 @@
 			<properties>
 				<sonar.organization>fathzer</sonar.organization>
 				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+				<!-- Skip System.out usage in examples -->
+				<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
+				<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S106</sonar.issue.ignore.multicriteria.e1.ruleKey>
+				<sonar.issue.ignore.multicriteria.e1.resourceKey>javaluator-examples/**/*</sonar.issue.ignore.multicriteria.e1.resourceKey>
+				<!-- Skip The diamond operator ("<>") should be used (Not supported in java 6) -->
+				<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2293</sonar.issue.ignore.multicriteria.e2.ruleKey>
+				<sonar.issue.ignore.multicriteria.e2.resourceKey>**/*</sonar.issue.ignore.multicriteria.e2.resourceKey>
+				<!-- Skip Fields in a "Serializable" class should either be transient or serializable from demo (unfortunately all swing stuff is unnecessarily serializable) -->
+				<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S1948</sonar.issue.ignore.multicriteria.e3.ruleKey>
+				<sonar.issue.ignore.multicriteria.e3.resourceKey>javaluator-demo/**/*</sonar.issue.ignore.multicriteria.e3.resourceKey>
+				<!-- Exclude demo from code coverage. -->
+				<sonar.coverage.exclusions>javaluator-demo/**</sonar.coverage.exclusions>
+				<!-- Exclude duplucations from examples -->
+				<sonar.cpd.exclusions>javaluator-examples/**/*.java</sonar.cpd.exclusions>
 				<maven.compiler.source>1.7</maven.compiler.source>
 				<maven.compiler.target>1.7</maven.compiler.target>
 				<maven.javadoc.skip>true</maven.javadoc.skip>
@@ -50,6 +64,7 @@
 			<modules>
 				<module>javaluator</module>
 				<module>javaluator-examples</module>
+				<module>javaluator-demo</module>
 			</modules>
 		</profile>
 		<profile>
