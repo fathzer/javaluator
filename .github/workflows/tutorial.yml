@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: fathzer/hosting
+          token: ${{ secrets.REPO_READ_TOKEN }}
           sparse-checkout: javaluator
           path: './hosting'
           
@@ -28,4 +29,3 @@ jobs:
         run: |
           chmod +x ./javaluator-examples/detectDiff.sh
           ./javaluator-examples/detectDiff.sh ./hosting/javaluator/www/en/doc/tutorial ./javaluator-examples/src/main/java/com/fathzer/soft/javaluator/examples
-        
