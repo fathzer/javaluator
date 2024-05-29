@@ -15,15 +15,15 @@ import com.fathzer.soft.javaluator.*;
  */
 public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 	/** The negate unary operator.*/
-	public final static Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
+	public static final Operator NEGATE = new Operator("-", 1, Operator.Associativity.RIGHT, 3);
 	/** The logical AND operator.*/
 	private static final Operator AND = new Operator("*", 2, Operator.Associativity.LEFT, 2);
 	/** The logical OR operator.*/
-	public final static Operator OR = new Operator("+", 2, Operator.Associativity.LEFT, 1);
+	public static final Operator OR = new Operator("+", 2, Operator.Associativity.LEFT, 1);
 	/** The true constant. */
-	public final static Constant TRUE = new Constant("true");
+	public static final Constant TRUE = new Constant("true");
 	/** The false constant. */
-	public final static Constant FALSE = new Constant("false");
+	public static final Constant FALSE = new Constant("false");
 	
 	public static class BitSetEvaluationContext {
 		/** The bitset's length. */
@@ -136,7 +136,6 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		for (int i = 0; i < bitSet.length(); i++) {
 			builder.append(bitSet.get(i)?'1':'0');
 		}
-		String res = builder.toString();
-		return res;
+		return builder.toString();
 	}
 }

@@ -15,7 +15,7 @@ import java.util.Map;
  * <br>This class is thread safe.
  * @param <T> The type of values handled by the evaluator 
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public abstract class AbstractEvaluator<T> {
 	private final Tokenizer tokenizer;
@@ -33,7 +33,7 @@ public abstract class AbstractEvaluator<T> {
 	 */
 	protected AbstractEvaluator(Parameters parameters) {
 		//TODO if constants, operators, functions are duplicated => error
-		final ArrayList<String> tokenDelimitersBuilder = new ArrayList<String>();
+		final List<String> tokenDelimitersBuilder = new ArrayList<String>();
 		this.functions = new HashMap<String, Function>();
 		this.operators = new HashMap<String, List<Operator>>();
 		this.constants = new HashMap<String, Constant>();
@@ -140,41 +140,38 @@ public abstract class AbstractEvaluator<T> {
 	}
 
 	/** Evaluates a constant.
-	 * <br>Subclasses that support constants must override this method.
-	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
-	 * while creating a subclass that accepts constants.
+	 * <br>Subclasses that support constants must override this method (The default implementation throws a UnsupportedOperationException).
 	 * @param constant The constant
 	 * @param evaluationContext The context of the evaluation
 	 * @return The constant's value
+	 * @throws UnsupportedOperationException if implementor of a subclass defined constants but forgot to override this method 
 	 */
 	protected T evaluate(Constant constant, Object evaluationContext) {
-		throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getName());
+		throw new UnsupportedOperationException("evaluate(Constant) is not implemented for "+constant.getName());
 	}
 	
 	/** Evaluates an operation.
-	 * <br>Subclasses that support operators must override this method.
-	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
-	 * while creating a subclass that accepts operators.
+	 * <br>Subclasses that support operators must override this method (The default implementation throws a UnsupportedOperationException).
 	 * @param operator The operator
 	 * @param operands The operands
 	 * @param evaluationContext The context of the evaluation
 	 * @return The result of the operation
+	 * @throws UnsupportedOperationException if implementor of a subclass defined operators but forgot to override this method 
 	 */
 	protected T evaluate(Operator operator, Iterator<T> operands, Object evaluationContext) {
-		throw new RuntimeException("evaluate(Operator, Iterator) is not implemented for "+operator.getSymbol());
+		throw new UnsupportedOperationException("evaluate(Operator, Iterator) is not implemented for "+operator.getSymbol());
 	}
 	
 	/** Evaluates a function.
-	 * <br>Subclasses that support functions must override this method.
-	 * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
-	 * while creating a subclass that accepts functions.
+	 * <br>Subclasses that support functions must override this method (The default implementation throws a UnsupportedOperationException).
 	 * @param function The function
 	 * @param arguments The function's arguments
 	 * @param evaluationContext The context of the evaluation
 	 * @return The result of the function
+	 * @throws UnsupportedOperationException if implementor of a subclass defined functions but forgot to override this method 
 	 */
 	protected T evaluate(Function function, Iterator<T> arguments, Object evaluationContext) {
-		throw new RuntimeException("evaluate(Function, Iterator) is not implemented for "+function.getName());
+		throw new UnsupportedOperationException("evaluate(Function, Iterator) is not implemented for "+function.getName());
 	}
 	
 	private void doFunction(Deque<T> values, Function function, int argCount, Object evaluationContext) {
@@ -280,7 +277,7 @@ public abstract class AbstractEvaluator<T> {
 					// If the token at the top of the stack is a function token, pop it
 					// onto the output queue.
 					int argCount = values.size()-previousValuesSize.pop();
-					doFunction(values, (Function)stack.pop().getFunction(), argCount, evaluationContext);
+					doFunction(values, stack.pop().getFunction(), argCount, evaluationContext);
 				}
 			} else if (token.isFunctionArgumentSeparator()) {
 				if (previous==null) {
@@ -324,7 +321,7 @@ public abstract class AbstractEvaluator<T> {
 				// If the token is an operator, op1, then:
 				while (!stack.isEmpty()) {
 					Token sc = stack.peek();
-					// While there is an operator token, o2, at the top of the stack
+					// While there is an operator token, op2, at the top of the stack
 					// op1 is left-associative and its precedence is less than or equal
 					// to that of op2,
 					// or op1 has precedence less than that of op2,
@@ -335,7 +332,7 @@ public abstract class AbstractEvaluator<T> {
 					if (sc.isOperator()
 							&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
 									(token.getPrecedence() < sc.getPrecedence()))) {
-						// Pop o2 off the stack, onto the output queue;
+						// Pop op2 off the stack, onto the output queue;
 						output(values, stack.pop(), evaluationContext);
 					} else {
 						break;

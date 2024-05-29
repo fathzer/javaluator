@@ -18,8 +18,7 @@ public class OperatorTableModel extends AbstractTableModel {
 		this.operators = new ArrayList<Operator>(collection);
 		Collections.sort(this.operators, new Comparator<Operator>() {
 			public int compare(Operator o1, Operator o2) {
-				int result = o1.getPrecedence()-o2.getPrecedence();
-				return result;
+				return o1.getPrecedence()-o2.getPrecedence();
 			}
 		});
 	}

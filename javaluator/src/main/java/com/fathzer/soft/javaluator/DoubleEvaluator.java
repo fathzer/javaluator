@@ -47,14 +47,14 @@ import java.util.regex.Pattern;
  * <li>pi: Ratio of the circumference of a circle to its diameter</li>
  * </ul>
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The order or operations (operator precedence) is not clearly defined, especially between the unary minus operator and exponentiation
 	 * operator (see <a href="http://en.wikipedia.org/wiki/Order_of_operations#Exceptions_to_the_standard">http://en.wikipedia.org/wiki/Order_of_operations</a>).
 	 * These constants define the operator precedence styles.
 	 */
-	public static enum Style {
+	public enum Style {
 		/** The most commonly operator precedence, where the unary minus as a lower precedence than the exponentiation.
 		 * <br>With this style, used by Google, Wolfram alpha, and many others, -2^2=-4.
 		 */
@@ -142,7 +142,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The whole set of predefined constants */
 	private static final Constant[] CONSTANTS = new Constant[]{PI, E};
 	
-	private static Parameters DEFAULT_PARAMETERS;
+	private static Parameters defaultParameters;
 	private static final Pattern SCIENTIFIC_NOTATION_PATTERN = Pattern.compile("([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)[eE][+-]?\\d+)$");
 	private static final ThreadLocal<NumberFormat> FORMATTER = new ThreadLocal<NumberFormat>() {
 	  @Override
@@ -154,7 +154,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** Gets a copy of DoubleEvaluator standard default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
 	 * <br>Each call to this method create a new instance of Parameters. 
-	 * @return a Paramaters instance
+	 * @return a Parameters instance
 	 * @see Style
 	 */
 	public static Parameters getDefaultParameters() {
@@ -178,10 +178,10 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	}
 
 	private static Parameters getParameters() {
-		if (DEFAULT_PARAMETERS == null) {
-			DEFAULT_PARAMETERS = getDefaultParameters();
+		if (defaultParameters == null) {
+			defaultParameters = getDefaultParameters();
 		}
-		return DEFAULT_PARAMETERS;
+		return defaultParameters;
 	}
 
 	private boolean supportsScientificNotation;

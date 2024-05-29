@@ -4,7 +4,7 @@ package com.fathzer.soft.javaluator;
  * <br>When evaluating an expression, it is first split into tokens.
  * These tokens can be operators, constants, etc ...
  * @author Jean-Marc Astesana
- * @see <a href="../../../license.html">License information</a>
+ * @see <a href="https://opensource.org/license/apache-2-0">License information (Apache 2)</a>
  */
 public class Token {
 	private enum Kind {
