@@ -136,7 +136,6 @@ public class BooleanSetEvaluator extends AbstractEvaluator<BitSet> {
 		for (int i = 0; i < bitSet.length(); i++) {
 			builder.append(bitSet.get(i)?'1':'0');
 		}
-		String res = builder.toString();
-		return res;
+		return builder.toString();
 	}
 }
