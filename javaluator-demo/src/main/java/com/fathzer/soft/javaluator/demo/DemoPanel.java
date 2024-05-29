@@ -13,6 +13,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JTable;
 
@@ -67,13 +68,13 @@ public class DemoPanel extends JPanel {
 		gbcPanel.gridx = 0;
 		gbcPanel.gridy = 1;
 		add(getPanel(), gbcPanel);
-		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.weighty = 1.0;
-		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridwidth = 2;
-		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 2;
-		add(getPanel1(), gbc_panel_1);
+		GridBagConstraints gbcPanel1 = new GridBagConstraints();
+		gbcPanel1.weighty = 1.0;
+		gbcPanel1.fill = GridBagConstraints.BOTH;
+		gbcPanel1.gridwidth = 2;
+		gbcPanel1.gridx = 0;
+		gbcPanel1.gridy = 2;
+		add(getPanel1(), gbcPanel1);
 	}
 
 	private JLabel getLblNewLabel() {
@@ -92,9 +93,10 @@ public class DemoPanel extends JPanel {
 						Object result = exp.length()==0 ? exp : getEvaluator().evaluate(exp);
 						getResultLabel().setText(result.toString());
 						resultLabel.setIcon(null);
+						resultLabel.setForeground(Color.BLACK);
 					} catch (IllegalArgumentException e) {
 						getResultLabel().setText("error: "+e);
-						resultLabel.setIcon(null); //TODO
+						resultLabel.setForeground(Color.RED);
 					}
 				}
 			});
@@ -166,32 +168,32 @@ public class DemoPanel extends JPanel {
 	private JPanel getPanel1() {
 		if (panel1 == null) {
 			panel1 = new JPanel();
-			GridBagLayout gbl_panel_1 = new GridBagLayout();
-			panel1.setLayout(gbl_panel_1);
-			GridBagConstraints gbc_operatorsPanel = new GridBagConstraints();
-			gbc_operatorsPanel.insets = new Insets(0, 0, 5, 0);
-			gbc_operatorsPanel.weighty = 1.0;
-			gbc_operatorsPanel.weightx = 1.0;
-			gbc_operatorsPanel.fill = GridBagConstraints.BOTH;
-			gbc_operatorsPanel.gridx = 0;
-			gbc_operatorsPanel.gridy = 0;
-			panel1.add(getOperatorsPanel(), gbc_operatorsPanel);
-			GridBagConstraints gbc_constantsPanel = new GridBagConstraints();
-			gbc_constantsPanel.insets = new Insets(0, 0, 5, 0);
-			gbc_constantsPanel.weighty = 0.3;
-			gbc_constantsPanel.weightx = 1.0;
-			gbc_constantsPanel.fill = GridBagConstraints.BOTH;
-			gbc_constantsPanel.gridx = 0;
-			gbc_constantsPanel.gridy = 1;
-			panel1.add(getConstantsPanel(), gbc_constantsPanel);
-			GridBagConstraints gbc_functionsPanel = new GridBagConstraints();
-			gbc_functionsPanel.weighty = 1.0;
-			gbc_functionsPanel.weightx = 1.0;
-			gbc_functionsPanel.fill = GridBagConstraints.BOTH;
-			gbc_functionsPanel.gridheight = 0;
-			gbc_functionsPanel.gridx = 1;
-			gbc_functionsPanel.gridy = 0;
-			panel1.add(getFunctionsPanel(), gbc_functionsPanel);
+			GridBagLayout gblPanel1 = new GridBagLayout();
+			panel1.setLayout(gblPanel1);
+			GridBagConstraints gbcOperatorsPanel = new GridBagConstraints();
+			gbcOperatorsPanel.insets = new Insets(0, 0, 5, 0);
+			gbcOperatorsPanel.weighty = 1.0;
+			gbcOperatorsPanel.weightx = 1.0;
+			gbcOperatorsPanel.fill = GridBagConstraints.BOTH;
+			gbcOperatorsPanel.gridx = 0;
+			gbcOperatorsPanel.gridy = 0;
+			panel1.add(getOperatorsPanel(), gbcOperatorsPanel);
+			GridBagConstraints gbcConstantsPanel = new GridBagConstraints();
+			gbcConstantsPanel.insets = new Insets(0, 0, 5, 0);
+			gbcConstantsPanel.weighty = 0.3;
+			gbcConstantsPanel.weightx = 1.0;
+			gbcConstantsPanel.fill = GridBagConstraints.BOTH;
+			gbcConstantsPanel.gridx = 0;
+			gbcConstantsPanel.gridy = 1;
+			panel1.add(getConstantsPanel(), gbcConstantsPanel);
+			GridBagConstraints gbcFunctionsPanel = new GridBagConstraints();
+			gbcFunctionsPanel.weighty = 1.0;
+			gbcFunctionsPanel.weightx = 1.0;
+			gbcFunctionsPanel.fill = GridBagConstraints.BOTH;
+			gbcFunctionsPanel.gridheight = 0;
+			gbcFunctionsPanel.gridx = 1;
+			gbcFunctionsPanel.gridy = 0;
+			panel1.add(getFunctionsPanel(), gbcFunctionsPanel);
 		}
 		return panel1;
 	}
