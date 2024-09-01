@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>com.fathzer</groupId>
 		<artifactId>javaluator-parent-pom</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<artifactId>javaluator-examples</artifactId>
-	<version>3.0.4</version>
+	<version>3.0.5</version>
 
 	<name>javaluator-examples</name>
 	<description>Some examples of use of Javaluator.</description>

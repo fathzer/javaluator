@@ -5,10 +5,10 @@
   <parent>
     <groupId>com.fathzer</groupId>
 		<artifactId>javaluator-parent-pom</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
   </parent>
   <artifactId>javaluator-demo</artifactId>
-  <version>3.0.2</version>
+  <version>3.0.3</version>
   
 	<properties>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
