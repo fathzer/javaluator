@@ -41,7 +41,7 @@
 				<sonar.organization>fathzer</sonar.organization>
 				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 				<!-- Skip System.out usage in examples -->
-				<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
+				<sonar.issue.ignore.multicriteria>e1,e3</sonar.issue.ignore.multicriteria>
 				<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S106</sonar.issue.ignore.multicriteria.e1.ruleKey>
 				<sonar.issue.ignore.multicriteria.e1.resourceKey>
 					javaluator-examples/**/*</sonar.issue.ignore.multicriteria.e1.resourceKey>
