@@ -16,7 +16,7 @@ public class ConstantTableModel extends AbstractTableModel {
 	
 	public ConstantTableModel(Collection<Constant> collection) {
 		this.constants = new ArrayList<>(collection);
-		Collections.sort(this.constants, new Comparator<>() {
+		Collections.sort(this.constants, new Comparator<Constant>() {
 			public int compare(Constant c1, Constant c2) {
 				return c1.getName().compareTo(c2.getName());
 			}

@@ -129,8 +129,7 @@
 				</executions>
 				<!-- defaults for compile and testCompile -->
 				<configuration>
-					<release>8</release><!-- or 7 or 8 depending on
-					compatibility expectations -->
+					<release>8</release>
 					<!-- Only required when Maven runtime JAVA_HOME isn't at
 					least Java 9 and when haven't configured the
 					maven-toolchains-plugin -->
