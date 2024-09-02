@@ -15,8 +15,8 @@ public class FunctionTableModel extends AbstractTableModel {
 	private List<Function> functions;
 	
 	public FunctionTableModel(Collection<Function> collection) {
-		this.functions = new ArrayList<Function>(collection);
-		Collections.sort(this.functions, new Comparator<Function>() {
+		this.functions = new ArrayList<>(collection);
+		Collections.sort(this.functions, new Comparator<>() {
 			public int compare(Function f1, Function f2) {
 				return f1.getName().compareTo(f2.getName());
 			}

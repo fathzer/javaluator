@@ -67,7 +67,7 @@ public class TextualOperatorsEvaluator extends AbstractEvaluator<Boolean> {
 	}
 	
 	public static void main(String[] args) {
-		Map<String,String> variableToValue = new HashMap<String, String>();
+		Map<String,String> variableToValue = new HashMap<>();
 		variableToValue.put("type", "PORT");
 		AbstractEvaluator<Boolean> evaluator = new TextualOperatorsEvaluator();
 		System.out.println ("type=PORT -> "+evaluator.evaluate("type=PORT", variableToValue));

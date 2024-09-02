@@ -70,7 +70,7 @@ public class Tokenizer {
 		// the longer may be before the shorter (&& should be before &) or the regexpr
 		// parser will recognize && as two &.
 		//TODO Create a test to verify that operators that includes others are working
-		Collections.sort(delimiters, new Comparator<String>() {
+		Collections.sort(delimiters, new Comparator<>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return o2.compareTo(o1);
@@ -108,7 +108,7 @@ public class Tokenizer {
 	 */
 	public Iterator<String> tokenize(String string) {
 		if (pattern!=null) {
-			List<String> res = new ArrayList<String>();
+			List<String> res = new ArrayList<>();
 			Matcher m = pattern.matcher(string);
 			int pos = 0;
 			while (m.find()) {

@@ -3,10 +3,10 @@
 ## Deploy the artifact on Maven central
 
 1. Push the code in `master` branch.  
-It will trigger some workflows. Please note that `tutorial` workflow may fail! It only means [Javaluator tutorial on Javaluator's site](https://javaluator.fathzer.com) require some updates.  
+It will trigger some workflows. Please note that `tutorial` workflow may fail! If it fails, it means that [Javaluator tutorial on Javaluator's site](https://javaluator.fathzer.com) require some updates.  
 If Sonar quality gate fail ... try to fix its complaints ;-)
 
-2. Ensure *toolchain* is configured ([see how to do it](#HowToConfigureToolchain)) and the jdk required in [*pom.xml*](https://github.com/fathzer/javaluator/blob/master/pom.xml)) is available.
+2. Ensure *toolchain* is configured ([see how to do it](#how-to-configure-toolchain)) and the jdk required in [*pom.xml*](https://github.com/fathzer/javaluator/blob/master/pom.xml)) is available.
 
 3. Run `mvn clean deploy` on the project.  
 Of course, signing material (certificate and its password) are not included in this project: There should be `fathzer_private_key.asc` and `fathzer_key_pwd.txt` files in the user's home directory.
@@ -34,7 +34,7 @@ This file should contain something like:
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>8</version>
+      <version>21</version>
       <vendor>sun</vendor>
     </provides>
     <configuration>
@@ -43,5 +43,4 @@ This file should contain something like:
   </toolchain>
 <toolchains>
 ```
-Once it is done, java 8 is activated with the `jdk` system property: `mvn -Djdk=8 clean deploy`
 

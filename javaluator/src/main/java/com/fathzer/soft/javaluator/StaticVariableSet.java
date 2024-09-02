@@ -16,7 +16,7 @@ public class StaticVariableSet<T> implements AbstractVariableSet<T> {
 	 * <br>Builds a new empty variable set.
 	 */
 	public StaticVariableSet() {
-		this.varToValue = new HashMap<String, T>();
+		this.varToValue = new HashMap<>();
 	}
 	
 	/** Gets the value of a variable.
