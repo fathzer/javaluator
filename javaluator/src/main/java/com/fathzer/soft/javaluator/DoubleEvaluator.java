@@ -219,7 +219,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		if (supportsScientificNotation) {
 			// There's a trap with scientific number notation (1E+50 for example):
 			// + is considered as an operator. We'll make a basic work around...
-			final List<String> tokens = new ArrayList<String>();
+			final List<String> tokens = new ArrayList<>();
 			final Iterator<String> rawTokens = super.tokenize(expression);
 			while (rawTokens.hasNext()) {
 				tokens.add(rawTokens.next());

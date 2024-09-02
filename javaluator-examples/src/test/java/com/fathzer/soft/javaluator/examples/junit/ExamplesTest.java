@@ -34,7 +34,7 @@ public class ExamplesTest {
 		ExtendedDoubleEvaluator evaluator = new ExtendedDoubleEvaluator();
 		// Test that all this stuff is ok
 		String expression = "sqrt(abs(-2))^2";
-		assertEquals(2, evaluator.evaluate(expression), 0.00001);;
+		assertEquals(2, evaluator.evaluate(expression), 0.00001);
 	}
 	
 	@Test

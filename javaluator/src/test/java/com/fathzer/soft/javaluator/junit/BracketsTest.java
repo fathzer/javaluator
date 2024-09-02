@@ -26,8 +26,7 @@ public class BracketsTest {
 		params.addExpressionBracket(BracketPair.PARENTHESES);
 		params.addExpressionBracket(BracketPair.BRACKETS);
 		params.addFunctionBracket(BracketPair.ANGLES);
-		DoubleEvaluator eval = new DoubleEvaluator(params);
-		return eval;
+		return new DoubleEvaluator(params);
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
