@@ -1,62 +1,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.fathzer</groupId>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fathzer</groupId>
 		<artifactId>javaluator-parent-pom</artifactId>
 		<version>1.0.1</version>
-  </parent>
-  <artifactId>javaluator-demo</artifactId>
-  <version>3.0.3</version>
-  
+	</parent>
+	<artifactId>javaluator-demo</artifactId>
+	<version>3.0.3</version>
+
 	<properties>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.install.skip>true</maven.install.skip>
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 
-    <dependencies>
-  	<dependency>
-  		<groupId>com.fathzer</groupId>
-  		<artifactId>javaluator</artifactId>
-			<version>3.0.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.fathzer</groupId>
-  		<artifactId>ajlib</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>com.fathzer</groupId>
+			<artifactId>javaluator</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fathzer</groupId>
+			<artifactId>ajlib</artifactId>
 			<version>0.3.16</version>
-  	</dependency>
-  </dependencies>
-  
-  <build>
-  	<plugins>
-  		<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-shade-plugin</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.5.3</version>
-	        <configuration>
+				<configuration>
 					<finalName>javaluator-demo</finalName>
-	          <minimizeJar>true</minimizeJar>
-              <transformers>
+					<minimizeJar>true</minimizeJar>
+					<transformers>
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <manifestEntries>
-                    <Main-Class>com.fathzer.soft.javaluator.demo.DemoApplet</Main-Class>
-                  </manifestEntries>
-                </transformer>
-              </transformers>
-	        </configuration>
-	        <executions>
-	          <execution>
-	            <phase>package</phase>
-	            <goals>
-	              <goal>shade</goal>
-	            </goals>
-	          </execution>
-	        </executions>
-  		</plugin>
-  	</plugins>
-  </build>
-  
+							<manifestEntries>
+								<Main-Class>com.fathzer.soft.javaluator.demo.DemoApplet</Main-Class>
+							</manifestEntries>
+						</transformer>
+					</transformers>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>module-info.class</exclude>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

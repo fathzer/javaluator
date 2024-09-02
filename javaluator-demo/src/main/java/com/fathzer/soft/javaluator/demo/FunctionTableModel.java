@@ -3,7 +3,6 @@ package com.fathzer.soft.javaluator.demo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -16,11 +15,7 @@ public class FunctionTableModel extends AbstractTableModel {
 	
 	public FunctionTableModel(Collection<Function> collection) {
 		this.functions = new ArrayList<>(collection);
-		Collections.sort(this.functions, new Comparator<Function>() {
-			public int compare(Function f1, Function f2) {
-				return f1.getName().compareTo(f2.getName());
-			}
-		});
+		Collections.sort(this.functions, (f1,f2) -> f1.getName().compareTo(f2.getName()));
 	}
 
 	public int getColumnCount() {
