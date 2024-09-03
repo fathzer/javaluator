@@ -4,7 +4,7 @@
 
 1. Push the code in `master` branch.  
 It will trigger some workflows. Please note that `tutorial` workflow may fail! If it fails, it means that [Javaluator tutorial on Javaluator's site](https://javaluator.fathzer.com) require some updates.  
-If Sonar quality gate fail ... try to fix its complaints ;-)
+If Sonar quality gate fails ... try to fix its complaints ;-)
 
 2. Ensure *toolchain* is configured ([see how to do it](#how-to-configure-toolchain)) and the jdk required in [*pom.xml*](https://github.com/fathzer/javaluator/blob/master/pom.xml)) is available.
 
@@ -23,6 +23,11 @@ Of course, signing material (certificate and its password) are not included in t
 	- Add the version release notes to the `javaluator/www/en/doc/relnotes.txt` file. 
 
 3. Don't forget to push the updates in the production site!
+
+## Update javadoc on javadoc.io
+
+Once the Maven artifacts are available on [Maven central](https://search.maven.org/search?q=a:javaluator), open the link `https://javadoc.io/doc/com.fathzer/javaluator/*VERSION*/` were *VERSION* is the new release number.  
+javadoc.io will process the request and made the new release available after a couple of minutes.
 
 ## How to configure toolchain
 Add a *toolchain.xml* file in your `.m2` directory.
