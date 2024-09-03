@@ -3,7 +3,6 @@ package com.fathzer.soft.javaluator.demo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -15,12 +14,8 @@ public class OperatorTableModel extends AbstractTableModel {
 	private List<Operator> operators;
 	
 	public OperatorTableModel(Collection<Operator> collection) {
-		this.operators = new ArrayList<Operator>(collection);
-		Collections.sort(this.operators, new Comparator<Operator>() {
-			public int compare(Operator o1, Operator o2) {
-				return o1.getPrecedence()-o2.getPrecedence();
-			}
-		});
+		this.operators = new ArrayList<>(collection);
+		Collections.sort(this.operators, (o1, o2) -> o1.getPrecedence()-o2.getPrecedence());
 	}
 
 	public int getColumnCount() {

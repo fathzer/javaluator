@@ -5,10 +5,10 @@
   <parent>
     <groupId>com.fathzer</groupId>
 		<artifactId>javaluator-parent-pom</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
   </parent>
   <artifactId>javaluator-demo</artifactId>
-  <version>3.0.2</version>
+	<version>3.0.3</version>
   
 	<properties>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
@@ -20,7 +20,7 @@
   	<dependency>
   		<groupId>com.fathzer</groupId>
   		<artifactId>javaluator</artifactId>
-			<version>3.0.4</version>
+			<version>3.0.5</version>
   	</dependency>
   	<dependency>
   		<groupId>com.fathzer</groupId>
@@ -46,6 +46,17 @@
                   </manifestEntries>
                 </transformer>
               </transformers>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>module-info.class</exclude>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
 	        </configuration>
 	        <executions>
 	          <execution>

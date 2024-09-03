@@ -12,7 +12,7 @@ public class Variables {
 		// Create the evaluator
 		final DoubleEvaluator eval = new DoubleEvaluator();
 		// Create a new empty variable set
-		final StaticVariableSet<Double> variables = new StaticVariableSet<Double>();
+		final StaticVariableSet<Double> variables = new StaticVariableSet<>();
 		double x = 0;
 		final double step = Math.PI/8;
 		while (x<=Math.PI/2) {

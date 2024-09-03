@@ -2,7 +2,6 @@ package com.fathzer.soft.javaluator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -70,12 +69,7 @@ public class Tokenizer {
 		// the longer may be before the shorter (&& should be before &) or the regexpr
 		// parser will recognize && as two &.
 		//TODO Create a test to verify that operators that includes others are working
-		Collections.sort(delimiters, new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o2.compareTo(o1);
-			}
-		});
+		Collections.sort(delimiters, (o1, o2) -> o2.compareTo(o1));
 		// Build a string that will contain the regular expression
 		StringBuilder result = new StringBuilder();
 		result.append('(');
@@ -108,7 +102,7 @@ public class Tokenizer {
 	 */
 	public Iterator<String> tokenize(String string) {
 		if (pattern!=null) {
-			List<String> res = new ArrayList<String>();
+			List<String> res = new ArrayList<>();
 			Matcher m = pattern.matcher(string);
 			int pos = 0;
 			while (m.find()) {

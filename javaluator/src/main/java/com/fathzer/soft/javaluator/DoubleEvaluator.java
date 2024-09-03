@@ -144,12 +144,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	
 	private static Parameters defaultParameters;
 	private static final Pattern SCIENTIFIC_NOTATION_PATTERN = Pattern.compile("([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)[eE][+-]?\\d+)$");
-	private static final ThreadLocal<NumberFormat> FORMATTER = new ThreadLocal<NumberFormat>() {
-	  @Override
-	  protected NumberFormat initialValue() {
-	  	return NumberFormat.getNumberInstance(Locale.US);
-	  }
-	};
+	private static final ThreadLocal<NumberFormat> FORMATTER = ThreadLocal.withInitial(() -> NumberFormat.getNumberInstance(Locale.US));
 	
 	/** Gets a copy of DoubleEvaluator standard default parameters.
 	 * <br>The returned parameters contains all the predefined operators, functions and constants.
@@ -219,7 +214,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 		if (supportsScientificNotation) {
 			// There's a trap with scientific number notation (1E+50 for example):
 			// + is considered as an operator. We'll make a basic work around...
-			final List<String> tokens = new ArrayList<String>();
+			final List<String> tokens = new ArrayList<>();
 			final Iterator<String> rawTokens = super.tokenize(expression);
 			while (rawTokens.hasNext()) {
 				tokens.add(rawTokens.next());

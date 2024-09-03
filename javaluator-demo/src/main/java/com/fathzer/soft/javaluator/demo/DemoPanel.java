@@ -5,8 +5,6 @@ import javax.swing.JLabel;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import java.awt.Insets;
 
 import javax.swing.border.TitledBorder;
@@ -86,8 +84,7 @@ public class DemoPanel extends JPanel {
 	private TextWidget getExpression() {
 		if (expression == null) {
 			expression = new TextWidget();
-			expression.addPropertyChangeListener(TextWidget.TEXT_PROPERTY, new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
+			expression.addPropertyChangeListener(TextWidget.TEXT_PROPERTY, evt -> {
 					try {
 						String exp = expression.getText();
 						Object result = exp.length()==0 ? exp : getEvaluator().evaluate(exp);
@@ -98,7 +95,6 @@ public class DemoPanel extends JPanel {
 						getResultLabel().setText("error: "+e);
 						resultLabel.setForeground(Color.RED);
 					}
-				}
 			});
 			expression.setColumns(30);
 		}

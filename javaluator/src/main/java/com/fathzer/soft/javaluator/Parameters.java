@@ -25,12 +25,12 @@ public class Parameters {
 	 * <br>Function argument separator is set to ','.
 	 */
 	public Parameters() {
-		this.operators = new ArrayList<Operator>();
-		this.functions = new ArrayList<Function>();
-		this.constants = new ArrayList<Constant>();
-		this.translations = new HashMap<String, String>();
-		this.expressionBrackets = new ArrayList<BracketPair>();
-		this.functionBrackets = new ArrayList<BracketPair>();
+		this.operators = new ArrayList<>();
+		this.functions = new ArrayList<>();
+		this.constants = new ArrayList<>();
+		this.translations = new HashMap<>();
+		this.expressionBrackets = new ArrayList<>();
+		this.functionBrackets = new ArrayList<>();
 		setFunctionArgumentSeparator(',');
 	}
 

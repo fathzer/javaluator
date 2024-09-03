@@ -8,7 +8,7 @@
 		<version>1.0.8</version>
 	</parent>
 	<artifactId>javaluator-parent-pom</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 
 	<name>javaluator-parent</name>
@@ -22,9 +22,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<animal-sniffer-signature>java16</animal-sniffer-signature>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<animal-sniffer-signature>java18</animal-sniffer-signature>
 	</properties>
 	<profiles>
 		<profile>
@@ -43,21 +41,22 @@
 				<sonar.organization>fathzer</sonar.organization>
 				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 				<!-- Skip System.out usage in examples -->
-				<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
+				<sonar.issue.ignore.multicriteria>e1,e3</sonar.issue.ignore.multicriteria>
 				<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S106</sonar.issue.ignore.multicriteria.e1.ruleKey>
-				<sonar.issue.ignore.multicriteria.e1.resourceKey>javaluator-examples/**/*</sonar.issue.ignore.multicriteria.e1.resourceKey>
-				<!-- Skip The diamond operator ("<>") should be used (Not supported in java 6) -->
-				<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2293</sonar.issue.ignore.multicriteria.e2.ruleKey>
-				<sonar.issue.ignore.multicriteria.e2.resourceKey>**/*</sonar.issue.ignore.multicriteria.e2.resourceKey>
-				<!-- Skip Fields in a "Serializable" class should either be transient or serializable from demo (unfortunately all swing stuff is unnecessarily serializable) -->
+				<sonar.issue.ignore.multicriteria.e1.resourceKey>
+					javaluator-examples/**/*</sonar.issue.ignore.multicriteria.e1.resourceKey>
+				<!-- Skip Fields in a "Serializable" class should either be
+				transient or serializable from demo (unfortunately all swing
+				stuff is unnecessarily serializable) -->
 				<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S1948</sonar.issue.ignore.multicriteria.e3.ruleKey>
-				<sonar.issue.ignore.multicriteria.e3.resourceKey>javaluator-demo/**/*</sonar.issue.ignore.multicriteria.e3.resourceKey>
+				<sonar.issue.ignore.multicriteria.e3.resourceKey>
+					javaluator-demo/**/*</sonar.issue.ignore.multicriteria.e3.resourceKey>
 				<!-- Exclude demo from code coverage. -->
 				<sonar.coverage.exclusions>javaluator-demo/**</sonar.coverage.exclusions>
-				<!-- Exclude duplucations from examples -->
+				<!-- Exclude duplications from examples -->
 				<sonar.cpd.exclusions>javaluator-examples/**/*.java</sonar.cpd.exclusions>
-				<maven.compiler.source>1.7</maven.compiler.source>
-				<maven.compiler.target>1.7</maven.compiler.target>
+				<maven.compiler.source>11</maven.compiler.source>
+				<maven.compiler.target>11</maven.compiler.target>
 				<maven.javadoc.skip>true</maven.javadoc.skip>
 			</properties>
 			<modules>
@@ -88,10 +87,56 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+		<plugins>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.2.5</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>animal-sniffer-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<configuration>
+							<release>11</release>
+							<!-- no excludes: compile everything to ensure
+							module-info contains right entries -->
+						</configuration>
+					</execution>
+					<execution>
+						<id>base-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<!-- recompile everything for target VM except the
+							module-info.java -->
+							<excludes>
+								<exclude>module-info.java</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+				<!-- defaults for compile and testCompile -->
+				<configuration>
+					<release>8</release>
+					<!-- Only required when Maven runtime JAVA_HOME isn't at
+					least Java 9 and when haven't configured the
+					maven-toolchains-plugin -->
+					<jdkToolchain>
+						<version>21</version>
+					</jdkToolchain>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -15,12 +15,9 @@ public class ConstantTableModel extends AbstractTableModel {
 	private List<Constant> constants;
 	
 	public ConstantTableModel(Collection<Constant> collection) {
-		this.constants = new ArrayList<Constant>(collection);
-		Collections.sort(this.constants, new Comparator<Constant>() {
-			public int compare(Constant c1, Constant c2) {
-				return c1.getName().compareTo(c2.getName());
-			}
-		});
+		this.constants = new ArrayList<>(collection);
+		final Comparator<Constant> cmp = (c1, c2) -> c1.getName().compareTo(c2.getName());
+		Collections.sort(this.constants, cmp);
 	}
 
 	public int getColumnCount() {
