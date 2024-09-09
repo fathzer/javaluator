@@ -130,12 +130,7 @@
 				<!-- defaults for compile and testCompile -->
 				<configuration>
 					<release>8</release>
-					<!-- Only required when Maven runtime JAVA_HOME isn't at
-					least Java 9 and when haven't configured the
-					maven-toolchains-plugin -->
-					<jdkToolchain>
-						<version>21</version>
-					</jdkToolchain>
+					<!-- Requires Maven runtime JAVA_HOME is at least Java 9 or have configured the maven-toolchains-plugin -->
 				</configuration>
 			</plugin>
 		</plugins>
