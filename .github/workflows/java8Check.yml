@@ -31,13 +31,13 @@ jobs:
           curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
 
           echo "checking ./javaluator-demo/target/javaluator-demo.jar"
-          java -jar ./checkReleaseTest.jar ./javaluator-demo/target/javaluator-demo.jar -j $MIN_JAVA_VERSION -i
+          java -jar ./checkReleaseTest.jar ./javaluator-demo/target/javaluator-demo.jar -j $vars.MIN_JAVA_VERSION -i
 
           # Let check the library itself in case demo pom points to an older release of the library
           OUT="$(ls ./javaluator/target/javaluator*.jar | grep -v javadoc.jar | grep -v sources.jar)"
           echo "checking $OUT"
-          java -jar ./checkReleaseTest.jar $OUT -j $MIN_JAVA_VERSION -i
+          java -jar ./checkReleaseTest.jar $OUT -j $vars.MIN_JAVA_VERSION -i
 
           OUT="$(ls ./javaluator-examples/target/javaluator-examples*.jar | grep -v javadoc.jar | grep -v sources.jar)"
           echo "checking $OUT"
-          java -jar ./checkReleaseTest.jar $OUT -j $MIN_JAVA_VERSION -i
+          java -jar ./checkReleaseTest.jar $OUT -j $vars.MIN_JAVA_VERSION -i
