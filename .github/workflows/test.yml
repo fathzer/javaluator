@@ -49,6 +49,7 @@ jobs:
           mkdir ./demo
           mv ./javaluator-demo/target/javaluator-demo.jar ./demo
           ls -l ./demo/*
-          curl https://www.astesana.net/javaReleaseTest.jar > ./javaReleaseTest.jar
+          curl https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
           ls -l .
+          java -jar ./checkReleaseTest.jar ./demo/javaluator-demo.jar -j 8 -i
         
