@@ -46,6 +46,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: |
           mvn -P demo package
+          # Check demo is compatible with java 8
+          curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
+          java -jar ./checkReleaseTest.jar ./demo/javaluator-demo.jar -j 8 -i
+          # copy demo to deplyment directory
           mkdir ./demo
           mv ./javaluator-demo/target/javaluator-demo.jar ./demo
           ls -l ./demo/*

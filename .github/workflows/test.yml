@@ -48,8 +48,7 @@ jobs:
           mvn -P demo package
           mkdir ./demo
           mv ./javaluator-demo/target/javaluator-demo.jar ./demo
-          ls -l ./demo/*
-          curl https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
-          ls -l .
+          # Check demo is compatible with java 8
+          curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
           java -jar ./checkReleaseTest.jar ./demo/javaluator-demo.jar -j 8 -i
         
