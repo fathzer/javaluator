@@ -49,7 +49,7 @@ jobs:
           # Check demo is compatible with java 8
           curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
           echo "checking demo is compatible with java ${{vars.MIN_JAVA_VERSION}}"
-          java -jar ./checkReleaseTest.jar ./javaluator-demo/javaluator-demo.jar -j ${{vars.MIN_JAVA_VERSION}} -i
+          java -jar ./checkReleaseTest.jar ./javaluator-demo/target/javaluator-demo.jar -j ${{vars.MIN_JAVA_VERSION}} -i
           # copy demo to deplyment directory
           mkdir ./demo
           mv ./javaluator-demo/target/javaluator-demo.jar ./demo
