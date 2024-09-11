@@ -1,1 +1,0 @@
-This folder contains a program used by 'java8Check.yml' workflow to check if generated classes are compatible with a java 8 (the exact release is defined in the workflow) virtual machine.

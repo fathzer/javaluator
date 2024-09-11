@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build and check
+    name: Build and check class release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,17 +27,17 @@ jobs:
       - name: Build and check
         run: |
           mvn -P sonar package
-          cd java8Test
-          mvn package
 
-          echo "checking ../javaluator-demo/target/javaluator-demo.jar"
-          java -jar target/javaReleaseTest.jar ../javaluator-demo/target/javaluator-demo.jar 52
+          curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
+
+          echo "checking ./javaluator-demo/target/javaluator-demo.jar is compatible with java ${{vars.MIN_JAVA_VERSION}}"
+          java -jar ./checkReleaseTest.jar ./javaluator-demo/target/javaluator-demo.jar -j ${{vars.MIN_JAVA_VERSION}} -i
 
           # Let check the library itself in case demo pom points to an older release of the library
-          OUT="$(ls ../javaluator/target/javaluator*.jar | grep -v javadoc.jar | grep -v sources.jar)"
-          echo "checking $OUT"
-          java -jar target/javaReleaseTest.jar $OUT 52
+          OUT="$(ls ./javaluator/target/javaluator*.jar | grep -v javadoc.jar | grep -v sources.jar)"
+          echo "checking $OUT is compatible with java ${{vars.MIN_JAVA_VERSION}}"
+          java -jar ./checkReleaseTest.jar $OUT -j ${{vars.MIN_JAVA_VERSION}} -i
 
-          OUT="$(ls ../javaluator-examples/target/javaluator-examples*.jar | grep -v javadoc.jar | grep -v sources.jar)"
-          echo "checking $OUT"
-          java -jar target/javaReleaseTest.jar $OUT 52
+          OUT="$(ls ./javaluator-examples/target/javaluator-examples*.jar | grep -v javadoc.jar | grep -v sources.jar)"
+          echo "checking $OUT is compatible with java ${{vars.MIN_JAVA_VERSION}}"
+          java -jar ./checkReleaseTest.jar $OUT -j ${{vars.MIN_JAVA_VERSION}} -i

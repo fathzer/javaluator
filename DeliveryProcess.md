@@ -6,9 +6,10 @@
 It will trigger some workflows. Please note that `tutorial` workflow may fail! If it fails, it means that [Javaluator tutorial on Javaluator's site](https://javaluator.fathzer.com) require some updates.  
 If Sonar quality gate fails ... try to fix its complaints ;-)
 
-2. Ensure *toolchain* is configured ([see how to do it](#how-to-configure-toolchain)) and the jdk required in [*pom.xml*](https://github.com/fathzer/javaluator/blob/master/pom.xml)) is available.
-
-3. Run `mvn clean deploy` on the project.  
+2. Run `mvn clean deploy` on the project.
+For unmentionable reasons, 'deploy' fails with 9+ releases of Java. But java 8 isn't able to compile the *module-info.java* files.  
+The easiest way to fix this is to use java 8 and [configure a *toolchain*](#how-to-configure-toolchain).  
+Then run `mvn -Djdk=21 clean deploy`.  
 Of course, signing material (certificate and its password) are not included in this project: There should be `fathzer_private_key.asc` and `fathzer_key_pwd.txt` files in the user's home directory.
 
 3. Create a release in Github.
