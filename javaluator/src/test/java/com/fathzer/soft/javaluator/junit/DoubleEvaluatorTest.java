@@ -29,7 +29,8 @@ public class DoubleEvaluatorTest {
 		assertEquals(2, EVALUATOR.evaluate("3-1"), 0.001);
 		assertEquals(-4, EVALUATOR.evaluate("-2^2"),0.001);
 		assertEquals(2, EVALUATOR.evaluate("4^0.5"),0.001);
-		
+		assertEquals(262144, EVALUATOR.evaluate("4^3^2"), 0.001);
+
 		assertEquals(1, EVALUATOR.evaluate("sin ( pi /2)"),0.001);
 		assertEquals(-1, EVALUATOR.evaluate("cos(pi)"),0.001);
 		assertEquals(1, EVALUATOR.evaluate("tan(pi/4)"),0.001);

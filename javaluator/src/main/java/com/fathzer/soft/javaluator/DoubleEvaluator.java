@@ -129,7 +129,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 	/** The division operator.*/
 	public static final Operator DIVIDE = new Operator("/", 2, Operator.Associativity.LEFT, 2);
 	/** The exponentiation operator.*/
-	public static final Operator EXPONENT = new Operator("^", 2, Operator.Associativity.LEFT, 4);
+	public static final Operator EXPONENT = new Operator("^", 2, Operator.Associativity.RIGHT, 4);
 	/** The <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo operator</a>.*/
 	public static final Operator MODULO = new Operator("%", 2, Operator.Associativity.LEFT, 2);
 
