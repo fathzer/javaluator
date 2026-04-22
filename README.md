@@ -1,5 +1,8 @@
 # Javaluator
-[![Javadocs](http://javadoc.io/badge/com.fathzer/javaluator.svg)](https://javadoc.io/doc/com.fathzer/javaluator)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fathzer/javaluator)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fathzer_javaluator&metric=alert_status)](https://sonarcloud.io/dashboard?id=fathzer_javaluator)
+[![Javadocs](http://javadoc.io/badge/com.fathzer/javaluator.svg)](https://javadoc.io/doc/com.fathzer/javaluator)
+[![Maven Central](https://img.shields.io/maven-central/v/com.fathzer/javaluator)](https://central.sonatype.com/artifact/com.fathzer/javaluator)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fathzer_javaluator&metric=alert_status)](https://sonarcloud.io/dashboard?id=fathzer_javaluator)
+[![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/fathzer/javaluator)
 
 A java infix evaluator based on "Shunting Yard" algorithm.
 
