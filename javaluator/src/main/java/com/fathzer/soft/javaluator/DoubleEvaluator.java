@@ -317,7 +317,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
 			result = Math.floor(arguments.next());
 		} else if (ROUND.equals(function)) {
 			Double arg = arguments.next();
-			if (arg==Double.NEGATIVE_INFINITY || arg==Double.POSITIVE_INFINITY) {
+			if (arg <= Long.MIN_VALUE || arg >= Long.MAX_VALUE) {
 				result = arg;
 			} else {
 				result = (double) Math.round(arg);

@@ -160,4 +160,19 @@ public class DoubleEvaluatorTest {
 	public void testNoArgInAverageFunction() {
 		EVALUATOR.evaluate("avg()");
 	}
+
+	@Test
+	public void roundLargeFiniteValues() {
+		assertEquals(1.0e20, EVALUATOR.evaluate("round(100000000000000000000)"), 0.0);
+		assertEquals(-1.0e20, EVALUATOR.evaluate("round(-100000000000000000000)"), 0.0);
+	}
+
+	@Test
+	public void roundRetainsTieAndBoundaryBehavior() {
+		assertEquals(3.0, EVALUATOR.evaluate("round(2.5)"), 0.0);
+		assertEquals(-2.0, EVALUATOR.evaluate("round(-2.5)"), 0.0);
+		assertEquals(0.0, EVALUATOR.evaluate("round(0.49999999999999994)"), 0.0);
+		assertEquals(4503599627370497.0, EVALUATOR.evaluate("round(4503599627370497)"), 0.0);
+	}
+
 }
