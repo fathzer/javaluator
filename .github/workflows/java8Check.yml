@@ -1,33 +1,36 @@
+# This workflow checks that the jars produced by the build are compatible with
+# the minimal required java version (MIN_JAVA_VERSION repository variable).
+# It is triggered by the completion of the "Build" workflow instead of directly by
+# push/pull_request events, so that it runs in the context of the base repository
+# and has access to repository variables, even for pull requests coming from
+# forks (which no longer receive repository secrets and variables).
 name: Check java class version
 on:
-  push:
-    branches:
-      - "*"
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read # Required to download the artifacts of the triggering workflow run
 jobs:
-  build:
-    name: Build and check class release
+  check:
+    name: Check class release
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available.
-      - name: Cache Maven packages
-        uses: actions/cache@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v8
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and check
+          name: build-artifacts
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check class release
         run: |
-          mvn -P sonar package
-
           curl -sS https://repo1.maven.org/maven2/com/fathzer/java-check-class-version/0.0.1/java-check-class-version-0.0.1.jar > ./checkReleaseTest.jar
 
           echo "checking ./javaluator-demo/target/javaluator-demo.jar is compatible with java ${{vars.MIN_JAVA_VERSION}}"
