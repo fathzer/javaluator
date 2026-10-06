@@ -4,9 +4,9 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fathzer_javaluator&metric=alert_status)](https://sonarcloud.io/dashboard?id=fathzer_javaluator)
 [![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/fathzer/javaluator)
 
-A java infix evaluator based on "Shunting Yard" algorithm.
+A generic java infix expression evaluator based on "Shunting Yard" algorithm.
 
-Evaluate an arithmetic expression is as simple as:
+Thanks to `DoubleEvaluator`, evaluating an arithmetic expression is as simple as:
 ```
 Double result = new DoubleEvaluator().evaluate("(e^3-1)*sin(pi/4)*ln(pi^2)").
 ```
