@@ -1,0 +1,56 @@
+# This workflow builds the project on pushes and pull requests and uploads the
+# build outputs (compiled classes, jars, test and coverage reports) as artifacts.
+# These artifacts are then analyzed by the "Sonar" and "Check java class version"
+# workflows, which are triggered by the workflow_run event so they run in the
+# context of the base repository and can access its secrets and variables, even
+# for pull requests coming from forks.
+name: Build
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build
+        # copy-dependencies collects the dependency jars of each module in
+        # target/dependency so the Sonar analysis can use them as java.libraries
+        run: mvn -B -P demo,release org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.apache.maven.plugins:maven-dependency-plugin:copy-dependencies
+      - name: Save pull request information
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir pr-info
+          echo "${{ github.event.pull_request.number }}" > pr-info/number
+          echo "${{ github.event.pull_request.head.ref }}" > pr-info/head
+          echo "${{ github.event.pull_request.base.ref }}" > pr-info/base
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-artifacts
+          path: '**/target/**'
+          retention-days: 1
+      - name: Upload pull request information
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-info
+          path: pr-info/
+          retention-days: 1
