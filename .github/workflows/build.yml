@@ -34,6 +34,36 @@ jobs:
         # copy-dependencies collects the dependency jars of each module in
         # target/dependency so the Sonar analysis can use them as java.libraries
         run: mvn -B -P demo,release org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.apache.maven.plugins:maven-dependency-plugin:copy-dependencies
+      - name: Install javaluator in the local repository
+        # gpg.skip is required because install triggers artifact signing
+        run: mvn -B install -pl javaluator -am -DskipTests -Dgpg.skip=true
+      - name: Get javaluator version
+        id: version
+        run: echo "version=$(mvn -B -q -f javaluator/pom.xml org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -DforceStdout)" >> "$GITHUB_OUTPUT"
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: current
+      - name: Check Gradle can resolve the built artifact
+        # Resolves the freshly installed artifact with Gradle to detect pom
+        # metadata problems that Maven tolerates but Gradle rejects
+        run: |
+          mkdir gradle-resolve-test
+          cat > gradle-resolve-test/build.gradle.kts <<'EOF'
+          plugins { java }
+          repositories {
+              mavenLocal()
+              mavenCentral()
+          }
+          dependencies {
+              implementation("com.fathzer:javaluator:${{ steps.version.outputs.version }}")
+          }
+          tasks.register("resolve") {
+              val cp = configurations.compileClasspath
+              doLast { println(cp.get().files) }
+          }
+          EOF
+          gradle -p gradle-resolve-test resolve
       - name: Save pull request information
         if: github.event_name == 'pull_request'
         run: |
