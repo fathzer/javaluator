@@ -108,17 +108,40 @@ public abstract class AbstractEvaluator<T> {
 	 * So, this part of the evaluation is in alpha state (method may change in the future).
 	 * @param previous The last parsed tokens (the previous token in the infix expression we are evaluating). 
 	 * @param candidates The candidate tokens.
-	 * @return A token
+	 * @return The operator to use (never null: if no candidate matches the operator position, one is returned anyway
+	 * and will be rejected as misplaced during the evaluation).
 	 * @see #validateHomonyms(List)
 	 */
 	protected Operator guessOperator(Token previous, List<Operator> candidates) {
-		final int argCount = ((previous!=null) && (previous.isCloseBracket() || previous.isLiteral())) ? 2 : 1;
+		final boolean operandComplete = isOperandComplete(previous);
+		// If the operator follows an operand, a binary operator is expected (a postfix unary one
+		// would also be valid). Else, a prefix unary operator is expected.
+		Operator postfixCandidate = null;
 		for (Operator operator : candidates) {
-			if (operator.getOperandCount()==argCount) {
+			if (operandComplete) {
+				if (operator.getOperandCount()==2) {
+					return operator;
+				} else if (postfixCandidate==null && operator.isPostfix()) {
+					postfixCandidate = operator;
+				}
+			} else if (operator.getOperandCount()==1 && !operator.isPostfix()) {
 				return operator;
 			}
 		}
-		return null;
+		// There's no candidate in the expected position, return one anyway:
+		// it will be rejected as misplaced during the evaluation.
+		return postfixCandidate==null ? candidates.get(0) : postfixCandidate;
+	}
+
+	/** Tests whether a token ends an operand.
+	 * <br>An operand ends with a literal (a number, a constant or a variable name), a close bracket,
+	 * or a postfix unary operator.
+	 * @param token The token to test (can be null).
+	 * @return true if the token ends an operand.
+	 */
+	private static boolean isOperandComplete(Token token) {
+		return token!=null && (token.isLiteral() || token.isCloseBracket()
+				|| (token.isOperator() && token.getOperator().isPostfix()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -231,122 +254,7 @@ public abstract class AbstractEvaluator<T> {
 			// read one token from the input stream
 			String strToken = tokens.next();
 			final Token token = toToken(previous, strToken);
-			if (token.isOpenBracket()) {
-				// If the token is a left parenthesis, then push it onto the stack.
-				stack.push(token);
-				if (previous!=null && previous.isFunction()) {
-					if (!functionBrackets.containsKey(token.getBrackets().getOpen())) {
-						throw new IllegalArgumentException("Invalid bracket after function: "+strToken);
-					}
-				} else {
-					if (!expressionBrackets.containsKey(token.getBrackets().getOpen())) {
-						throw new IllegalArgumentException("Invalid bracket in expression: "+strToken);
-					}
-				}
-			} else if (token.isCloseBracket()) {
-				if (previous==null) {
-					throw new IllegalArgumentException("expression can't start with a close bracket");
-				}
-				if (previous.isFunctionArgumentSeparator()) {
-					throw new IllegalArgumentException("argument is missing");
-				}
-				BracketPair brackets = token.getBrackets();
-				// If the token is a right parenthesis:
-				boolean openBracketFound = false;
-				// Until the token at the top of the stack is a left parenthesis,
-				// pop operators off the stack onto the output queue
-				while (!stack.isEmpty()) {
-					Token sc = stack.pop();
-					if (sc.isOpenBracket()) {
-						if (sc.getBrackets().equals(brackets)) {
-							openBracketFound = true;
-							break;
-						} else {
-							throw new IllegalArgumentException("Invalid parenthesis match "+sc.getBrackets().getOpen()+brackets.getClose());
-						}
-					} else {
-						output(values, sc, evaluationContext);
-					}
-				}
-				if (!openBracketFound) {
-					// If the stack runs out without finding a left parenthesis, then
-					// there are mismatched parentheses.
-					throw new IllegalArgumentException("Parentheses mismatched");
-				}
-				if (!stack.isEmpty() && stack.peek().isFunction()) {
-					// If the token at the top of the stack is a function token, pop it
-					// onto the output queue.
-					int argCount = values.size()-previousValuesSize.pop();
-					doFunction(values, stack.pop().getFunction(), argCount, evaluationContext);
-				}
-			} else if (token.isFunctionArgumentSeparator()) {
-				if (previous==null) {
-					throw new IllegalArgumentException("expression can't start with a function argument separator");
-				}
-				// Verify that there was an argument before this separator
-				if (previous.isOpenBracket() || previous.isFunctionArgumentSeparator()) {
-					// The cases were operator miss an operand are detected elsewhere.
-					throw new IllegalArgumentException("argument is missing");
-				}
-				// If the token is a function argument separator
-				boolean pe = false;
-				while (!stack.isEmpty()) {
-					if (stack.peek().isOpenBracket()) {
-						pe = true;
-						break;
-					} else {
-						// Until the token at the top of the stack is a left parenthesis,
-						// pop operators off the stack onto the output queue.
-						output(values, stack.pop(), evaluationContext);
-					}
-				}
-				if (!pe) {
-					// If no left parentheses are encountered, either the separator was misplaced
-					// or parentheses were mismatched.
-					throw new IllegalArgumentException("Separator or parentheses mismatched");
-				} else {
-					// Verify we are in function scope
-					Token openBracket = stack.pop();
-					Token scopeToken = stack.peek();
-					stack.push(openBracket);
-					if (!scopeToken.isFunction()) {
-						throw new IllegalArgumentException("Argument separator used outside of function scope");
-					}
-				}
-			} else if (token.isFunction()) {
-				// If the token is a function token, then push it onto the stack.
-				stack.push(token);
-				previousValuesSize.push(values.size());
-			} else if (token.isOperator()) {
-				// If the token is an operator, op1, then:
-				while (!stack.isEmpty()) {
-					Token sc = stack.peek();
-					// While there is an operator token, op2, at the top of the stack
-					// op1 is left-associative and its precedence is less than or equal
-					// to that of op2,
-					// or op1 has precedence less than that of op2,
-					// Let + and ^ be right associative.
-					// Correct transformation from 1^2+3 is 12^3+
-					// The differing operator priority decides pop / push
-					// If 2 operators have equal priority then associativity decides.
-					if (sc.isOperator()
-							&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
-									(token.getPrecedence() < sc.getPrecedence()))) {
-						// Pop op2 off the stack, onto the output queue;
-						output(values, stack.pop(), evaluationContext);
-					} else {
-						break;
-					}
-				}
-				// push op1 onto the stack.
-				stack.push(token);
-			} else {
-				// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
-				if ((previous!=null) && previous.isLiteral()) {
-					throw new IllegalArgumentException("A literal can't follow another literal");
-				}
-				output(values, token, evaluationContext);
-			}
+			processToken(values, stack, previousValuesSize, previous, token, strToken, evaluationContext);
 			previous = token;
 		}
 		// When there are no more tokens to read:
@@ -362,6 +270,153 @@ public abstract class AbstractEvaluator<T> {
 			throw new IllegalArgumentException();
 		}
 		return values.pop();
+	}
+
+	private void processToken(Deque<T> values, Deque<Token> stack, Deque<Integer> previousValuesSize,
+			Token previous, Token token, String strToken, Object evaluationContext) {
+		if (token.isOpenBracket()) {
+			doOpenBracket(stack, token, previous, strToken);
+		} else if (token.isCloseBracket()) {
+			doCloseBracket(values, stack, previousValuesSize, previous, token, evaluationContext);
+		} else if (token.isFunctionArgumentSeparator()) {
+			doArgumentSeparator(values, stack, previous, evaluationContext);
+		} else if (token.isFunction()) {
+			// If the token is a function token, then push it onto the stack.
+			stack.push(token);
+			previousValuesSize.push(values.size());
+		} else if (token.isOperator()) {
+			doOperator(values, stack, previous, token, evaluationContext);
+		} else {
+			doLiteral(values, previous, token, evaluationContext);
+		}
+	}
+
+	private void doOpenBracket(Deque<Token> stack, Token token, Token previous, String strToken) {
+		// If the token is a left parenthesis, then push it onto the stack.
+		stack.push(token);
+		if (previous!=null && previous.isFunction()) {
+			if (!functionBrackets.containsKey(token.getBrackets().getOpen())) {
+				throw new IllegalArgumentException("Invalid bracket after function: "+strToken);
+			}
+		} else if (!expressionBrackets.containsKey(token.getBrackets().getOpen())) {
+			throw new IllegalArgumentException("Invalid bracket in expression: "+strToken);
+		}
+	}
+
+	private void doCloseBracket(Deque<T> values, Deque<Token> stack, Deque<Integer> previousValuesSize,
+			Token previous, Token token, Object evaluationContext) {
+		if (previous==null) {
+			throw new IllegalArgumentException("expression can't start with a close bracket");
+		}
+		if (previous.isFunctionArgumentSeparator()) {
+			throw new IllegalArgumentException("argument is missing");
+		}
+		BracketPair brackets = token.getBrackets();
+		// If the token is a right parenthesis:
+		boolean openBracketFound = false;
+		// Until the token at the top of the stack is a left parenthesis,
+		// pop operators off the stack onto the output queue
+		while (!stack.isEmpty()) {
+			Token sc = stack.pop();
+			if (sc.isOpenBracket()) {
+				if (sc.getBrackets().equals(brackets)) {
+					openBracketFound = true;
+					break;
+				} else {
+					throw new IllegalArgumentException("Invalid parenthesis match "+sc.getBrackets().getOpen()+brackets.getClose());
+				}
+			} else {
+				output(values, sc, evaluationContext);
+			}
+		}
+		if (!openBracketFound) {
+			// If the stack runs out without finding a left parenthesis, then
+			// there are mismatched parentheses.
+			throw new IllegalArgumentException("Parentheses mismatched");
+		}
+		if (!stack.isEmpty() && stack.peek().isFunction()) {
+			// If the token at the top of the stack is a function token, pop it
+			// onto the output queue.
+			int argCount = values.size()-previousValuesSize.pop();
+			doFunction(values, stack.pop().getFunction(), argCount, evaluationContext);
+		}
+	}
+
+	private void doArgumentSeparator(Deque<T> values, Deque<Token> stack, Token previous, Object evaluationContext) {
+		if (previous==null) {
+			throw new IllegalArgumentException("expression can't start with a function argument separator");
+		}
+		// Verify that there was an argument before this separator
+		if (previous.isOpenBracket() || previous.isFunctionArgumentSeparator()) {
+			// The cases were operator miss an operand are detected elsewhere.
+			throw new IllegalArgumentException("argument is missing");
+		}
+		// If the token is a function argument separator
+		boolean pe = false;
+		while (!stack.isEmpty()) {
+			if (stack.peek().isOpenBracket()) {
+				pe = true;
+				break;
+			} else {
+				// Until the token at the top of the stack is a left parenthesis,
+				// pop operators off the stack onto the output queue.
+				output(values, stack.pop(), evaluationContext);
+			}
+		}
+		if (!pe) {
+			// If no left parentheses are encountered, either the separator was misplaced
+			// or parentheses were mismatched.
+			throw new IllegalArgumentException("Separator or parentheses mismatched");
+		} else {
+			// Verify we are in function scope
+			Token openBracket = stack.pop();
+			Token scopeToken = stack.peek();
+			stack.push(openBracket);
+			if (scopeToken==null || !scopeToken.isFunction()) {
+				throw new IllegalArgumentException("Argument separator used outside of function scope");
+			}
+		}
+	}
+
+	private void doOperator(Deque<T> values, Deque<Token> stack, Token previous, Token token, Object evaluationContext) {
+		// If the token is an operator, op1, then:
+		final Operator operator = token.getOperator();
+		// Checks the operator position: a prefix unary operator can only appear where an operand
+		// is expected, a postfix unary operator or a binary operator can only appear after an operand.
+		final boolean operandComplete = isOperandComplete(previous);
+		if ((operator.getOperandCount()==1 && operator.isPostfix()!=operandComplete)
+				|| (operator.getOperandCount()==2 && !operandComplete)) {
+			throw new IllegalArgumentException("Misplaced "+operator.getSymbol()+" operator");
+		}
+		while (!stack.isEmpty()) {
+			Token sc = stack.peek();
+			// While there is an operator token, op2, at the top of the stack
+			// op1 is left-associative and its precedence is less than or equal
+			// to that of op2,
+			// or op1 has precedence less than that of op2,
+			// Let + and ^ be right associative.
+			// Correct transformation from 1^2+3 is 12^3+
+			// The differing operator priority decides pop / push
+			// If 2 operators have equal priority then associativity decides.
+			if (sc.isOperator()
+					&& ((token.getAssociativity().equals(Operator.Associativity.LEFT) && (token.getPrecedence() <= sc.getPrecedence())) ||
+							(token.getPrecedence() < sc.getPrecedence()))) {
+				// Pop op2 off the stack, onto the output queue;
+				output(values, stack.pop(), evaluationContext);
+			} else {
+				break;
+			}
+		}
+		// push op1 onto the stack.
+		stack.push(token);
+	}
+
+	private void doLiteral(Deque<T> values, Token previous, Token token, Object evaluationContext) {
+		// If the token is a number (identifier), a constant or a variable, then add its value to the output queue.
+		if ((previous!=null) && previous.isLiteral()) {
+			throw new IllegalArgumentException("A literal can't follow another literal");
+		}
+		output(values, token, evaluationContext);
 	}
 
 	private Token toToken(Token previous, String token) {
