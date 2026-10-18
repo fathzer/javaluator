@@ -6,9 +6,13 @@ public class Operator {
 	/** An Operator's <a href="http://en.wikipedia.org/wiki/Operator_associativity">associativity</a>.
 	 */
 	public enum Associativity {
-		/** Left associativity.*/
+		/** Left associativity.
+		 * <br>For unary operators, left associativity also means the operator is a postfix operator
+		 * (it appears after its operand, like the factorial operator in <i>n!</i>).*/
 		LEFT,
-		/** Right associativity. */
+		/** Right associativity.
+		 * <br>For unary operators, right associativity also means the operator is a prefix operator
+		 * (it appears before its operand, like the unary minus in <i>-x</i>).*/
 		RIGHT,
 		/** No associativity.*/
 		NONE
@@ -22,6 +26,9 @@ public class Operator {
 	 * @param symbol The operator name (Currently, the name's length must be one character). 
 	 * @param operandCount The number of operands of the operator (must be 1 or 2).
 	 * @param associativity The associativity of the operator.
+	 * <br>For a unary operator, the associativity also defines the position of the operator relative to its operand:
+	 * {@link Associativity#RIGHT} means the operator is a prefix operator (for instance <i>-</i> in <i>-x</i>),
+	 * {@link Associativity#LEFT} means it is a postfix operator (for instance <i>!</i> in <i>n!</i>).
 	 * @param precedence The <a href="http://en.wikipedia.org/wiki/Order_of_operations">precedence</a> of the operator.
 	 * <br>The precedence is the priority of the operator. An operator with an higher precedence will be executed before an operator with a lower precedence.
 	 * Example : In "<i>1+3*4</i>" * has a higher precedence than +, so the expression is interpreted as 1+(3*4).
@@ -78,6 +85,16 @@ public class Operator {
 	 */
 	public int getPrecedence() {
 		return this.precedence;
+	}
+	
+	/** Tests whether this operator is a postfix unary operator.
+	 * <br>A unary operator is a postfix one (it appears after its operand, like <i>!</i> in <i>n!</i>) if it is
+	 * left associative. If it is right associative, it is a prefix operator (it appears before its operand,
+	 * like <i>-</i> in <i>-x</i>).
+	 * @return true if this operator is a left associative unary operator (always false for binary operators).
+	 */
+	public boolean isPostfix() {
+		return this.operandCount==1 && Associativity.LEFT.equals(this.associativity);
 	}
 
 	/* (non-Javadoc)

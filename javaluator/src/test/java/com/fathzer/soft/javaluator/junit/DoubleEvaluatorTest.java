@@ -155,6 +155,11 @@ public class DoubleEvaluatorTest {
 	public void testStartWithFunctionSeparator() {
 		EVALUATOR.evaluate(",3");
 	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testArgumentSeparatorOutsideFunctionScope() {
+		EVALUATOR.evaluate("(1,2)");
+	}
 
 	@Test (expected=IllegalArgumentException.class)
 	public void testNoArgInAverageFunction() {
